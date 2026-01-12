@@ -18,11 +18,6 @@ Route::prefix('dashboard')->group(function () {
         ->name('dashboard.safety.store');
 });
 
-// Redirect old dashboard route
-Route::get('dashboard', function () {
-    return redirect()->route('dashboard.safety');
-});
-
 Route::post('/period/store', [PeriodController::class, 'store'])->name('period.store');
 
 Route::get('/dashboard/work-permit', [WorkPermitDashboardController::class, 'index'])->name('dashboard.work-permit');
