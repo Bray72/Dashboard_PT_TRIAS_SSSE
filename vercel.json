@@ -6,8 +6,24 @@
     },
     "routes": [
         {
+            "src": "/build/(.*)",
+            "dest": "/public/build/"
+        },
+        {
+            "src": "/css/(.*)",
+            "dest": "/public/css/"
+        },
+        {
             "src": "/(.*)",
             "dest": "/public"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/public/js/"
+        },
+        {
+            "src": "/vendors/(.*)",
+            "dest": "/public/vendors/"
         },
         {
             "src": "/(.*)",
