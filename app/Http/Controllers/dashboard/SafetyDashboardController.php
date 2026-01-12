@@ -22,7 +22,7 @@ class SafetyDashboardController extends Controller
         $months = $month ? [$month] : range(1, 12);
         $gaugeMonth = $request->get('gauge_month');
 
-        $allMetrics = $this->getAllMonthlyMetrics($year);
+        $allMetrics = $this->getAllMonthlyMetrics($year, $companyId);
 
         $gaugeFR = [];
         $gaugeSR = [];
@@ -175,14 +175,19 @@ class SafetyDashboardController extends Controller
     }
 
     // Returns array with FR, SR, IR for each month
-    private function getAllMonthlyMetrics($year)
+    private function getAllMonthlyMetrics($year, $companyId = null)
     {
         $statistics = CompanyStatistic::select(
                 'company_statistics.*'
             )
             ->join('periods', 'company_statistics.period_id', '=', 'periods.id')
-            ->where('periods.year', $year)
-            ->get()
+            ->where('periods.year', $year);
+
+        if ($companyId) {
+            $statistics = $statistics->where('company_statistics.company_id', $companyId);
+        }
+
+        $statistics = $statistics->get()
             ->groupBy(function ($item) {
                 return $item->period->month;
             });
