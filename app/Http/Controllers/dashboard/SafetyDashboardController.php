@@ -16,12 +16,19 @@ class SafetyDashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $companyId = $request->company_id;
         $year = $request->year ?? Period::orderBy('year', 'desc')->value('year') ?? date('Y');
+        
+        // Get all companies for dropdown
+        $companies = Company::all();
+        
+        // Set company ID - from request or default to first company
+        $companyId = $request->company_id ?? $companies->first()?->id;
+        
         $month = $request->get('month'); 
         $months = $month ? [$month] : range(1, 12);
         $gaugeMonth = $request->get('gauge_month');
 
+        // Now call getAllMonthlyMetrics with the correct companyId
         $allMetrics = $this->getAllMonthlyMetrics($year, $companyId);
 
         $gaugeFR = [];
@@ -46,12 +53,6 @@ class SafetyDashboardController extends Controller
         for ($m = 1; $m <= 12; $m++) {
             $monthlyFR[] = $allMetrics[$m]['fr'] ?? 0;
         }
-
-        // Get all companies for dropdown
-        $companies = Company::all();
-        
-        // Set default company if not selected
-        $companyId = $companyId ?? $companies->first()?->id;
 
         // Get periods for the selected year
         $periods = Period::where('year', $year)
