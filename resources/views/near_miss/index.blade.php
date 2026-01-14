@@ -39,7 +39,7 @@
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
 
-<form method="POST" action="{{ route('dashboard.near-miss.store') }}">
+<form method="POST" action="{{ route('near-miss.department.store') }}">
 @csrf
 
 <div class="row">
