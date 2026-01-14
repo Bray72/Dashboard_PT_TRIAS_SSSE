@@ -3,76 +3,70 @@
 @section('content')
 <div class="container">
 
-    <h3 class="mb-4">📊 Near Miss Dashboard</h3>
+    <h3>Near Miss Dashboard</h3>
 
-    {{-- SUMMARY --}}
+    @if($stat)
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card shadow-sm text-center">
+            <div class="card">
                 <div class="card-body">
-                    <h6>Total Near Miss</h6>
-                    <h3>{{ $total }}</h3>
+                    <small>Total Near Miss</small>
+                    <h4>{{ $stat->total_near_miss }}</h4>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm text-center">
+            <div class="card">
                 <div class="card-body">
-                    <h6>High Risk</h6>
-                    <h3 class="text-danger">{{ $highRisk }}</h3>
+                    <small>Near Miss Rate</small>
+                    <h4>{{ $stat->near_miss_rate }}</h4>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm text-center">
+            <div class="card">
                 <div class="card-body">
-                    <h6>Open</h6>
-                    <h3 class="text-warning">{{ $open }}</h3>
+                    <small>Open</small>
+                    <h4 class="text-warning">{{ $stat->open }}</h4>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm text-center">
+            <div class="card">
                 <div class="card-body">
-                    <h6>Closed</h6>
-                    <h3 class="text-success">{{ $closed }}</h3>
+                    <small>Closed</small>
+                    <h4 class="text-success">{{ $stat->closed }}</h4>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- TABLE --}}
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Company</th>
-                        <th>Lokasi</th>
-                        <th>Risk</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($nearMisses as $nm)
-                    <tr>
-                        <td>{{ $nm->date }}</td>
-                        <td>{{ $nm->company->name }}</td>
-                        <td>{{ $nm->location }}</td>
-                        <td>
-                            <span class="badge bg-danger">{{ $nm->risk_level }}</span>
-                        </td>
-                        <td>{{ $nm->status }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    {{-- Pie Severity --}}
+    <div class="row">
+        <div class="col-md-6">
+            <h6>Severity</h6>
+            <ul>
+                <li>High: {{ $stat->high_severity }}</li>
+                <li>Medium: {{ $stat->medium_severity }}</li>
+                <li>Low: {{ $stat->low_severity }}</li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h6>Likelihood</h6>
+            <ul>
+                <li>High: {{ $stat->high_likelihood }}</li>
+                <li>Medium: {{ $stat->medium_likelihood }}</li>
+                <li>Low: {{ $stat->low_likelihood }}</li>
+            </ul>
         </div>
     </div>
-    <button class="bg-blue-600 text-white px-4 py-2 rounded" href="{{ route('near-miss.create') }}">Input Near Miss</button>
+    @else
+        <p class="text-muted">Data near miss belum tersedia.</p>
+    @endif
+
 </div>
 @endsection

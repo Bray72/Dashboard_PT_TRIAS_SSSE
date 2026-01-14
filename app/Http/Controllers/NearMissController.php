@@ -2,61 +2,93 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NearMiss;
-use App\Models\Company;
-use App\Models\Period;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\NearMissStatistic;
+use App\Models\Period;
 
-class NearMissController extends Controller
+class NearMissDashboardController extends Controller
 {
-    /* ================= DASHBOARD ================= */
     public function index(Request $request)
     {
-        $companyId = $request->company_id;
-        $year      = $request->year ?? date('Y');
+        $companyId = $request->get('company_id', 1);
 
-        $nearMisses = NearMiss::with(['company', 'period'])
-            ->when($companyId, fn ($q) => $q->where('company_id', $companyId))
-            ->whereHas('period', fn ($q) => $q->where('year', $year))
-            ->get();
+        $periodId = $request->get('period_id') ??
+            Period::orderBy('year', 'desc')
+                  ->orderBy('month', 'desc')
+                  ->value('id');
 
-        return view('near_miss.index', [
-            'nearMisses' => $nearMisses,
-            'companies'  => Company::all(),
-            'year'       => $year,
+        $stat = NearMissStatistic::with('period')
+            ->where('company_id', $companyId)
+            ->where('period_id', $periodId)
+            ->first();
 
-            /* SUMMARY */
-            'total'      => $nearMisses->count(),
-            'highRisk'   => $nearMisses->where('risk_level', 'High')->count(),
-            'open'       => $nearMisses->where('status', 'Open')->count(),
-            'closed'     => $nearMisses->where('status', 'Closed')->count(),
-        ]);
+        return view('near-miss.index', compact('stat', 'periodId'));
     }
 
-    /* ================= FORM ================= */
-    public function create()
+    /**
+     * Generate / refresh statistic per period
+     */
+    public function generate($companyId, $periodId)
     {
-        return view('near_miss.create', [
-            'companies' => Company::all(),
-            'periods'   => Period::orderBy('year', 'desc')->get()
-        ]);
-    }
+        DB::statement("
+            INSERT INTO near_miss_statistics (
+                company_id, period_id,
+                total_near_miss,
+                high_risk, medium_risk, low_risk,
+                high_severity, medium_severity, low_severity,
+                high_likelihood, medium_likelihood, low_likelihood,
+                open, closed,
+                near_miss_rate,
+                created_at, updated_at
+            )
+            SELECT
+                nm.company_id,
+                nm.period_id,
+                COUNT(*) AS total_near_miss,
 
-    /* ================= STORE ================= */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'company_id' => 'required',
-            'period_id'  => 'required',
-            'date'       => 'required|date',
-            'risk_level' => 'required',
-            'status'     => 'required'
-        ]);
+                COUNT(*) FILTER (WHERE nm.risk_level='high'),
+                COUNT(*) FILTER (WHERE nm.risk_level='medium'),
+                COUNT(*) FILTER (WHERE nm.risk_level='low'),
 
-        NearMiss::create($request->all());
+                COUNT(*) FILTER (WHERE nm.severity='high'),
+                COUNT(*) FILTER (WHERE nm.severity='medium'),
+                COUNT(*) FILTER (WHERE nm.severity='low'),
 
-        return redirect()
-            ->route('near-miss.index')
-            ->with('success', 'Near Miss berhasil disimpan');
+                COUNT(*) FILTER (WHERE nm.likelihood='high'),
+                COUNT(*) FILTER (WHERE nm.likelihood='medium'),
+                COUNT(*) FILTER (WHERE nm.likelihood='low'),
+
+                COUNT(*) FILTER (WHERE nm.status='open'),
+                COUNT(*) FILTER (WHERE nm.status='closed'),
+
+                ROUND(COUNT(*)::decimal / cs.man_hours, 6),
+                NOW(), NOW()
+            FROM near_misses nm
+            JOIN company_statistics cs
+              ON cs.company_id = nm.company_id
+             AND cs.period_id  = nm.period_id
+            WHERE nm.company_id = {$companyId}
+              AND nm.period_id  = {$periodId}
+            GROUP BY nm.company_id, nm.period_id, cs.man_hours
+            ON CONFLICT (company_id, period_id)
+            DO UPDATE SET
+                total_near_miss = EXCLUDED.total_near_miss,
+                high_risk = EXCLUDED.high_risk,
+                medium_risk = EXCLUDED.medium_risk,
+                low_risk = EXCLUDED.low_risk,
+                high_severity = EXCLUDED.high_severity,
+                medium_severity = EXCLUDED.medium_severity,
+                low_severity = EXCLUDED.low_severity,
+                high_likelihood = EXCLUDED.high_likelihood,
+                medium_likelihood = EXCLUDED.medium_likelihood,
+                low_likelihood = EXCLUDED.low_likelihood,
+                open = EXCLUDED.open,
+                closed = EXCLUDED.closed,
+                near_miss_rate = EXCLUDED.near_miss_rate,
+                updated_at = NOW();
+        ");
+
+        return back()->with('success', 'Near miss statistic generated');
     }
 }

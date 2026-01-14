@@ -14,21 +14,17 @@ class NearMiss extends Model
     protected $fillable = [
         'company_id',
         'period_id',
+        'department_id',
         'date',
         'location',
         'category',
+        'severity',
+        'likelihood',
         'risk_level',
         'description',
         'action_required',
         'status'
     ];
-
-    /* ================= RELATION ================= */
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
 
     public function period()
     {
