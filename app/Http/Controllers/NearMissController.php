@@ -23,7 +23,7 @@ class NearMissController extends Controller
             ->where('period_id', $periodId)
             ->first();
 
-        return view('near-miss.index', compact('stat', 'periodId'));
+        return view('near_miss.index', compact('stat', 'periodId'));
     }
 
     /**
