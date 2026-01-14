@@ -26,7 +26,7 @@ class NearMissController extends Controller
             ->where('period_id',$periodId)
             ->first();
 
-        return view('near-miss.dashboard', compact(
+        return view('near_miss.index', compact(
             'periods','periodId','stat','departments'
         ));
     }
