@@ -31,6 +31,20 @@ class NearMissController extends Controller
         ));
     }
 
+    /* SIMPAN DEPARTMENT */
+    public function storeDepartment(Request $request)
+    {
+        $request->validate([
+            'department_name' => 'required|unique:departments,name'
+        ]);
+
+        Department::create([
+            'name' => $request->department_name
+        ]);
+
+        return back()->with('success_department','Department berhasil ditambahkan');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

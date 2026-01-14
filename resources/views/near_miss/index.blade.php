@@ -38,63 +38,103 @@
 
 <hr>
 
+{{-- INPUT DEPARTMENT --}}
+<div class="card mb-4">
+    <div class="card-body">
+        <h6 class="mb-2">Tambah Department</h6>
+
+        @if(session('success_department'))
+            <div class="alert alert-success">
+                {{ session('success_department') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('near-miss.department.store') }}">
+            @csrf
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="department_name"
+                           class="form-control"
+                           placeholder="Nama Department"
+                           required>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary w-100">
+                        Tambah
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- FORM INPUT --}}
-<h5>Input Near Miss</h5>
+{{-- FORM NEAR MISS --}}
+<div class="card mb-4">
+    <div class="card-body">
+        <h6>Input Near Miss</h6>
 
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
+        <form method="POST" action="{{ route('near-miss.store') }}">
+            @csrf
+            <input type="hidden" name="period_id" value="{{ $periodId }}">
 
-<form method="POST" action="{{ route('near-miss.store') }}" class="row g-3">
-@csrf
-<input type="hidden" name="period_id" value="{{ $periodId }}">
-<div class="col-md-4">
-    <label>Department</label>
-    <select name="department_id" class="form-select" required>
-        <option value="">-- Pilih Department --</option>
-        @foreach($departments as $dept)
-            <option value="{{ $dept->id }}">{{ $dept->name }}</option>
-        @endforeach
-    </select>
-</div>
-<div class="col-md-4">
-    <label>Tanggal</label>
-    <input type="date" name="date" class="form-control">
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label>Tanggal</label>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Department</label>
+                    <select name="department_id" class="form-select" required>
+                        <option value="">-- Pilih Department --</option>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->id }}">
+                                {{ $dept->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Severity</label>
+                    <select name="severity" class="form-select" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Likelihood</label>
+                    <select name="likelihood" class="form-select" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Risk Level</label>
+                    <select name="risk_level" class="form-select" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12">
+                    <button class="btn btn-primary">
+                        Simpan Near Miss
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
 </div>
 
-<div class="col-md-4">
-    <label>Severity</label>
-    <select name="severity" class="form-select">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-    </select>
-</div>
-
-<div class="col-md-4">
-    <label>Likelihood</label>
-    <select name="likelihood" class="form-select">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-    </select>
-</div>
-
-<div class="col-md-4">
-    <label>Risk Level</label>
-    <select name="risk_level" class="form-select">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-    </select>
-</div>
-
-<div class="col-12">
-    <button class="btn btn-primary">Simpan</button>
-</div>
-</form>
-
-</div>
 @endsection
 
 @section('scripts')
