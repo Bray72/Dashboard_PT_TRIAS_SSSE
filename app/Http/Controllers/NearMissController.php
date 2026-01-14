@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\NearMissStatistic;
 use App\Models\Period;
 
-class NearMissDashboardController extends Controller
+class NearMissController extends Controller
 {
     public function index(Request $request)
     {
