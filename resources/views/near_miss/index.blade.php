@@ -48,7 +48,15 @@
 <form method="POST" action="{{ route('near-miss.store') }}" class="row g-3">
 @csrf
 <input type="hidden" name="period_id" value="{{ $periodId }}">
-
+<div class="col-md-4">
+    <label>Department</label>
+    <select name="department_id" class="form-select" required>
+        <option value="">-- Pilih Department --</option>
+        @foreach($departments as $dept)
+            <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+        @endforeach
+    </select>
+</div>
 <div class="col-md-4">
     <label>Tanggal</label>
     <input type="date" name="date" class="form-control">

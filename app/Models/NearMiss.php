@@ -30,4 +30,9 @@ class NearMiss extends Model
     {
         return $this->belongsTo(Period::class);
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }
