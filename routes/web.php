@@ -30,4 +30,3 @@ Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.d
 
 Route::post('/near-miss/store', [NearMissController::class,'store'])->name('near-miss.store');
 
-Route::post('/near-miss/department', [NearMissController::class,'storeDepartment'])->name('near-miss.department.store');
