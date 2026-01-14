@@ -7,7 +7,7 @@ use App\Models\Department;
 use App\Models\CompanyStatistic;
 use Illuminate\Http\Request;
 
-class NearMissDashboardController extends Controller
+class NearMissController extends Controller
 {
     public function index(Request $request)
     {
