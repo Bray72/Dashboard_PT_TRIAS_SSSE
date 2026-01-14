@@ -15,7 +15,7 @@
                 <ul class="flex gap-6">
                     <li><a href="{{ route('dashboard.safety') }}" class="text-gray-700 hover:text-blue-600">Safety Metrics</a></li>
                     <li><a href="{{ route('dashboard.work-permit') }}" class="text-gray-700 hover:text-blue-600">Work-Permit</a></li>
-                    <li><a href="{{ route('near-miss.index') }}" class="text-gray-700 hover:text-blue-600">Near Miss</a></li>
+                    <li><a href="{{ route('near-miss.dashboard') }}" class="text-gray-700 hover:text-blue-600">Near Miss</a></li>
                 </ul>
             </div>
         </div>

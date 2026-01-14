@@ -3,70 +3,123 @@
 @section('content')
 <div class="container">
 
-    <h3>Near Miss Dashboard</h3>
+<h4 class="mb-3">Near Miss Dashboard</h4>
 
-    @if($stat)
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small>Total Near Miss</small>
-                    <h4>{{ $stat->total_near_miss }}</h4>
-                </div>
-            </div>
-        </div>
+{{-- FILTER PERIODE --}}
+<form method="GET" class="mb-4">
+    <select name="period_id" onchange="this.form.submit()" class="form-select w-25">
+        @foreach($periods as $p)
+            <option value="{{ $p->id }}" {{ $periodId==$p->id?'selected':'' }}>
+                {{ $p->month }}/{{ $p->year }}
+            </option>
+        @endforeach
+    </select>
+</form>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small>Near Miss Rate</small>
-                    <h4>{{ $stat->near_miss_rate }}</h4>
-                </div>
-            </div>
-        </div>
+{{-- SUMMARY --}}
+@if($stat)
+<div class="row mb-4">
+    <div class="col-md-3"><div class="card p-3">Total<br><b>{{ $stat->total_near_miss }}</b></div></div>
+    <div class="col-md-3"><div class="card p-3">Rate<br><b>{{ $stat->near_miss_rate }}</b></div></div>
+    <div class="col-md-3"><div class="card p-3 text-warning">Open<br><b>{{ $stat->open }}</b></div></div>
+    <div class="col-md-3"><div class="card p-3 text-success">Closed<br><b>{{ $stat->closed }}</b></div></div>
+</div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small>Open</small>
-                    <h4 class="text-warning">{{ $stat->open }}</h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small>Closed</small>
-                    <h4 class="text-success">{{ $stat->closed }}</h4>
-                </div>
-            </div>
-        </div>
+{{-- CHART --}}
+<div class="row mb-5">
+    <div class="col-md-6">
+        <canvas id="severityChart"></canvas>
     </div>
-
-    {{-- Pie Severity --}}
-    <div class="row">
-        <div class="col-md-6">
-            <h6>Severity</h6>
-            <ul>
-                <li>High: {{ $stat->high_severity }}</li>
-                <li>Medium: {{ $stat->medium_severity }}</li>
-                <li>Low: {{ $stat->low_severity }}</li>
-            </ul>
-        </div>
-
-        <div class="col-md-6">
-            <h6>Likelihood</h6>
-            <ul>
-                <li>High: {{ $stat->high_likelihood }}</li>
-                <li>Medium: {{ $stat->medium_likelihood }}</li>
-                <li>Low: {{ $stat->low_likelihood }}</li>
-            </ul>
-        </div>
+    <div class="col-md-6">
+        <canvas id="likelihoodChart"></canvas>
     </div>
-    @else
-        <p class="text-muted">Data near miss belum tersedia.</p>
-    @endif
+</div>
+@endif
+
+<hr>
+
+{{-- FORM INPUT --}}
+<h5>Input Near Miss</h5>
+
+@if(session('success'))
+<div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+<form method="POST" action="{{ route('near-miss.store') }}" class="row g-3">
+@csrf
+<input type="hidden" name="period_id" value="{{ $periodId }}">
+
+<div class="col-md-4">
+    <label>Tanggal</label>
+    <input type="date" name="date" class="form-control">
+</div>
+
+<div class="col-md-4">
+    <label>Severity</label>
+    <select name="severity" class="form-select">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <label>Likelihood</label>
+    <select name="likelihood" class="form-select">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <label>Risk Level</label>
+    <select name="risk_level" class="form-select">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+    </select>
+</div>
+
+<div class="col-12">
+    <button class="btn btn-primary">Simpan</button>
+</div>
+</form>
 
 </div>
+@endsection
+
+@section('scripts')
+@if($stat)
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('severityChart'), {
+    type: 'pie',
+    data: {
+        labels: ['High','Medium','Low'],
+        datasets: [{
+            data: [
+                {{ $stat->high_severity }},
+                {{ $stat->medium_severity }},
+                {{ $stat->low_severity }}
+            ]
+        }]
+    }
+});
+
+new Chart(document.getElementById('likelihoodChart'), {
+    type: 'pie',
+    data: {
+        labels: ['High','Medium','Low'],
+        datasets: [{
+            data: [
+                {{ $stat->high_likelihood }},
+                {{ $stat->medium_likelihood }},
+                {{ $stat->low_likelihood }}
+            ]
+        }]
+    }
+});
+</script>
+@endif
 @endsection

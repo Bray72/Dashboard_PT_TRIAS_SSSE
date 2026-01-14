@@ -26,8 +26,6 @@ Route::post('/dashboard/work-permit/store',[WorkPermitDashboardController::class
 
 Route::get('/dashboard/work-permit/create',[WorkPermitDashboardController::class, 'create'])->name('dashboard.work-permit.create');
 
+Route::get('/near-miss', [NearMissDashboardController::class,'index'])->name('near-miss.dashboard');
 
-Route::prefix('near-miss')->group(function () {
-    Route::get('/', [NearMissController::class, 'index'])->name('near-miss.index');
-    Route::post('/generate/{company}/{period}', [NearMissController::class, 'generate'])->name('near-miss.generate');
-});
+Route::post('/near-miss/store', [NearMissDashboardController::class,'store'])->name('near-miss.store');
