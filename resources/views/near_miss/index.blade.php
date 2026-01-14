@@ -73,6 +73,6 @@
             </table>
         </div>
     </div>
-    <button href="{{ route('near-miss.create') }}">Input Near Miss</button>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded" href="{{ route('near-miss.create') }}">Input Near Miss</button>
 </div>
 @endsection
