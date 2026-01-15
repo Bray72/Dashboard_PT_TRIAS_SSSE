@@ -212,7 +212,7 @@
         @else
             <div class="text-center py-12">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 00-.707.293h-3.172a1 1 0 00-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No near miss reports</h3>
                 <p class="mt-1 text-sm text-gray-500">Start by adding a near miss report using the form above.</p>
@@ -410,6 +410,16 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    function openEditModal(id, currentStatus) {
+        document.getElementById('editModal').classList.remove('hidden');
+        document.getElementById('statusSelect').value = currentStatus;
+        document.getElementById('editStatusForm').action = `/near-miss/${id}/status`;
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const chartColors = {
             low: '#10b981',
@@ -583,17 +593,6 @@
                 }
             }
         });
-
-        // Edit Modal Functions
-        function openEditModal(id, currentStatus) {
-            document.getElementById('editModal').classList.remove('hidden');
-            document.getElementById('statusSelect').value = currentStatus;
-            document.getElementById('editStatusForm').action = `/near-miss/${id}/status`;
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-        }
 
         // Close modal when clicking outside
         document.getElementById('editModal').addEventListener('click', function(e) {
