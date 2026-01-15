@@ -88,6 +88,11 @@ class NearMissController extends Controller
                 ];
             });
 
+        $nearMisses = NearMiss::whereIn('period_id', $periodIds)
+            ->with(['department', 'period'])
+            ->orderBy('date', 'desc')
+            ->paginate(10);
+
         $departments = Department::orderBy('name')->get();
 
         return view('near_miss.index', compact(
@@ -103,7 +108,8 @@ class NearMissController extends Controller
             'departmentStats',
             'status',
             'monthlyTrend',
-            'departments'
+            'departments',
+            'nearMisses'
         ));
     }
 
@@ -151,6 +157,21 @@ class NearMissController extends Controller
 
         return redirect()->route('near-miss.dashboard')
             ->with('success', 'Near Miss berhasil ditambahkan');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Open,Closed'
+        ]);
+
+        $nearMiss = NearMiss::findOrFail($id);
+        $nearMiss->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()->route('near-miss.dashboard')
+            ->with('success', 'Status Near Miss berhasil diperbarui');
     }
 
     private function getMonthName($month)

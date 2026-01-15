@@ -141,6 +141,85 @@
         </div>
     </div>
 
+    <!-- Near Miss Data Table Section -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Near Miss Reports</h2>
+            <p class="text-gray-600 text-sm mt-1">List of all near miss incidents</p>
+        </div>
+
+        @if($nearMisses->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Department</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Risk Level</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($nearMisses as $nearMiss)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->date->format('M d, Y') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->location }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->department->name ?? '-' }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->category }}</td>
+                                <td class="px-6 py-4 text-sm">
+                                    @php
+                                        $riskColors = [
+                                            'Low' => 'bg-green-100 text-green-800',
+                                            'Medium' => 'bg-yellow-100 text-yellow-800',
+                                            'High' => 'bg-red-100 text-red-800'
+                                        ];
+                                    @endphp
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $riskColors[$nearMiss->risk_level] ?? 'bg-gray-100 text-gray-800' }}">
+                                        {{ $nearMiss->risk_level }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm">
+                                    @php
+                                        $statusColors = [
+                                            'Open' => 'bg-blue-100 text-blue-800',
+                                            'Closed' => 'bg-green-100 text-green-800'
+                                        ];
+                                    @endphp
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColors[$nearMiss->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                        {{ $nearMiss->status }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm">
+                                    <button type="button" 
+                                        onclick="openEditModal({{ $nearMiss->id }}, '{{ $nearMiss->status }}')"
+                                        class="text-blue-600 hover:text-blue-900 font-medium text-sm">
+                                        Edit Status
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+                {{ $nearMisses->links() }}
+            </div>
+        @else
+            <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No near miss reports</h3>
+                <p class="mt-1 text-sm text-gray-500">Start by adding a near miss report using the form above.</p>
+            </div>
+        @endif
+    </div>
+
     <!-- Status Distribution Cards -->
     <div class="bg-white rounded-lg shadow p-6 mb-8">
         <h3 class="text-lg font-semibold text-gray-900 mb-6">Status Overview</h3>
@@ -292,6 +371,39 @@
                 Submit Near Miss Report
             </button>
         </form>
+    </div>
+
+    <!-- Edit Status Modal -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Update Near Miss Status</h3>
+            </div>
+            
+            <form id="editStatusForm" method="POST" class="p-6">
+                @csrf
+                @method('PUT')
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select name="status" id="statusSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" 
+                        onclick="closeEditModal()"
+                        class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -469,6 +581,24 @@
                         ticks: { stepSize: 1 }
                     }
                 }
+            }
+        });
+
+        // Edit Modal Functions
+        function openEditModal(id, currentStatus) {
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('statusSelect').value = currentStatus;
+            document.getElementById('editStatusForm').action = `/near-miss/${id}/status`;
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
             }
         });
     });
