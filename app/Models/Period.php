@@ -18,4 +18,9 @@ class Period extends Model
     {
         return $this->hasMany(CompanyStatistic::class);
     }
+
+    public function nearMisses()
+    {
+        return $this->hasMany(NearMiss::class);
+    }
 }
