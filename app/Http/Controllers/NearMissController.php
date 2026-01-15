@@ -87,7 +87,7 @@ class NearMissController extends Controller
             'status'        => 'Open',
         ]);
 
-        return redirect()->route('near_miss.index')
+        return redirect()->route('near-miss.dashboard')
             ->with('success', 'Near Miss berhasil ditambahkan');
     }
 }
