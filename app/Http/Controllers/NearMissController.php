@@ -33,33 +33,33 @@ class NearMissController extends Controller
         $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours : 0;
 
         // Risk level distribution
-        $risk = NearMiss::selectRaw('risk_level, COUNT(*) as total')
-            ->whereIn('period_id', $periodIds)
+        $risk = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('risk_level')
+            ->selectRaw('risk_level, COUNT(*) as total')
             ->pluck('total', 'risk_level');
 
         // Severity distribution
-        $severity = NearMiss::selectRaw('severity, COUNT(*) as total')
-            ->whereIn('period_id', $periodIds)
+        $severity = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('severity')
+            ->selectRaw('severity, COUNT(*) as total')
             ->pluck('total', 'severity');
 
         // Likelihood distribution
-        $likelihood = NearMiss::selectRaw('likelihood, COUNT(*) as total')
-            ->whereIn('period_id', $periodIds)
+        $likelihood = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('likelihood')
+            ->selectRaw('likelihood, COUNT(*) as total')
             ->pluck('total', 'likelihood');
 
         // Category distribution
-        $category = NearMiss::selectRaw('category, COUNT(*) as total')
-            ->whereIn('period_id', $periodIds)
+        $category = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('category')
+            ->selectRaw('category, COUNT(*) as total')
             ->pluck('total', 'category');
 
         // Department distribution
-        $departmentStats = NearMiss::selectRaw('department_id, COUNT(*) as total')
-            ->whereIn('period_id', $periodIds)
+        $departmentStats = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('department_id')
+            ->selectRaw('department_id, COUNT(*) as total')
             ->with('department')
             ->get()
             ->map(function($item) {
@@ -70,21 +70,21 @@ class NearMissController extends Controller
             });
 
         // Status distribution
-        $status = NearMiss::selectRaw('status, COUNT(*) as total')
-            ->whereIn('period_id', $periodIds)
+        $status = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('status')
+            ->selectRaw('status, COUNT(*) as total')
             ->pluck('total', 'status');
 
         // Monthly trend
         $monthlyTrend = Period::whereIn('id', $periodIds)
-            ->with(['nearMisses' => function($q) {
-                $q->selectRaw('period_id, COUNT(*) as count');
-            }])
+            ->selectRaw('month, EXTRACT(MONTH FROM created_at) as month_num')
+            ->orderBy('month')
             ->get()
             ->map(function($period) {
+                $count = NearMiss::whereIn('period_id', [$period->id])->count();
                 return [
                     'month' => $this->getMonthName($period->month),
-                    'count' => $period->nearMisses->sum('count') ?? 0
+                    'count' => $count
                 ];
             });
 
