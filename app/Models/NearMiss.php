@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class NearMiss extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'company_id',
         'period_id',
@@ -20,6 +22,10 @@ class NearMiss extends Model
         'description',
         'action_required',
         'status'
+    ];
+
+    protected $casts = [
+        'date' => 'date',
     ];
 
     public function period()
@@ -37,4 +43,3 @@ class NearMiss extends Model
         return $this->belongsTo(Department::class);
     }
 }
-
