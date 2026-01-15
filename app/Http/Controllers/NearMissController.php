@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\NearMiss;
 use App\Models\NearMissStatistic;
 use App\Models\Period;
+use App\Models\Company;
 use App\Models\Department;
 use App\Models\CompanyStatistic;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class NearMissController extends Controller
     {
         $year  = $request->year ?? now()->year;
         $month = $request->month;
-
+         $companies = Company::all();
         $periodQuery = Period::where('year', $year);
         if ($month) {
             $periodQuery->where('month', $month);
@@ -109,7 +110,8 @@ class NearMissController extends Controller
             'status',
             'monthlyTrend',
             'departments',
-            'nearMisses'
+            'nearMisses',
+            'company'
         ));
     }
 
