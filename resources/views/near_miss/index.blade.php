@@ -264,6 +264,19 @@
 
         <form method="POST" action="{{ route('near-miss.store') }}" class="space-y-6">
             @csrf
+            <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Company *</label>
+                    <select name="company_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Company --</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('company_id')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Date -->
