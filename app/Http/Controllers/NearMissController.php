@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\NearMiss;
+use App\Models\NearMissStatistic;
 use App\Models\Period;
 use App\Models\Department;
 use App\Models\CompanyStatistic;
@@ -21,17 +22,71 @@ class NearMissController extends Controller
 
         $periodIds = $periodQuery->pluck('id');
 
+        // Total near miss count
         $totalNearMiss = NearMiss::whereIn('period_id', $periodIds)->count();
 
+        // Get man hours for near miss rate calculation
         $manHours = CompanyStatistic::whereIn('period_id', $periodIds)
             ->sum('man_hours');
 
+        // Calculate near miss rate: total near miss / man hours
         $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours : 0;
 
+        // Risk level distribution
         $risk = NearMiss::selectRaw('risk_level, COUNT(*) as total')
             ->whereIn('period_id', $periodIds)
             ->groupBy('risk_level')
             ->pluck('total', 'risk_level');
+
+        // Severity distribution
+        $severity = NearMiss::selectRaw('severity, COUNT(*) as total')
+            ->whereIn('period_id', $periodIds)
+            ->groupBy('severity')
+            ->pluck('total', 'severity');
+
+        // Likelihood distribution
+        $likelihood = NearMiss::selectRaw('likelihood, COUNT(*) as total')
+            ->whereIn('period_id', $periodIds)
+            ->groupBy('likelihood')
+            ->pluck('total', 'likelihood');
+
+        // Category distribution
+        $category = NearMiss::selectRaw('category, COUNT(*) as total')
+            ->whereIn('period_id', $periodIds)
+            ->groupBy('category')
+            ->pluck('total', 'category');
+
+        // Department distribution
+        $departmentStats = NearMiss::selectRaw('department_id, COUNT(*) as total')
+            ->whereIn('period_id', $periodIds)
+            ->groupBy('department_id')
+            ->with('department')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'name' => $item->department->name ?? 'Unknown',
+                    'total' => $item->total
+                ];
+            });
+
+        // Status distribution
+        $status = NearMiss::selectRaw('status, COUNT(*) as total')
+            ->whereIn('period_id', $periodIds)
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        // Monthly trend
+        $monthlyTrend = Period::whereIn('id', $periodIds)
+            ->with(['nearMisses' => function($q) {
+                $q->selectRaw('period_id, COUNT(*) as count');
+            }])
+            ->get()
+            ->map(function($period) {
+                return [
+                    'month' => $this->getMonthName($period->month),
+                    'count' => $period->nearMisses->sum('count') ?? 0
+                ];
+            });
 
         $departments = Department::orderBy('name')->get();
 
@@ -40,7 +95,14 @@ class NearMissController extends Controller
             'month',
             'totalNearMiss',
             'nearMissRate',
+            'manHours',
             'risk',
+            'severity',
+            'likelihood',
+            'category',
+            'departmentStats',
+            'status',
+            'monthlyTrend',
             'departments'
         ));
     }
@@ -89,5 +151,11 @@ class NearMissController extends Controller
 
         return redirect()->route('near-miss.dashboard')
             ->with('success', 'Near Miss berhasil ditambahkan');
+    }
+
+    private function getMonthName($month)
+    {
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return $months[$month - 1] ?? $month;
     }
 }
