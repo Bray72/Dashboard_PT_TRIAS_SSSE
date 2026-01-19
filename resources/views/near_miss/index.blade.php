@@ -133,11 +133,9 @@
         </div>
 
         <!-- Monthly Trend Line Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Monthly Trend</h3>
-            <div class="relative h-80">
-                <canvas id="trendChart"></canvas>
-            </div>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-lg font-semibold mb-4">Near Miss per Company</h2>
+            <canvas id="nearMissCompanyChart"></canvas>
         </div>
     </div>
 
@@ -421,6 +419,36 @@
 </div>
 
 @push('scripts')
+<script>
+    const companyLabels = {!! json_encode($nearMissPerCompany->pluck('company_name')) !!};
+    const companyTotals = {!! json_encode($nearMissPerCompany->pluck('total')) !!};
+
+    const ctxCompany = document.getElementById('nearMissCompanyChart');
+
+    new Chart(ctxCompany, {
+        type: 'bar',
+        data: {
+            labels: companyLabels,
+            datasets: [{
+                label: 'Total Near Miss',
+                data: companyTotals,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function openEditModal(id, currentStatus) {

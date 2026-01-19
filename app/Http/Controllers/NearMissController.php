@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\CompanyStatistic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class NearMissController extends Controller
 {
@@ -39,6 +40,13 @@ class NearMissController extends Controller
             ->selectRaw('risk_level, COUNT(*) as total')
             ->pluck('total', 'risk_level');
 
+        $nearMissPerCompany = DB::table('near_misses')
+            ->join('companies', 'near_misses.company_id', '=', 'companies.id')
+            ->select('companies.name as company_name', DB::raw('COUNT(near_misses.id) as total'))
+            ->groupBy('companies.name')
+            ->orderBy('companies.name')
+            ->get();
+        
         // Severity distribution
         $severity = NearMiss::whereIn('period_id', $periodIds)
             ->groupBy('severity')
