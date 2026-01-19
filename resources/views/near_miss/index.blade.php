@@ -68,7 +68,7 @@
                 </div>
             </div>
             <p class="text-xs text-gray-600">
-                <strong>Formula:</strong> Qty Near Miss / Man Hours
+                <strong>Formula:</strong> Qty Near Miss / Man Hours * 100.000
             </p>
             <p class="text-xs text-gray-600 mt-1">Total Man Hours: <strong>{{ number_format($manHours) }}</strong></p>
         </div>
