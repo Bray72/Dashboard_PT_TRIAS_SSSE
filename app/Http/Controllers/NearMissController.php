@@ -117,21 +117,24 @@ class NearMissController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'date'           => 'required|date',
-            'department_id'  => 'required|exists:departments,id',
-            'location'       => 'required',
-            'category'       => 'required',
-            'severity'       => 'required',
-            'likelihood'     => 'required',
-            'description'    => 'required',
+            'department_id'  => 'required|integer|exists:departments,id',
+            'location'       => 'required|string',
+            'category'       => 'required|string',
+            'severity'       => 'required|in:Low,Medium,High',
+            'likelihood'     => 'required|in:Low,Medium,High',
+            'description'    => 'required|string',
+            'action_required'=> 'nullable|string',
         ]);
 
-        // auto period
-        $date  = \Carbon\Carbon::parse($request->date);
-        $period = Period::where('month', $date->month)
-            ->where('year', $date->year)
-            ->firstOrFail();
+        // auto period (buat period kalau belum ada)
+        $date = \Carbon\Carbon::parse($validated['date']);
+
+        $period = Period::firstOrCreate(
+            ['month' => $date->month, 'year' => $date->year],
+            ['name' => $date->format('F Y')] // opsional kalau tabel period ada kolom name
+        );
 
         // auto risk mapping
         $riskMatrix = [
@@ -140,45 +143,24 @@ class NearMissController extends Controller
             'High' => ['Low' => 'Medium', 'Medium' => 'High', 'High' => 'High'],
         ];
 
-        $riskLevel = $riskMatrix[$request->severity][$request->likelihood];
+        $riskLevel = $riskMatrix[$validated['severity']][$validated['likelihood']] ?? 'Low';
 
         NearMiss::create([
-            'company_id'    => auth()->user()->company_id ?? 1,
-            'period_id'     => $period->id,
-            'department_id' => $request->department_id,
-            'date'          => $request->date,
-            'location'      => $request->location,
-            'category'      => $request->category,
-            'severity'      => $request->severity,
-            'likelihood'    => $request->likelihood,
-            'risk_level'    => $riskLevel,
-            'description'   => $request->description,
-            'action_required' => $request->action_required,
-            'status'        => 'Open',
+            'company_id'      => auth()->user()->company_id ?? 1,
+            'period_id'       => $period->id,
+            'department_id'   => $validated['department_id'], // ✅ fix utama
+            'date'            => $validated['date'],
+            'location'        => $validated['location'],
+            'category'        => $validated['category'],
+            'severity'        => $validated['severity'],
+            'likelihood'      => $validated['likelihood'],
+            'risk_level'      => $riskLevel,
+            'description'     => $validated['description'],
+            'action_required' => $validated['action_required'] ?? null,
+            'status'          => 'Open',
         ]);
 
         return redirect()->route('near-miss.dashboard')
             ->with('success', 'Near Miss berhasil ditambahkan');
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:Open,Closed'
-        ]);
-
-        $nearMiss = NearMiss::findOrFail($id);
-        $nearMiss->update([
-            'status' => $request->status
-        ]);
-
-        return redirect()->route('near-miss.dashboard')
-            ->with('success', 'Status Near Miss berhasil diperbarui');
-    }
-
-    private function getMonthName($month)
-    {
-        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return $months[$month - 1] ?? $month;
     }
 }

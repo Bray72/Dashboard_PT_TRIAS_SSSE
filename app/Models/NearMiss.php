@@ -21,7 +21,7 @@ class NearMiss extends Model
         'risk_level',
         'description',
         'action_required',
-        'status'
+        'status',
     ];
 
     protected $casts = [
