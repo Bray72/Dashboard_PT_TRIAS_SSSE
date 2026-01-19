@@ -163,4 +163,25 @@ class NearMissController extends Controller
         return redirect()->route('near-miss.dashboard')
             ->with('success', 'Near Miss berhasil ditambahkan');
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Open,Closed'
+        ]);
+
+        $nearMiss = NearMiss::findOrFail($id);
+        $nearMiss->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()->route('near-miss.dashboard')
+            ->with('success', 'Status Near Miss berhasil diperbarui');
+    }
+
+    private function getMonthName($month)
+    {
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return $months[$month - 1] ?? $month;
+    }
 }
