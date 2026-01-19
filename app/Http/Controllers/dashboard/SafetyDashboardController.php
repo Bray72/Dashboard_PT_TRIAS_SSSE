@@ -2,223 +2,274 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\CompanyStatistic;
 use App\Models\Period;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class SafetyDashboardController extends Controller
 {
-     public function index(Request $request)
+    /**
+     * Display safety dashboard with charts
+     * Shows monthly safety metrics (SR, FR, IR) for selected company and year
+     */
+    public function index(Request $request)
     {
-        $companyId = $request->company_id;
+        $year = $request->year ?? Period::orderBy('year', 'desc')->value('year') ?? date('Y');
         
-        // Get date from request or use current date
-        $date = $request->filled('date') 
-            ? \DateTime::createFromFormat('Y-m-d', $request->date)
-            : new \DateTime();
-        
-        $year = $date->format('Y');
-        $month = (int)$date->format('m');
-        $gaugeMonth = $month; // For single month view
-
-        // List perusahaan (untuk tab / dropdown)
+        // Get all companies for dropdown
         $companies = Company::all();
+        
+        // Set company ID - from request or default to first company
+        $companyId = $request->company_id ?? $companies->first()?->id;
+        
+        $month = $request->get('month'); 
+        $months = $month ? [$month] : range(1, 12);
+        $gaugeMonth = $request->get('gauge_month');
 
-        $companyId = $request->company_id 
-        ?? $companies->first()?->id;
+        // Now call getAllMonthlyMetrics with the correct companyId
+        $allMetrics = $this->getAllMonthlyMetrics($year, $companyId);
+  
+        $gaugeFR = [];
+        $gaugeSR = [];
+        $gaugeIR = [];
 
-        // Ambil periode dalam 1 tahun
+        if ($gaugeMonth) {
+            // Get single month gauge data
+            $gaugeFR[$gaugeMonth] = $allMetrics[$gaugeMonth]['fr'] ?? 0;
+            $gaugeSR[$gaugeMonth] = $allMetrics[$gaugeMonth]['sr'] ?? 0;
+            $gaugeIR[$gaugeMonth] = $allMetrics[$gaugeMonth]['ir'] ?? 0;
+        } else {
+            // Get all months gauge data
+            for ($m = 1; $m <= 12; $m++) {
+                $gaugeFR[$m] = $allMetrics[$m]['fr'] ?? 0;
+                $gaugeSR[$m] = $allMetrics[$m]['sr'] ?? 0;
+                $gaugeIR[$m] = $allMetrics[$m]['ir'] ?? 0;
+            }
+        }
+
+        $monthlyFR = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlyFR[] = $allMetrics[$m]['fr'] ?? 0;
+        }
+
+        // Get periods for the selected year
         $periods = Period::where('year', $year)
             ->orderBy('month')
             ->get();
 
-        // Ambil data statistik
+        // Get statistics for the selected company and year
         $statistics = CompanyStatistic::with(['company', 'period'])
-            ->when($companyId, function ($query) use ($companyId) {
-                $query->where('company_id', $companyId);
-            })
+            ->where('company_id', $companyId)
             ->whereHas('period', function ($q) use ($year) {
                 $q->where('year', $year);
             })
             ->get();
 
-        // Data untuk chart
-        $chartData = [
-            'labels' => $periods->pluck('month'),
-            'man_hours' => [],
-            'employee' => [],
-            'lta' => []
-        ];
+        // Prepare chart data
+        $chartData = $this->prepareChartData($periods, $statistics);
 
-        foreach ($periods as $period) {
-            $stat = $statistics
-                ->where('period_id', $period->id)
-                ->first();
+        $monthNames = $this->getMonthNames();
 
-            $chartData['man_hours'][] = $stat->man_hours ?? 0;
-            $chartData['employee'][]  = $stat->employee ?? 0;
-            $chartData['lta'][]       = $stat->lta ?? 0;
-        }
+        $monthlySummary = $this->getMonthlySummary($companyId, $year, $gaugeMonth);
 
-        // Get gauge data for selected month
-        $gaugeSR = $this->getGaugeData('severity_rate', $year, $companyId);
-        $gaugeFR = $this->getGaugeData('frequency_rate', $year, $companyId);
-        $gaugeIR = $this->getGaugeData('incident_rate', $year, $companyId);
-        
-        // Get summary data for selected month
-        $monthlySummary = $this->getMonthlySummary($companyId, $year, $month);
-
-        // Month names for display
-        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                      'July', 'August', 'September', 'October', 'November', 'December'];
-
-        // Monthly FR data for chart
-        $monthlyFR = [];
-        foreach ($periods as $period) {
-            $stat = $statistics->where('period_id', $period->id)->first();
-            if ($stat) {
-                $monthlyFR[$period->month] = $this->calculateFR($stat);
-            }
-        }
-
-        return view('dashboard/index', compact(
+        return view('dashboard.index', compact(
             'companies',
             'chartData',
             'year',
             'companyId',
             'periods',
+            'statistics',
             'monthNames',
-            'date',
+            'monthlyFR',
+            'month',
             'gaugeMonth',
-            'gaugeSR',
             'gaugeFR',
+            'gaugeSR',
             'gaugeIR',
-            'monthlySummary',
-            'monthlyFR'
+            'monthlySummary' // pass summary data to view
         ));
     }
 
-    private function getGaugeData($type, $year, $companyId)
+    /**
+     * Store safety metrics data
+     */
+    public function store(Request $request)
     {
-        $periods = Period::where('year', $year)->orderBy('month')->get();
-        $statistics = CompanyStatistic::where('company_id', $companyId)
-            ->whereHas('period', function ($q) use ($year) {
-                $q->where('year', $year);
-            })
-            ->get();
+        $validated = $request->validate([
+            'company_id'         => 'required|exists:companies,id',
+            'period_id'          => 'required|exists:periods,id',
+            'man_hours'          => 'required|integer|min:0',
+            'employee'           => 'required|integer|min:0',
+            'lta'                => 'required|integer|min:0',
+            'lost_work_days'     => 'required|integer|min:0',
+            'lost_time'          => 'required|integer|min:0',
+            'kecelakaan_kerja'   => 'required|integer|min:0',
+        ]);
 
-        $data = [];
-        foreach ($periods as $period) {
-            $stat = $statistics->where('period_id', $period->id)->first();
-            if ($stat) {
-                $data[$period->month] = match($type) {
-                    'severity_rate' => $this->calculateSR($stat),
-                    'frequency_rate' => $this->calculateFR($stat),
-                    'incident_rate' => $this->calculateIR($stat),
-                };
-            }
-        }
-        return $data;
+        CompanyStatistic::updateOrCreate(
+            [
+                'company_id' => $validated['company_id'],
+                'period_id'  => $validated['period_id'],
+            ],
+            $validated
+        );
+
+        return redirect()->back()->with('success', 'Data keselamatan kerja berhasil disimpan!');
     }
 
-    private function getMonthlySummary($companyId, $year, $month)
+    /**
+     * Prepare data for chart visualization
+     */
+    private function prepareChartData($periods, $statistics)
     {
-        $period = Period::where('year', $year)->where('month', $month)->first();
-        
-        if (!$period) {
-            return [
-                'man_hours' => 0,
-                'employee' => 0,
-                'lta' => 0,
-                'lost_work_days' => 0,
-                'lost_time' => 0,
-                'kecelakaan_kerja' => 0
-            ];
+        $chartData = [
+            'labels'     => [],
+            'man_hours'  => [],
+            'employee'   => [],
+            'sr'         => [],
+            'fr'         => [],
+            'ir'         => [],
+        ];
+
+        foreach ($periods as $period) {
+            $stat = $statistics->where('period_id', $period->id)->first();
+
+            $chartData['labels'][] = $this->getMonthName($period->month);
+            $chartData['man_hours'][] = $stat?->man_hours ?? 0;
+            $chartData['employee'][] = $stat?->employee ?? 0;
+
+            // Calculate safety metrics
+            if ($stat) {
+                $chartData['sr'][] = $stat->man_hours > 0 ? ($stat->lost_time * 1000000) / $stat->man_hours : 0;
+                $chartData['fr'][] = $stat->man_hours > 0 ? ($stat->lost_work_days * 1000000) / $stat->man_hours : 0;
+                $chartData['ir'][] = $stat->employee > 0 ? ($stat->kecelakaan_kerja * 100) / $stat->employee : 0;
+            } else {
+                $chartData['sr'][] = 0;
+                $chartData['fr'][] = 0;
+                $chartData['ir'][] = 0;
+            }
         }
 
-        $stat = CompanyStatistic::where('company_id', $companyId)
-            ->where('period_id', $period->id)
-            ->first();
+        return $chartData;
+    }
 
-        return $stat ? $stat->toArray() : [
-            'man_hours' => 0,
-            'employee' => 0,
-            'lta' => 0,
-            'lost_work_days' => 0,
-            'lost_time' => 0,
-            'kecelakaan_kerja' => 0
+    /**
+     * Convert month number to name
+     */
+    private function getMonthName($month)
+    {
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return $months[$month - 1] ?? $month;
+    }
+
+    /**
+     * Get all month names array for view
+     */
+    private function getMonthNames()
+    {
+        return [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ];
     }
 
-    private function calculateSR($stat)
+    // Returns array with FR, SR, IR for each month
+    private function getAllMonthlyMetrics($year, $companyId = null)
     {
-        return $stat->man_hours > 0 
-            ? round(($stat->lost_time * 1000000) / $stat->man_hours, 2)
-            : 0;
+        $statistics = CompanyStatistic::select(
+                'company_statistics.*'
+            )
+            ->join('periods', 'company_statistics.period_id', '=', 'periods.id')
+            ->where('periods.year', $year);
+
+        if ($companyId) {
+            $statistics = $statistics->where('company_statistics.company_id', $companyId);
+        }
+
+        $statistics = $statistics->get()
+            ->groupBy(function ($item) {
+                return $item->period->month;
+            });
+
+        $metrics = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $monthStats = $statistics->get($month, collect());
+
+            $manHours = $monthStats->sum('man_hours');
+            $employees = $monthStats->sum('employee');
+            $lta = $monthStats->sum('lta');
+            $lostTime = $monthStats->sum('lost_time');
+            $accidents = $monthStats->sum('kecelakaan_kerja');
+
+            $metrics[$month] = [
+                'fr' => $manHours > 0 ? round(($lta / $manHours) * 1_000_000, 2) : 0,
+                'sr' => $manHours > 0 ? round(($lostTime * 1_000_000) / $manHours, 2) : 0,
+                'ir' => $employees > 0 ? round(($accidents * 100) / $employees, 2) : 0,
+            ];
+        }
+
+        return $metrics;
     }
 
-    private function calculateFR($stat)
+    private function getMonthlySummary($companyId, $year, $month = null)
     {
-        return $stat->man_hours > 0 
-            ? round(($stat->lost_work_days * 1000000) / $stat->man_hours, 2)
-            : 0;
+        $query = CompanyStatistic::with('period')
+            ->where('company_id', $companyId)
+            ->whereHas('period', function ($q) use ($year) {
+                $q->where('year', $year);
+            });
+
+        // If specific month is selected, get only that month's data
+        if ($month) {
+            $query->whereHas('period', function ($q) use ($month) {
+                $q->where('month', $month);
+            });
+        }
+
+        $stats = $query->get();
+
+        return [
+            'man_hours' => $stats->sum('man_hours'),
+            'employee' => $stats->sum('employee'),
+            'lta' => $stats->sum('lta'),
+            'lost_work_days' => $stats->sum('lost_work_days'),
+            'lost_time' => $stats->sum('lost_time'),
+            'kecelakaan_kerja' => $stats->sum('kecelakaan_kerja'),
+        ];
     }
 
-    private function calculateIR($stat)
+    // ========== LEGACY ROUTES (untuk backward compatibility) ==========
+
+    public function indexLegacyA(Request $request)
     {
-        return $stat->employee > 0 
-            ? round(($stat->kecelakaan_kerja * 100) / $stat->employee, 2)
-            : 0;
+        return $this->index($request);
     }
 
-    public function store(Request $request)
+    public function storeLegacyA(Request $request)
     {
-        // 1. VALIDASI
-        $request->validate([
-            'company_id'      => 'required|exists:companies,id',
-            'date'            => 'required|date_format:Y-m-d',
-            'man_hours'       => 'required|integer|min:0',
-            'employee'  => 'required|integer|min:0',
-            'lta'       => 'required|integer|min:0',
-            'lost_work_days'       => 'required|integer|min:0',
-            'lost_time'       => 'required|integer|min:0',
-            'kecelakaan_kerja'       => 'required|integer|min:0',
-        ]);
-
-        // 2. PARSE DATE TO GET MONTH AND YEAR
-        $date = \DateTime::createFromFormat('Y-m-d', $request->date);
-        $month = (int)$date->format('m');
-        $year = (int)$date->format('Y');
-
-        // 3. CARI / BUAT PERIODE OTOMATIS
-        $period = \App\Models\Period::firstOrCreate(
-            [
-                'month' => $month,
-                'year'  => $year
-            ]
-        );
-
-        // 4. SIMPAN / UPDATE STATISTIK
-        \App\Models\CompanyStatistic::updateOrCreate(
-            [
-                'company_id' => $request->company_id,
-                'period_id'  => $period->id
-            ],
-            [
-                'man_hours'      => $request->man_hours,
-                'employee' => $request->employee,
-                'lta'      => $request->lta,
-                'lost_work_days'      => $request->lost_work_days,
-                'lost_time'      => $request->lost_time,
-                'kecelakaan_kerja'      => $request->kecelakaan_kerja,
-            ]
-        );
-
-        return redirect()
-            ->route('dashboard', ['date' => $request->date, 'company_id' => $request->company_id])
-            ->with('success', 'Data berhasil disimpan');
+        return $this->store($request);
     }
 
+    public function indexLegacyB(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function storeLegacyB(Request $request)
+    {
+        return $this->store($request);
+    }
+
+    public function indexLegacyC(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function storeLegacyC(Request $request)
+    {
+        return $this->store($request);
+    }
 }
