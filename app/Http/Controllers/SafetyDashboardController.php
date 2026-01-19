@@ -8,7 +8,7 @@ use App\Models\CompanyStatistic;
 use App\Models\Period;
 use Illuminate\Http\Request;
 
-class SafetyDashboardController extends Controller
+class SafetyDashboardController2 extends Controller
 {
     /**
      * Display safety dashboard with charts
