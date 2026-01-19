@@ -10,9 +10,9 @@
 
     <!-- Filters Section -->
     <div class="bg-white rounded-lg shadow p-6 mb-8">
-        <form method="GET" class="flex gap-4 items-end">
+        <form method="GET" class="flex gap-4 items-end flex-wrap">
             <!-- Company Filter -->
-            <div class="flex-1">
+            <div class="flex-1 min-w-48">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
                 <select name="company_id" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @foreach($companies as $company)
@@ -23,28 +23,11 @@
                 </select>
             </div>
 
-            <!-- Year Filter -->
-            <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <select name="year" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    @for($y = date('Y'); $y >= 2020; $y--)
-                        <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
-                    @endfor
-                </select>
+            <!-- Date Filter -->
+            <div class="flex-1 min-w-48">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Month/Year</label>
+                <input type="date" name="date" value="{{ $date->format('Y-m-d') }}" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
             </div>
-        </form>
-        <form method="GET" class="mb-6">
-            <input type="hidden" name="year" value="{{ $year }}">
-
-            <select name="gauge_month" onchange="this.form.submit()"
-                class="px-4 py-2 border rounded">
-                <option value="">All Month</option>
-                @for($m = 1; $m <= 12; $m++)
-                    <option value="{{ $m }}" {{ $m == $gaugeMonth ? 'selected' : '' }}>
-                        {{ DateTime::createFromFormat('!m', $m)->format('F') }}
-                    </option>
-                @endfor
-            </select>
         </form>
     </div>
 
@@ -207,7 +190,6 @@
 
     <!-- Input Form Section -->
     <div class="bg-white rounded-lg shadow p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Tambah Period</h2>
         {{-- ALERT SUCCESS --}}
         @if(session('success'))
             <p style="color:green">{{ session('success') }}</p>
@@ -221,23 +203,6 @@
                 @endforeach
             </ul>
         @endif
-
-        {{-- FORM INPUT --}}
-        <form action="{{ route('period.store') }}" method="POST">
-            @csrf
-
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
-            <input type="number" name="year" value="{{ old('year') }}" required>
-            <br><br>
-
-            <label class="block text-sm font-medium text-gray-700 mb-2">Bulan(dalam bentuk angka)</label>
-            <input type="number" name="month" value="{{ old('month') }}">
-            <br> <br>
-
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
-                Tambah Period
-            </button> <br> <br>
-        </form>
 
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Add Monthly Data</h2>
         
@@ -259,21 +224,14 @@
                     @enderror
                 </div>
 
-                <!-- Period Select -->
+                <!-- Date Input (Auto-creates Period) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Month/Year *</label>
-                    <select name="period_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Select Period --</option>
-                        @foreach($periods as $period)
-                            <option value="{{ $period->id }}">
-                                {{-- Use monthNames array from controller instead of $this->getMonthName() --}}
-                                {{ $monthNames[$period->month - 1] }} {{ $period->year }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('period_id')
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Month/Year (Period auto-created) *</label>
+                    <input type="date" name="date" value="{{ old('date') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('date')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
+                    <p class="text-gray-500 text-xs mt-1">Period will be automatically created from the selected date</p>
                 </div>
 
                 <!-- Man Hours -->
