@@ -119,7 +119,8 @@ class NearMissController extends Controller
             'monthlyTrend',
             'departments',
             'nearMisses',
-            'companies'
+            'companies',
+            'nearMissPerCompany'
         ));
     }
 
