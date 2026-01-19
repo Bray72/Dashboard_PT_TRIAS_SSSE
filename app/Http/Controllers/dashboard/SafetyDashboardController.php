@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\dashboard;
+namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Company;
 use App\Models\CompanyStatistic;
 use App\Models\Period;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class SafetyDashboardController extends Controller
