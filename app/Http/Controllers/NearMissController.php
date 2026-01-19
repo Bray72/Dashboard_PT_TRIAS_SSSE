@@ -118,6 +118,7 @@ class NearMissController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'company_id'     => 'required|integer|exists:companies,id',
             'date'           => 'required|date',
             'department_id'  => 'required|integer|exists:departments,id',
             'location'       => 'required|string',
@@ -128,19 +129,13 @@ class NearMissController extends Controller
             'action_required'=> 'nullable|string',
         ]);
 
-        // ✅ ambil company_id dari user login (aman)
-        $companyId = auth()->user()->company_id;
-
-        if (!$companyId) {
-            return back()->withErrors(['company_id' => 'Company belum terhubung ke user login.']);
-        }
-
         // period otomatis
         $date = \Carbon\Carbon::parse($validated['date']);
 
-        $period = Period::firstOrCreate(
-            ['month' => $date->month, 'year' => $date->year]
-        );
+        $period = Period::firstOrCreate([
+            'month' => $date->month,
+            'year'  => $date->year
+        ]);
 
         // risk mapping
         $riskMatrix = [
@@ -152,7 +147,7 @@ class NearMissController extends Controller
         $riskLevel = $riskMatrix[$validated['severity']][$validated['likelihood']] ?? 'Low';
 
         NearMiss::create([
-            'company_id'      => $companyId, // ✅ FIX UTAMA
+            'company_id'      => $validated['company_id'],     // ✅ FIX UTAMA
             'period_id'       => $period->id,
             'department_id'   => $validated['department_id'],
             'date'            => $validated['date'],
@@ -166,8 +161,7 @@ class NearMissController extends Controller
             'status'          => 'Open',
         ]);
 
-        return redirect()->route('near-miss.dashboard')
-            ->with('success', 'Near Miss berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Near Miss berhasil ditambahkan!');
     }
 
     public function updateStatus(Request $request, $id)
