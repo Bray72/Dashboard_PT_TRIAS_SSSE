@@ -35,10 +35,11 @@
         </form>
         <form method="GET" class="mb-6">
             <input type="hidden" name="year" value="{{ $year }}">
+            <input type="hidden" name="company_id" value="{{ $companyId }}">
 
             <select name="gauge_month" onchange="this.form.submit()"
                 class="px-4 py-2 border rounded">
-                <option value="">All Month</option>
+                <option value="" {{ empty($gaugeMonth) ? 'selected' : '' }}>All Month</option>
                 @for($m = 1; $m <= 12; $m++)
                     <option value="{{ $m }}" {{ $m == $gaugeMonth ? 'selected' : '' }}>
                         {{ DateTime::createFromFormat('!m', $m)->format('F') }}
@@ -207,7 +208,6 @@
 
     <!-- Input Form Section -->
     <div class="bg-white rounded-lg shadow p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Tambah Period</h2>
         {{-- ALERT SUCCESS --}}
         @if(session('success'))
             <p style="color:green">{{ session('success') }}</p>
@@ -221,23 +221,6 @@
                 @endforeach
             </ul>
         @endif
-
-        {{-- FORM INPUT --}}
-        <form action="{{ route('period.store') }}" method="POST">
-            @csrf
-
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
-            <input type="number" name="year" value="{{ old('year') }}" required>
-            <br><br>
-
-            <label class="block text-sm font-medium text-gray-700 mb-2">Bulan(dalam bentuk angka)</label>
-            <input type="number" name="month" value="{{ old('month') }}">
-            <br> <br>
-
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
-                Tambah Period
-            </button> <br> <br>
-        </form>
 
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Add Monthly Data</h2>
         
@@ -259,19 +242,32 @@
                     @enderror
                 </div>
 
-                <!-- Period Select -->
+                <!-- Month Select -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Month/Year *</label>
-                    <select name="period_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Select Period --</option>
-                        @foreach($periods as $period)
-                            <option value="{{ $period->id }}">
-                                {{-- Use monthNames array from controller instead of $this->getMonthName() --}}
-                                {{ $monthNames[$period->month - 1] }} {{ $period->year }}
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Month *</label>
+                    <select name="month" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Month --</option>
+                        @for($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" {{ old('month') == $m ? 'selected' : '' }}>
+                                {{ \DateTime::createFromFormat('!m', $m)->format('F') }}
                             </option>
-                        @endforeach
+                        @endfor
                     </select>
-                    @error('period_id')
+                    @error('month')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Year Select -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Year *</label>
+                    <select name="year" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Year --</option>
+                        @for($y = date('Y'); $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ old('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                    @error('year')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
