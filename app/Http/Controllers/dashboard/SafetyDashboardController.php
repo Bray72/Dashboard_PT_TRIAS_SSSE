@@ -244,7 +244,7 @@ class SafetyDashboardController extends Controller
         );
 
         return redirect()
-            ->route('dashboard', ['company_id' => $request->company_id])
+            ->route('dashboard.safety', ['company_id' => $request->company_id])
             ->with('success', 'Data berhasil disimpan');
     }
 
