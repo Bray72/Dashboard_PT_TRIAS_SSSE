@@ -32,7 +32,7 @@ class NearMissController extends Controller
             ->sum('man_hours');
 
         // Calculate near miss rate: total near miss / man hours
-        $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours : 0;
+        $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours * 100000 : 0;
 
         // Risk level distribution
         $risk = NearMiss::whereIn('period_id', $periodIds)
