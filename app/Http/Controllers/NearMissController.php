@@ -128,15 +128,21 @@ class NearMissController extends Controller
             'action_required'=> 'nullable|string',
         ]);
 
-        // auto period (buat period kalau belum ada)
+        // ✅ ambil company_id dari user login (aman)
+        $companyId = auth()->user()->company_id;
+
+        if (!$companyId) {
+            return back()->withErrors(['company_id' => 'Company belum terhubung ke user login.']);
+        }
+
+        // period otomatis
         $date = \Carbon\Carbon::parse($validated['date']);
 
         $period = Period::firstOrCreate(
-            ['month' => $date->month, 'year' => $date->year],
-            ['name' => $date->format('F Y')] // opsional kalau tabel period ada kolom name
+            ['month' => $date->month, 'year' => $date->year]
         );
 
-        // auto risk mapping
+        // risk mapping
         $riskMatrix = [
             'Low' => ['Low' => 'Low', 'Medium' => 'Low', 'High' => 'Medium'],
             'Medium' => ['Low' => 'Low', 'Medium' => 'Medium', 'High' => 'High'],
@@ -146,9 +152,9 @@ class NearMissController extends Controller
         $riskLevel = $riskMatrix[$validated['severity']][$validated['likelihood']] ?? 'Low';
 
         NearMiss::create([
-            'company_id'      => auth()->user()->company_id ?? 1,
+            'company_id'      => $companyId, // ✅ FIX UTAMA
             'period_id'       => $period->id,
-            'department_id'   => $validated['department_id'], // ✅ fix utama
+            'department_id'   => $validated['department_id'],
             'date'            => $validated['date'],
             'location'        => $validated['location'],
             'category'        => $validated['category'],
