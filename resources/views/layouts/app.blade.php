@@ -15,7 +15,7 @@
                 {{-- Logo + Brand --}}
                 <div class="flex items-center gap-3">
                     <a href="{{ url('/') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('/ppt.png') }}"
+                        <img src="{{ asset('https://trias-sentosa.com/images/logo.webp') }}"
                             alt="Logo"
                             style="width:250px; height:auto;"
                             class="object-contain"
