@@ -47,37 +47,39 @@
                 
             </div>
             <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
-                <table class="table table-bordered table-sm align-middle">
-                    <thead style="background:#9bbb59;color:white;">
-                        <tr>
-                            <th class="text-start">Safety Work Permit</th>
-                            <th class="text-center">
-                                {{ \Carbon\Carbon::createFromDate($year, $month, 1)->format('M') }}’{{ substr($year,2) }}
-                            </th>
-                            <th class="text-center">YTD’{{ substr($year,2) }}</th>
-                            <th class="text-center">YTD’{{ substr($year-1,2) }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($permitTypes as $type)
-                        <tr>
-                            <td class="fw-bold">{{ $type->name }}</td>
+                <div class="overflow-x-auto">
+                    <table class="table table-bordered table-sm align-middle w-full min-w-[600px]">
+                        <thead style="background:#9bbb59;color:white;">
+                            <tr>
+                                <th class="text-start">Safety Work Permit</th>
+                                <th class="text-center">
+                                    {{ \Carbon\Carbon::createFromDate($year, $month, 1)->format('M') }}’{{ substr($year,2) }}
+                                </th>
+                                <th class="text-center">YTD’{{ substr($year,2) }}</th>
+                                <th class="text-center">YTD’{{ substr($year-1,2) }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($permitTypes as $type)
+                            <tr>
+                                <td class="fw-bold">{{ $type->name }}</td>
 
-                            <td class="text-center fw-bold">
-                                {{ $monthly[$type->id]->total ?? 0 }}
-                            </td>
+                                <td class="text-center fw-bold">
+                                    {{ $monthly[$type->id]->total ?? 0 }}
+                                </td>
 
-                            <td class="text-center fw-bold">
-                                {{ $ytdCurrent[$type->id]->total ?? 0 }}
-                            </td>
+                                <td class="text-center fw-bold">
+                                    {{ $ytdCurrent[$type->id]->total ?? 0 }}
+                                </td>
 
-                            <td class="text-center fw-bold text-success">
-                                {{ $ytdPrevious[$type->id]->total ?? 0 }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                <td class="text-center fw-bold text-success">
+                                    {{ $ytdPrevious[$type->id]->total ?? 0 }}
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
             <div class="card-shadow mb-4">
