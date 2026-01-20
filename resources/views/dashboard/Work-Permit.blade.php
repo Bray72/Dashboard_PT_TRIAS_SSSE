@@ -45,7 +45,7 @@
                     </form>
                 </div>
                 
-            </div> <br>
+            </div>
             <div class="bg-white rounded-lg shadow p-6 mb-8">
                 <table class="table table-bordered table-sm align-middle">
                     <thead style="background:#9bbb59;color:white;">
@@ -79,55 +79,55 @@
                     </tbody>
                 </table>
             </div>
-        <br> <br>
-
-    <!-- Added chart section before Input Work Permit -->
-    <div class="card-shadow mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="text-xl font-bold text-green-900 mb-4">Permit Trends - Year {{ $year }}</h3>
-                <canvas id="permitTrendsChart" height="80"></canvas>
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <div class="card-shadow mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="text-xl font-bold text-green-900 mb-4">Permit Trends - Year {{ $year }}</h3>
+                        <canvas id="permitTrendsChart" height="80"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </div>    
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
+                <h2 class="text-2xl font-bold text-green-900 mb-6">Input Work Permit</h2>
+                @csrf
 
-    <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
-        <h2 class="text-2xl font-bold text-green-900 mb-6">Input Work Permit</h2>
-        @csrf
+                <input type="hidden" name="company_id" value="1">
 
-        <input type="hidden" name="company_id" value="1">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <select name="month" required>
+                        @for($m=1; $m<=12; $m++)
+                            <option value="{{ $m }}">{{ DateTime::createFromFormat('!m',$m)->format('F') }}</option>
+                        @endfor
+                    </select>
 
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <select name="month" required>
-                @for($m=1; $m<=12; $m++)
-                    <option value="{{ $m }}">{{ DateTime::createFromFormat('!m',$m)->format('F') }}</option>
-                @endfor
-            </select>
+                    <input type="number" name="year" value="{{ date('Y') }}" required>
+                </div>
 
-            <input type="number" name="year" value="{{ date('Y') }}" required>
-        </div>
+                <table class="w-full mb-4 table table-bordered table-sm">
+                    @foreach($permitTypes as $permit)
+                    <tr>
+                        <td>{{ $permit->name }}</td>
+                        <td>
+                            <input
+                                type="number"
+                                name="permits[{{ $permit->id }}]"
+                                value="0"
+                                min="0"
+                                class="border p-1 w-24"
+                            >
+                        </td>
+                    </tr>
+                    @endforeach
+                </table>
 
-        <table class="w-full mb-4 table table-bordered table-sm">
-            @foreach($permitTypes as $permit)
-            <tr>
-                <td>{{ $permit->name }}</td>
-                <td>
-                    <input
-                        type="number"
-                        name="permits[{{ $permit->id }}]"
-                        value="0"
-                        min="0"
-                        class="border p-1 w-24"
-                    >
-                </td>
-            </tr>
-            @endforeach
-        </table>
-
-        <button class="bg-green-600 text-white px-4 py-2 rounded">
-            Simpan
-        </button>
-    </form>
+                <button class="bg-green-600 text-white px-4 py-2 rounded">
+                    Simpan
+                </button>
+            </form>
+        </div>    
     </div>
 </div>
 @endsection
