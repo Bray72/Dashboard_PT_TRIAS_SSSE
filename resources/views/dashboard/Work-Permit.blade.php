@@ -6,7 +6,7 @@
                 <div class="mb-8">
                     <h1 class="text-4xl font-bold text-blue-900">Work Permit Dashboard</h1>
                 </div>
-                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
                     <form method="GET" action="{{ route('dashboard.work-permit') }}">
                         <div class="row g-3 align-items-end">
 
@@ -46,7 +46,7 @@
                 </div>
                 
             </div>
-            <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
                 <table class="table table-bordered table-sm align-middle">
                     <thead style="background:#9bbb59;color:white;">
                         <tr>
@@ -79,7 +79,7 @@
                     </tbody>
                 </table>
             </div>
-        <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
             <div class="card-shadow mb-4">
                 <div class="card">
                     <div class="card-body">
@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>    
-        <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
             <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
                 <h2 class="text-2xl font-bold text-green-900 mb-6">Input Work Permit</h2>
                 @csrf
