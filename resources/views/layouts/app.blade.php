@@ -8,18 +8,120 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-sm">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <img src="data:image/png;base64,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" width="250px" alt="logo">
-                <ul class="flex gap-6">
-                    <li><a href="{{ route('dashboard.safety') }}" class="text-gray-700 hover:text-blue-600">Safety Metrics</a></li>
-                    <li><a href="{{ route('dashboard.work-permit') }}" class="text-gray-700 hover:text-blue-600">Work-Permit</a></li>
-                    <li><a href="{{ route('near-miss.dashboard') }}" class="text-gray-700 hover:text-blue-600">Near Miss</a></li>
-                </ul>
+    <nav class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                {{-- Logo + Brand --}}
+                <div class="flex items-center gap-3">
+                    <a href="{{ url('/') }}" class="flex items-center gap-2">
+                        <img src="{{ asset('/ppt.png') }}"
+                            alt="Logo"
+                            style="width:250px; height:auto;"
+                            class="object-contain"
+                            onerror="this.style.display='none'">
+                    </a>
+                </div>
+
+                {{-- Desktop Menu --}}
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="{{ route('dashboard.safety') }}"
+                    class="px-3 py-2 rounded-md text-sm font-medium
+                    {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        Safety Metrics
+                    </a>
+
+                    <a href="{{ route('dashboard.work-permit') }}"
+                    class="px-3 py-2 rounded-md text-sm font-medium
+                    {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        Work Permit
+                    </a>
+
+                    <a href="{{ route('near-miss.dashboard') }}"
+                    class="px-3 py-2 rounded-md text-sm font-medium
+                    {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        Near Miss
+                    </a>
+                </div>
+
+                {{-- User + Logout --}}
+                <div class="hidden md:flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-gray-700">
+                        <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold">
+                            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
+                        </div>
+                        <span class="text-sm font-medium">
+                            {{ Auth::user()->name ?? 'User' }}
+                        </span>
+                    </div>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="px-4 py-2 rounded-md bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+
+                {{-- Mobile button --}}
+                <button id="mobileMenuBtn"
+                    class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                    ☰
+                </button>
+            </div>
+        </div>
+
+        {{-- Mobile Menu --}}
+        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200">
+            <div class="px-4 py-3 space-y-2">
+
+                <a href="{{ route('dashboard.safety') }}"
+                class="block px-3 py-2 rounded-md text-sm font-medium
+                {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                    Safety Metrics
+                </a>
+
+                <a href="{{ route('dashboard.work-permit') }}"
+                class="block px-3 py-2 rounded-md text-sm font-medium
+                {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                    Work Permit
+                </a>
+
+                <a href="{{ route('near-miss.dashboard') }}"
+                class="block px-3 py-2 rounded-md text-sm font-medium
+                {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                    Near Miss
+                </a>
+
+                <div class="pt-3 border-t border-gray-200 flex items-center justify-between">
+                    <span class="text-sm text-gray-700 font-medium">
+                        {{ Auth::user()->name ?? 'User' }}
+                    </span>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="px-4 py-2 rounded-md bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btn = document.getElementById("mobileMenuBtn");
+            const menu = document.getElementById("mobileMenu");
+
+            btn.addEventListener("click", function () {
+                menu.classList.toggle("hidden");
+            });
+        });
+    </script>
 
     @if($message = Session::get('success'))
         <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">

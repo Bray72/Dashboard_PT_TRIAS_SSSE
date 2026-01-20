@@ -5,27 +5,44 @@ use App\Http\Controllers\dashboard\SafetyDashboardController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\WorkPermitDashboardController;
 use App\Http\Controllers\NearMissController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// ========== SAFETY DASHBOARD ROUTES ==========
-Route::prefix('dashboard')->group(function () {
-    // Main Safety Dashboard (Monthly view with charts)
-    Route::get('safety', [SafetyDashboardController::class, 'index'])
-        ->name('dashboard.safety');
-    Route::post('safety/store', [SafetyDashboardController::class, 'store'])
-        ->name('dashboard.safety.store');
+// ========== AUTHENTICATION ROUTES ==========
+// Guest routes (only accessible when NOT logged in)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 });
 
-Route::post('/period/store', [PeriodController::class, 'store'])->name('period.store');
+// Logout route (only accessible when logged in)
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::get('/dashboard/work-permit', [WorkPermitDashboardController::class, 'index'])->name('dashboard.work-permit');
-Route::post('/dashboard/work-permit/store',[WorkPermitDashboardController::class, 'store'])->name('dashboard.work-permit.store');
+// ========== PROTECTED DASHBOARD ROUTES (Require Authentication) ==========
+Route::middleware('auth')->group(function () {
+    // Safety Dashboard Routes
+    Route::prefix('dashboard')->group(function () {
+        // Main Safety Dashboard (Monthly view with charts)
+        Route::get('safety', [SafetyDashboardController::class, 'index'])
+            ->name('dashboard.safety');
+        Route::post('safety/store', [SafetyDashboardController::class, 'store'])
+            ->name('dashboard.safety.store');
+    });
 
-Route::get('/dashboard/work-permit/create',[WorkPermitDashboardController::class, 'create'])->name('dashboard.work-permit.create');
+    Route::post('/period/store', [PeriodController::class, 'store'])->name('period.store');
 
-Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.dashboard');
-Route::post('/near-miss/store', [NearMissController::class,'store'])->name('near-miss.store');
-Route::put('/near-miss/{id}/status', [NearMissController::class,'updateStatus'])->name('near-miss.updateStatus');
+    // Work Permit Dashboard Routes
+    Route::get('/dashboard/work-permit', [WorkPermitDashboardController::class, 'index'])->name('dashboard.work-permit');
+    Route::post('/dashboard/work-permit/store',[WorkPermitDashboardController::class, 'store'])->name('dashboard.work-permit.store');
+    Route::get('/dashboard/work-permit/create',[WorkPermitDashboardController::class, 'create'])->name('dashboard.work-permit.create');
+
+    // Near Miss Dashboard Routes
+    Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.dashboard');
+    Route::post('/near-miss/store', [NearMissController::class,'store'])->name('near-miss.store');
+    Route::put('/near-miss/{id}/status', [NearMissController::class,'updateStatus'])->name('near-miss.updateStatus');
+});
