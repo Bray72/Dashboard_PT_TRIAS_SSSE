@@ -9,7 +9,7 @@
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
         <form method="GET" class="flex gap-4 items-end">
             <!-- Company Filter -->
             <div class="flex-1">
@@ -50,7 +50,7 @@
     </div>
 
     <!-- Summary Statistics Section -->
-    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
         <h3 class="text-lg font-semibold text-blue-900 mb-4">
             @if($gaugeMonth)
                 Summary Data - {{ DateTime::createFromFormat('!m', $gaugeMonth)->format('F') }} {{ $year }}
@@ -108,7 +108,7 @@
     <!-- SR Gauge Charts -->
     <div class="grid grid-cols-3 gap-6 mb-8">
         @foreach($gaugeSR as $month => $sr)
-            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
                 <h4 class="font-semibold mb-2">
                     {{ DateTime::createFromFormat('!m', $month)->format('F') }}
                 </h4>
@@ -129,7 +129,7 @@
     <!-- FR Gauge Charts -->
     <div class="grid grid-cols-3 gap-6 mb-8">
         @foreach($gaugeFR as $month => $fr)
-            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
                 <h4 class="font-semibold mb-2">
                     {{ DateTime::createFromFormat('!m', $month)->format('F') }}
                 </h4>
@@ -150,7 +150,7 @@
     <!-- IR Gauge Charts -->
     <div class="grid grid-cols-3 gap-6 mb-8">
         @foreach($gaugeIR as $month => $ir)
-            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
                 <h4 class="font-semibold mb-2">
                     {{ DateTime::createFromFormat('!m', $month)->format('F') }}
                 </h4>
@@ -171,7 +171,7 @@
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- SR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Severity Rate (SR)</h3>
             <div class="relative h-80">
                 <canvas id="srChart"></canvas>
@@ -180,7 +180,7 @@
         </div>
 
         <!-- FR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Frequency Rate (FR)</h3>
             <div class="relative h-80">
                 <canvas id="frChart"></canvas>
@@ -189,7 +189,7 @@
         </div>
 
         <!-- IR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Incident Rate (IR)</h3>
             <div class="relative h-80">
                 <canvas id="irChart"></canvas>
@@ -198,7 +198,7 @@
         </div>
 
         <!-- Comparison Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Monthly Comparison</h3>
             <div class="relative h-80">
                 <canvas id="comparisonChart"></canvas>
@@ -207,7 +207,7 @@
     </div>
 
     <!-- Input Form Section -->
-    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-500/250">
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
         {{-- ALERT SUCCESS --}}
         @if(session('success'))
             <p style="color:green">{{ session('success') }}</p>
