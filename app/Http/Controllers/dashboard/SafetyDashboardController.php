@@ -383,7 +383,7 @@ class SafetyDashboardController extends Controller
         ];
 
         // Load view dan generate PDF
-        $pdf = Pdf::loadView('pdf.safety-metrics', $data);
+        $pdf = Pdf::loadView('pdf.safety-metric', $data);
         
         // Set ukuran dan orientasi
         $pdf->setPaper('a4', 'landscape');
