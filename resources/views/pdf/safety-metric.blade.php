@@ -181,19 +181,19 @@
     <div class="metric-summary">
         <div class="metric-item">
             <div class="metric-label">Total Man Hours</div>
-            <div class="metric-value">{{ number_format($tableData->sum('man_hours') ?? 0, 0) }}</div>
+            <div class="metric-value">{{ number_format(array_sum(array_column($tableData, 'man_hours')), 0) }}</div>
         </div>
         <div class="metric-item">
             <div class="metric-label">Total LTA</div>
-            <div class="metric-value">{{ $tableData->sum('lta') ?? 0 }}</div>
+            <div class="metric-value">{{ array_sum(array_column($tableData, 'lta')) }}</div>
         </div>
         <div class="metric-item">
             <div class="metric-label">Total Lost Work Days</div>
-            <div class="metric-value">{{ $tableData->sum('lost_work_days') ?? 0 }}</div>
+            <div class="metric-value">{{ array_sum(array_column($tableData, 'lost_work_days')) }}</div>
         </div>
         <div class="metric-item">
             <div class="metric-label">Total Work Accidents</div>
-            <div class="metric-value">{{ $tableData->sum('kecelakaan_kerja') ?? 0 }}</div>
+            <div class="metric-value">{{ array_sum(array_column($tableData, 'kecelakaan_kerja')) }}</div>
         </div>
     </div>
 
