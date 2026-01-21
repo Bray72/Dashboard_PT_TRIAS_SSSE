@@ -248,4 +248,124 @@ class SafetyDashboardController extends Controller
             ->with('success', 'Data berhasil disimpan');
     }
 
+    public function export(Request $request)
+    {
+        $companyId = $request->company_id;
+        $year = $request->year ?? date('Y');
+        $format = $request->format ?? 'csv'; // csv atau xlsx
+
+        // Ambil data perusahaan
+        $company = Company::find($companyId);
+        if (!$company) {
+            return redirect()->back()->with('error', 'Perusahaan tidak ditemukan');
+        }
+
+        // Ambil periode dalam 1 tahun
+        $periods = Period::where('year', $year)->orderBy('month')->get();
+
+        // Ambil data statistik
+        $statistics = CompanyStatistic::with(['company', 'period'])
+            ->where('company_id', $companyId)
+            ->whereHas('period', function ($q) use ($year) {
+                $q->where('year', $year);
+            })
+            ->get();
+
+        // Siapkan data untuk export
+        $exportData = [];
+        $exportData[] = ['Safety Metrics Report', $company->name, 'Year: ' . $year];
+        $exportData[] = []; // Baris kosong
+        $exportData[] = [
+            'Month', 'Man Hours', 'Total Employees', 'LTA', 
+            'Lost Work Days', 'Lost Time (hours)', 'Work Accidents',
+            'Severity Rate (SR)', 'Frequency Rate (FR)', 'Incident Rate (IR)'
+        ];
+
+        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+
+        foreach ($periods as $period) {
+            $stat = $statistics->where('period_id', $period->id)->first();
+            
+            $row = [
+                $monthNames[$period->month - 1] ?? $period->month,
+                $stat->man_hours ?? 0,
+                $stat->employee ?? 0,
+                $stat->lta ?? 0,
+                $stat->lost_work_days ?? 0,
+                $stat->lost_time ?? 0,
+                $stat->kecelakaan_kerja ?? 0,
+                $stat ? $this->calculateSR($stat) : 0,
+                $stat ? $this->calculateFR($stat) : 0,
+                $stat ? $this->calculateIR($stat) : 0,
+            ];
+            
+            $exportData[] = $row;
+        }
+
+        // Generate filename
+        $filename = 'safety_metrics_' . str_replace(' ', '_', $company->name) . '_' . $year . '_' . date('Ymd_His');
+
+        if ($format === 'xlsx') {
+            return $this->exportToExcel($exportData, $filename);
+        } else {
+            return $this->exportToCSV($exportData, $filename);
+        }
+    }
+
+    private function exportToCSV($data, $filename)
+    {
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => "attachment; filename=\"$filename.csv\"",
+        ];
+
+        $callback = function() use ($data) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ["\xEF\xBB\xBF"]); // UTF-8 BOM untuk Excel
+
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function exportToExcel($data, $filename)
+    {
+        // Menggunakan library PhpOffice\PhpSpreadsheet jika tersedia
+        // Jika tidak ada, fallback ke CSV
+        
+        try {
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            foreach ($data as $rowIndex => $row) {
+                foreach ($row as $colIndex => $value) {
+                    $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 1, $value);
+                }
+            }
+
+            // Auto-size columns
+            foreach ($sheet->getColumnIterator() as $column) {
+                $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+            }
+
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            
+            return response()->stream(function() use ($writer) {
+                $writer->save('php://output');
+            }, 200, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => "attachment; filename=\"$filename.xlsx\"",
+            ]);
+        } catch (\Exception $e) {
+            // Fallback ke CSV jika PhpSpreadsheet tidak tersedia
+            return $this->exportToCSV($data, $filename);
+        }
+    }
+
 }

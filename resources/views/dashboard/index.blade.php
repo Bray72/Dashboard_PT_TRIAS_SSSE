@@ -47,6 +47,18 @@
                 @endfor
             </select>
         </form>
+
+        <!-- Export Buttons -->
+        <div class="flex gap-2 mt-4">
+            <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year, 'format' => 'csv']) }}" 
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                📥 Export CSV
+            </a>
+            <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year, 'format' => 'xlsx']) }}" 
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                📥 Export Excel
+            </a>
+        </div>
     </div>
 
     <!-- Summary Statistics Section -->
