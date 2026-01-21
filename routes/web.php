@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/work-permit', [WorkPermitDashboardController::class, 'index'])->name('dashboard.work-permit');
     Route::post('/dashboard/work-permit/store',[WorkPermitDashboardController::class, 'store'])->name('dashboard.work-permit.store');
     Route::get('/dashboard/work-permit/create',[WorkPermitDashboardController::class, 'create'])->name('dashboard.work-permit.create');
+    Route::get('/dashboard/work-permit/export', [WorkPermitDashboardController::class, 'export'])->name('dashboard.work-permit.export');
+    Route::get('/dashboard/work-permit/export-pdf', [WorkPermitDashboardController::class, 'exportPDF'])->name('dashboard.work-permit.export-pdf');
 
     // Near Miss Dashboard Routes
     Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.dashboard');

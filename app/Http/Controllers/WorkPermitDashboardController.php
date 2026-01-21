@@ -7,6 +7,7 @@ use App\Models\PermitStatistic;
 use App\Models\Period;
 use Illuminate\Support\Facades\DB;
 use App\Models\PermitType;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class WorkPermitDashboardController extends Controller
 {
@@ -114,5 +115,160 @@ class WorkPermitDashboardController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Data Work Permit berhasil disimpan');
+    }
+
+    public function export(Request $request)
+    {
+        $month = (int) ($request->month ?? 1);
+        $year = (int) ($request->year ?? 2026);
+
+        $permitTypes = PermitType::orderBy('name')->get();
+
+        // Monthly data
+        $monthly = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
+            ->where('periods.month', $month)
+            ->where('periods.year', $year)
+            ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
+            ->groupBy('permit_statistics.permit_type_id')
+            ->get()
+            ->keyBy('permit_type_id');
+
+        // YTD current year
+        $ytdCurrent = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
+            ->where('periods.year', $year)
+            ->whereBetween('periods.month', [1, $month])
+            ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
+            ->groupBy('permit_statistics.permit_type_id')
+            ->get()
+            ->keyBy('permit_type_id');
+
+        // YTD previous year
+        $ytdPrevious = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
+            ->where('periods.year', $year - 1)
+            ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
+            ->groupBy('permit_statistics.permit_type_id')
+            ->get()
+            ->keyBy('permit_type_id');
+
+        // Prepare export data
+        $exportData = [];
+        $exportData[] = ['Work Permit Report', 'Month: ' . $month, 'Year: ' . $year];
+        $exportData[] = [];
+        $exportData[] = [
+            'Safety Work Permit Type',
+            'Monthly (' . date('M', mktime(0, 0, 0, $month, 1)) . ')',
+            'YTD ' . $year,
+            'YTD ' . ($year - 1)
+        ];
+
+        foreach ($permitTypes as $type) {
+            $exportData[] = [
+                $type->name,
+                $monthly[$type->id]->total ?? 0,
+                $ytdCurrent[$type->id]->total ?? 0,
+                $ytdPrevious[$type->id]->total ?? 0,
+            ];
+        }
+
+        // Add totals
+        $totalMonthly = $monthly->sum('total') ?? 0;
+        $totalYtdCurrent = $ytdCurrent->sum('total') ?? 0;
+        $totalYtdPrevious = $ytdPrevious->sum('total') ?? 0;
+
+        $exportData[] = [];
+        $exportData[] = ['TOTAL', $totalMonthly, $totalYtdCurrent, $totalYtdPrevious];
+
+        $filename = 'work_permit_report_' . $month . '_' . $year . '_' . date('Ymd_His');
+
+        return $this->exportToCSV($exportData, $filename);
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $month = (int) ($request->month ?? 1);
+        $year = (int) ($request->year ?? 2026);
+
+        $permitTypes = PermitType::orderBy('name')->get();
+
+        // Monthly data
+        $monthly = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
+            ->where('periods.month', $month)
+            ->where('periods.year', $year)
+            ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
+            ->groupBy('permit_statistics.permit_type_id')
+            ->get()
+            ->keyBy('permit_type_id');
+
+        // YTD current year
+        $ytdCurrent = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
+            ->where('periods.year', $year)
+            ->whereBetween('periods.month', [1, $month])
+            ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
+            ->groupBy('permit_statistics.permit_type_id')
+            ->get()
+            ->keyBy('permit_type_id');
+
+        // YTD previous year
+        $ytdPrevious = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
+            ->where('periods.year', $year - 1)
+            ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
+            ->groupBy('permit_statistics.permit_type_id')
+            ->get()
+            ->keyBy('permit_type_id');
+
+        // Prepare table data
+        $tableData = [];
+        foreach ($permitTypes as $type) {
+            $tableData[] = [
+                'name' => $type->name,
+                'monthly' => $monthly[$type->id]->total ?? 0,
+                'ytd_current' => $ytdCurrent[$type->id]->total ?? 0,
+                'ytd_previous' => $ytdPrevious[$type->id]->total ?? 0,
+            ];
+        }
+
+        // Calculate totals
+        $totalMonthly = array_sum(array_column($tableData, 'monthly'));
+        $totalYtdCurrent = array_sum(array_column($tableData, 'ytd_current'));
+        $totalYtdPrevious = array_sum(array_column($tableData, 'ytd_previous'));
+
+        $data = [
+            'month' => $month,
+            'year' => $year,
+            'monthName' => date('F', mktime(0, 0, 0, $month, 1)),
+            'tableData' => $tableData,
+            'totalMonthly' => $totalMonthly,
+            'totalYtdCurrent' => $totalYtdCurrent,
+            'totalYtdPrevious' => $totalYtdPrevious,
+            'generatedDate' => date('d-m-Y H:i:s'),
+        ];
+
+        $pdf = Pdf::loadView('pdf.work-permit', $data);
+        $pdf->setPaper('a4', 'landscape');
+
+        $filename = 'work_permit_report_' . $month . '_' . $year . '_' . date('Ymd_His') . '.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    private function exportToCSV($data, $filename)
+    {
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => "attachment; filename=\"$filename.csv\"",
+        ];
+
+        $callback = function() use ($data) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ["\xEF\xBB\xBF"]);
+
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
