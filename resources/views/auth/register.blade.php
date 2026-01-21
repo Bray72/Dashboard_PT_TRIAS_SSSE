@@ -8,9 +8,9 @@
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-        <img class="mx-auto" width="100px" src="https://trias-sentosa.com/images/ts.jpg" alt="">
         <!-- Card Container -->
         <div class="bg-white rounded-lg shadow-lg p-8">
+            <img class="mx-auto" width="100px" src="https://trias-sentosa.com/images/ts.jpg" alt="">
             <!-- Header -->
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
