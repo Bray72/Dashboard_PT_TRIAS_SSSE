@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Metrics Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 15px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        
+        .header p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .info-box {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .info-item {
+            font-size: 12px;
+        }
+        
+        .info-item strong {
+            color: #2c3e50;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        thead {
+            background-color: #2c3e50;
+            color: white;
+        }
+        
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            font-size: 11px;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            font-size: 11px;
+        }
+        
+        tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background-color: #e8eef7;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        
+        .metric-summary {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-left: 4px solid #2c3e50;
+        }
+        
+        .metric-item {
+            flex: 1;
+            padding: 10px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Safety Metrics Report</h1>
+        <p>{{ $company->name }}</p>
+        <p>Year: {{ $year }}</p>
+    </div>
+
+    <div class="info-box">
+        <div class="info-item">
+            <strong>Company:</strong> {{ $company->name }}
+        </div>
+        <div class="info-item">
+            <strong>Year:</strong> {{ $year }}
+        </div>
+        <div class="info-item">
+            <strong>Generated:</strong> {{ $generatedDate }}
+        </div>
+    </div>
+
+    <h3 style="color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px;">Monthly Safety Metrics</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th class="text-right">Man Hours</th>
+                <th class="text-right">Employees</th>
+                <th class="text-right">LTA</th>
+                <th class="text-right">Lost Work Days</th>
+                <th class="text-right">Lost Time (hrs)</th>
+                <th class="text-right">Work Accidents</th>
+                <th class="text-right">SR</th>
+                <th class="text-right">FR</th>
+                <th class="text-right">IR</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($tableData as $row)
+            <tr>
+                <td>{{ $row['month'] }}</td>
+                <td class="text-right">{{ number_format($row['man_hours'], 0) }}</td>
+                <td class="text-right">{{ $row['employee'] }}</td>
+                <td class="text-right">{{ $row['lta'] }}</td>
+                <td class="text-right">{{ $row['lost_work_days'] }}</td>
+                <td class="text-right">{{ $row['lost_time'] }}</td>
+                <td class="text-right">{{ $row['kecelakaan_kerja'] }}</td>
+                <td class="text-right">{{ number_format($row['sr'], 2) }}</td>
+                <td class="text-right">{{ number_format($row['fr'], 2) }}</td>
+                <td class="text-right">{{ number_format($row['ir'], 2) }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <div class="metric-summary">
+        <div class="metric-item">
+            <div class="metric-label">Total Man Hours</div>
+            <div class="metric-value">{{ number_format($tableData->sum('man_hours') ?? 0, 0) }}</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-label">Total LTA</div>
+            <div class="metric-value">{{ $tableData->sum('lta') ?? 0 }}</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-label">Total Lost Work Days</div>
+            <div class="metric-value">{{ $tableData->sum('lost_work_days') ?? 0 }}</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-label">Total Work Accidents</div>
+            <div class="metric-value">{{ $tableData->sum('kecelakaan_kerja') ?? 0 }}</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This is an automatically generated report from the Safety Management System.</p>
+        <p>For questions or discrepancies, please contact the Safety Department.</p>
+    </div>
+</body>
+</html>

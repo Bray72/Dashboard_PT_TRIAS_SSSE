@@ -7,6 +7,7 @@ use App\Models\CompanyStatistic;
 use App\Models\Period;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SafetyDashboardController extends Controller
 {
@@ -252,7 +253,6 @@ class SafetyDashboardController extends Controller
     {
         $companyId = $request->company_id;
         $year = $request->year ?? date('Y');
-        $format = $request->format ?? 'csv'; // csv atau xlsx
 
         // Ambil data perusahaan
         $company = Company::find($companyId);
@@ -306,11 +306,7 @@ class SafetyDashboardController extends Controller
         // Generate filename
         $filename = 'safety_metrics_' . str_replace(' ', '_', $company->name) . '_' . $year . '_' . date('Ymd_His');
 
-        if ($format === 'xlsx') {
-            return $this->exportToExcel($exportData, $filename);
-        } else {
-            return $this->exportToCSV($exportData, $filename);
-        }
+        return $this->exportToCSV($exportData, $filename);
     }
 
     private function exportToCSV($data, $filename)
@@ -334,38 +330,68 @@ class SafetyDashboardController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    private function exportToExcel($data, $filename)
+    public function exportPDF(Request $request)
     {
-        // Menggunakan library PhpOffice\PhpSpreadsheet jika tersedia
-        // Jika tidak ada, fallback ke CSV
-        
-        try {
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
+        $companyId = $request->company_id;
+        $year = $request->year ?? date('Y');
 
-            foreach ($data as $rowIndex => $row) {
-                foreach ($row as $colIndex => $value) {
-                    $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 1, $value);
-                }
-            }
-
-            // Auto-size columns
-            foreach ($sheet->getColumnIterator() as $column) {
-                $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
-            }
-
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            
-            return response()->stream(function() use ($writer) {
-                $writer->save('php://output');
-            }, 200, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition' => "attachment; filename=\"$filename.xlsx\"",
-            ]);
-        } catch (\Exception $e) {
-            // Fallback ke CSV jika PhpSpreadsheet tidak tersedia
-            return $this->exportToCSV($data, $filename);
+        // Ambil data perusahaan
+        $company = Company::find($companyId);
+        if (!$company) {
+            return redirect()->back()->with('error', 'Perusahaan tidak ditemukan');
         }
+
+        // Ambil periode dalam 1 tahun
+        $periods = Period::where('year', $year)->orderBy('month')->get();
+
+        // Ambil data statistik
+        $statistics = CompanyStatistic::with(['company', 'period'])
+            ->where('company_id', $companyId)
+            ->whereHas('period', function ($q) use ($year) {
+                $q->where('year', $year);
+            })
+            ->get();
+
+        // Siapkan data untuk table
+        $tableData = [];
+        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+
+        foreach ($periods as $period) {
+            $stat = $statistics->where('period_id', $period->id)->first();
+            
+            $tableData[] = [
+                'month' => $monthNames[$period->month - 1] ?? $period->month,
+                'man_hours' => $stat->man_hours ?? 0,
+                'employee' => $stat->employee ?? 0,
+                'lta' => $stat->lta ?? 0,
+                'lost_work_days' => $stat->lost_work_days ?? 0,
+                'lost_time' => $stat->lost_time ?? 0,
+                'kecelakaan_kerja' => $stat->kecelakaan_kerja ?? 0,
+                'sr' => $stat ? $this->calculateSR($stat) : 0,
+                'fr' => $stat ? $this->calculateFR($stat) : 0,
+                'ir' => $stat ? $this->calculateIR($stat) : 0,
+            ];
+        }
+
+        // Data untuk view PDF
+        $data = [
+            'company' => $company,
+            'year' => $year,
+            'tableData' => $tableData,
+            'generatedDate' => date('d-m-Y H:i:s'),
+        ];
+
+        // Load view dan generate PDF
+        $pdf = Pdf::loadView('pdf.safety-metrics', $data);
+        
+        // Set ukuran dan orientasi
+        $pdf->setPaper('a4', 'landscape');
+        
+        // Download atau view
+        $filename = 'safety_metrics_' . str_replace(' ', '_', $company->name) . '_' . $year . '_' . date('Ymd_His') . '.pdf';
+        
+        return $pdf->download($filename);
     }
 
 }

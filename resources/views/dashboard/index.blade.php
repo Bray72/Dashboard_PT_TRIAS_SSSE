@@ -49,10 +49,14 @@
         </form>
 
         <!-- Export Buttons -->
-        <div class="flex gap-2 mt-4">
-            <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year, 'format' => 'csv']) }}" 
+        <div class="mt-4 flex gap-2">
+            <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year]) }}" 
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
-                📥 Export CSV
+                Export CSV
+            </a>
+            <a href="{{ route('dashboard.safety.export-pdf', ['company_id' => $companyId, 'year' => $year]) }}" 
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                Export PDF
             </a>
         </div>
     </div>

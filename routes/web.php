@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
             ->name('dashboard.safety.store');
         Route::get('safety/export', [SafetyDashboardController::class, 'export'])
             ->name('dashboard.safety.export');
+        Route::get('safety/export-pdf', [SafetyDashboardController::class, 'exportPDF'])
+            ->name('dashboard.safety.export-pdf');
     });
 
     Route::post('/period/store', [PeriodController::class, 'store'])->name('period.store');
