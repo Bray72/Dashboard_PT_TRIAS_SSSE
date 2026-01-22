@@ -207,60 +207,6 @@
     </style>
 </head>
 <body>
-    <div class="company-header">
-        <!-- LEFT SECTION -->
-        <div class="header-left">
-            <img src="https://s3-symbol-logo.tradingview.com/trias-sentosa-rp-500--600.png" alt="PT Trias Sentosa Logo" class="header-logo">
-            
-            <div class="header-company-info">
-                <h1>PT TRIAS SENTOSA Tbk</h1>
-                
-                <div class="office-locations">
-                    <div class="office-location-group">
-                        <strong>HEAD OFFICE / WARU PLANT :</strong>
-                        <div>Jl. Raya Waru No.1 B, Waru,<br>Sidoarjo 61256, Indonesia</div>
-                        <div>Ph: +62-31-8533125, Fax: +62-31-8534116</div>
-                    </div>
-
-                    <div class="office-location-group">
-                        <strong>JAKARTA OFFICE :</strong>
-                        <div>Altira Business Park<br>Jl. Yos Sudarso Kav.85 Blok A01-07, 5th Floor, Sunter<br>Jakarta Utara 14350, Indonesia</div>
-                        <div>Ph: +62-21-29615575, Fax: +62-21-29615565</div>
-                    </div>
-
-                    <div class="office-location-group">
-                        <strong>KRIAN PLANT :</strong>
-                        <div>Desa Keboharan, Km 26, Krian,<br>Sidoarjo 61262, Indonesia</div>
-                        <div>Ph: +62-31-8975825, Fax: +62-31-8972998</div>
-                    </div>
-
-                    <div class="office-location-group">
-                        <strong>SURABAYA OFFICE :</strong>
-                        <div>Spazio Tower 15th Floor<br>Jl. Mayjen Yono Suwoyo,<br>Surabaya 60225, Indonesia</div>
-                        <div>Ph: +62-31-99144888, Fax: +62-31-99148510</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- RIGHT SECTION -->
-        <div class="header-right">
-            <div class="astra-brand">ASTRIA</div>
-            <div class="astra-tagline">FLEXIBLE PACKAGING FILM MANUFACTURER</div>
-            
-            <div class="certifications">
-                <div class="cert-box">LRQA<br>CERTIFIED</div>
-                <div class="cert-box">✓<br>UKAS</div>
-                <div class="cert-box">LRQA<br>CERTIFIED</div>
-                <div class="cert-box">✓<br>UKAS</div>
-                <div class="cert-box">ISCC</div>
-                <div class="cert-box">LRQA<br>CERTIFIED</div>
-                <div class="cert-box">ISO<br>14001</div>
-                <div class="cert-box">✓<br>UKAS</div>
-            </div>
-        </div>
-    </div>
-
     <div class="header">
         <h1>Safety Metrics Report</h1>
         <p>{{ $company->name }}</p>
