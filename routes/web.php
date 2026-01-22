@@ -7,14 +7,14 @@ use App\Http\Controllers\WorkPermitDashboardController;
 use App\Http\Controllers\NearMissController;
 use App\Http\Controllers\AuthController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('dashboard.index');
+});
 
 // ========== AUTHENTICATION ROUTES ==========
 // Guest routes (only accessible when NOT logged in)
 Route::middleware('guest')->group(function () {
-    Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.store');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.store');
