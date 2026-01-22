@@ -245,6 +245,9 @@ class WorkPermitDashboardController extends Controller
 
         $pdf = Pdf::loadView('pdf.work-permit', $data);
         $pdf->setPaper('a4', 'landscape');
+        
+        // Enable external images
+        $pdf->getOptions()->setIsRemoteEnabled(true);
 
         $filename = 'work_permit_report_' . $month . '_' . $year . '_' . date('Ymd_His') . '.pdf';
 

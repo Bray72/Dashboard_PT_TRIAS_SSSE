@@ -388,6 +388,9 @@ class SafetyDashboardController extends Controller
         // Set ukuran dan orientasi
         $pdf->setPaper('a4', 'landscape');
         
+        // Enable external images
+        $pdf->getOptions()->setIsRemoteEnabled(true);
+        
         // Download atau view
         $filename = 'safety_metrics_' . str_replace(' ', '_', $company->name) . '_' . $year . '_' . date('Ymd_His') . '.pdf';
         
