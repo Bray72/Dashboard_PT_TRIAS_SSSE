@@ -26,7 +26,7 @@
                 <p class="text-sm text-gray-600 mt-1">Sign in to your Safety Metrics Dashboard</p>
             </div>
 
-            <form action="#" method="POST" class="space-y-4">
+            <form action="/login" method="POST" class="space-y-4">
                 @csrf
 
                 <div>
