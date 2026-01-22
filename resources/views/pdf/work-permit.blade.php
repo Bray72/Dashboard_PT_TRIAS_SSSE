@@ -143,10 +143,6 @@
         .page-break {
             page-break-after: always;
         }
-    </style>
-</head>
-<body>
-    <style>
         .company-header {
             display: flex;
             align-items: flex-start;
@@ -225,7 +221,8 @@
             line-height: 1.2;
         }
     </style>
-
+</head>
+<body>
     <div class="company-header">
         <!-- LOGO -->
         <img src="https://trias-sentosa.com/images/ts.jpg" alt="PT Trias Sentosa Logo" class="header-logo">
