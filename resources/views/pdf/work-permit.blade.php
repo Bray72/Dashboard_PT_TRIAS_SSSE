@@ -227,13 +227,13 @@
     <table width="100%" style="border-bottom: 2px solid #0b2d5c; padding-bottom: 10px; margin-bottom: 10px;">
         <tr>
             <!-- LOGO -->
-            <td width="18%" style="vertical-align: top;">
+            <td width="8%" style="vertical-align: top;">
                 <img src="https://trias-sentosa.com/images/ts.jpg"
-                    style="width: 90px; height: auto;">
+                    style="width: 50px; height: auto;">
             </td>
 
             <!-- TITLE -->
-            <td width="82%" style="vertical-align: middle;">
+            <td width="92%" style="vertical-align: middle;">
                 <div style="font-size: 26px; font-weight: bold; color: #0b2d5c; letter-spacing: 1px;">
                     PT TRIAS SENTOSA Tbk
                 </div>
