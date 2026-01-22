@@ -152,7 +152,7 @@
             <!-- LOGO -->
             <td width="8%" style="vertical-align: top;">
                 <img src="https://trias-sentosa.com/images/ts.jpg"
-                    style="width: 40px; height: auto;">
+                    style="width: 50px; height: auto;">
             </td>
 
             <!-- TITLE -->
