@@ -204,67 +204,60 @@
             line-height: 1.2;
         }
     </style>
+    <table width="100%" style="border-bottom: 2px solid #0b2d5c; padding-bottom: 10px; margin-bottom: 10px; background-color:#FFFBB1">
+        <tr>
+            <!-- LOGO -->
+            <td width="8%" style="vertical-align: top;">
+                <img src="https://trias-sentosa.com/images/ts.jpg"
+                    style="width: 50px; height: auto;">
+            </td>
 
-    <div class="company-header">
-        <!-- LOGO -->
-        <img src="https://trias-sentosa.com/images/ts.jpg" alt="PT Trias Sentosa Logo" class="header-logo">
-        
-        <!-- CENTER: Company Name & Offices -->
-        <div class="header-center">
-            <h1>PT TRIAS SENTOSA Tbk</h1>
-            
-            <div class="office-grid">
-                <div class="office-section">
-                    <strong>HEAD OFFICE / WARU PLANT :</strong>
-                    Jl. Raya Waru No.1 B, Waru,<br>
-                    Sidoarjo 61256, Indonesia<br>
-                    Ph: +62-31-8533125<br>
-                    Fax: +62-31-8534116
+            <!-- TITLE -->
+            <td width="92%" style="vertical-align: middle;">
+                <div style="font-size: 20px; font-weight: bold; color: #0b2d5c; letter-spacing: 1px;">
+                    PT TRIAS SENTOSA Tbk
                 </div>
 
-                <div class="office-section">
-                    <strong>JAKARTA OFFICE :</strong>
-                    Altira Business Park<br>
-                    Jl. Yos Sudarso Kav.85 Blok A01-07, 5th Floor, Sunter<br>
-                    Jakarta Utara 14350, Indonesia<br>
-                    Ph: +62-21-29615575<br>
-                    Fax: +62-21-29615565
-                </div>
+                <div style="margin-top: 8px;">
+                    <table width="100%" style="font-size: 10px; color: #000;">
+                        <tr>
+                            <td width="50%" style="vertical-align: top; padding-right: 10px;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">HEAD OFFICE / WARU PLANT :</div>
+                                <div>Jl. Raya Waru No.1 B, Waru,</div>
+                                <div>Sidoarjo 61256, Indonesia</div>
+                                <div>Ph: +62-31-8533125, Fax: +62-31-8534116</div>
+                            </td>
 
-                <div class="office-section">
-                    <strong>KRIAN PLANT :</strong>
-                    Desa Keboharan, Km 26, Krian,<br>
-                    Sidoarjo 61262, Indonesia<br>
-                    Ph: +62-31-8975825<br>
-                    Fax: +62-31-8972998
-                </div>
+                            <td width="50%" style="vertical-align: top;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">JAKARTA OFFICE :</div>
+                                <div>Altira Business Park</div>
+                                <div>Jl. Yos Sudarso Kav.85 Blok A01-07, 5<sup>th</sup> Floor, Sunter</div>
+                                <div>Jakarta Utara 14350, Indonesia</div>
+                                <div>Ph: +62-21-29615575, Fax: +62-21-29615565</div>
+                            </td>
+                        </tr>
 
-                <div class="office-section">
-                    <strong>SURABAYA OFFICE :</strong>
-                    Spazio Tower 15th Floor<br>
-                    Jl. Mayjen Yono Suwoyo,<br>
-                    Surabaya 60225, Indonesia<br>
-                    Ph: +62-31-99144888<br>
-                    Fax: +62-31-99148510
-                </div>
-            </div>
-        </div>
+                        <tr>
+                            <td width="50%" style="vertical-align: top; padding-right: 10px; padding-top: 8px;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">KRIAN PLANT :</div>
+                                <div>Desa Keboharan, Km 26, Krian,</div>
+                                <div>Sidoarjo 61262, Indonesia</div>
+                                <div>Ph: +62-31-8975825, Fax: +62-31-8972998</div>
+                            </td>
 
-        <!-- RIGHT: ASTRIA & Certifications -->
-        <div class="header-right">
-            <div class="astra-brand">ASTRIA</div>
-            <div class="astra-tagline">Flexible Packaging<br>Film Manufacturer</div>
-            
-            <div class="certifications">
-                <div class="cert-box">LRQA<br>CERT.</div>
-                <div class="cert-box">✓<br>UKAS</div>
-                <div class="cert-box">LRQA<br>CERT.</div>
-                <div class="cert-box">✓<br>UKAS</div>
-                <div class="cert-box">ISCC</div>
-                <div class="cert-box">ISO<br>14001</div>
-            </div>
-        </div>
-    </div>
+                            <td width="50%" style="vertical-align: top; padding-top: 8px;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">SURABAYA OFFICE :</div>
+                                <div>Spazio Tower 15<sup>th</sup> Floor</div>
+                                <div>Jl. Mayjen Yono Suwoyo,</div>
+                                <div>Surabaya 60225, Indonesia</div>
+                                <div>Ph: +62-31-99144888, Fax: +62-31-99148510</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
 
     <div class="header">
         <h1>Safety Metrics Report</h1>
