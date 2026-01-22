@@ -68,7 +68,7 @@
         
         .td {
             padding: 10px 12px;
-            border: 1px solid #ddd;
+            border: 1px solid;
             font-size: 11px;
         }
         
@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <table width="100%" style="border-bottom: 2px solid #0b2d5c; padding-bottom: 10px; margin-bottom: 10px; background-color:#FFFBB1">
+    <table width="100%" style="border-bottom: 2px solid #0b2d5c; padding-bottom: 10px; margin-bottom: 10px;">
         <tr>
             <!-- LOGO -->
             <td width="8%" style="vertical-align: top;">
