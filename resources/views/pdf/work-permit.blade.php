@@ -143,71 +143,64 @@
         .page-break {
             page-break-after: always;
         }
-        .header {
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 12px;
-        }
-
-        .header-top {
-            display: table;
-            width: 100%;
-        }
-
-        .header-left, .header-right {
-            display: table-cell;
-            vertical-align: top;
-        }
-
-        .header-left {
-            width: 35%;
-        }
-
-        .header-right {
-            width: 65%;
-            text-align: right;
-            font-size: 9px;
-            line-height: 1.3;
-        }
-
-        .header img {
-            height: 50px;
-            width: auto;
-        }
-
-        .title-report {
-            margin-top: 4px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .sub-title {
-            font-size: 11px;
-            color: #555;
-            margin-top: 2px;
-        }
     </style>
 </head>
 <body>
     <!-- HEADER COMPANY -->
-    <div class="header">
-        <div class="header-top">
-            <div class="header-left">
-                <img src="{{ public_path('https://trias-sentosa.com/images/ts.jpg') }}" alt="Logo">
-            </div>
+    <table width="100%" style="border-bottom: 2px solid #0b2d5c; padding-bottom: 10px; margin-bottom: 10px; background-color:#FFFBB1">
+        <tr>
+            <!-- LOGO -->
+            <td width="8%" style="vertical-align: top;">
+                <img src="https://trias-sentosa.com/images/ts.jpg"
+                    style="width: 40px; height: auto;">
+            </td>
 
-            <div class="header-right">
-                <b>PT TRIAS SENTOSA Tbk</b><br>
-                Head Office: Jl. Raya Waru No.1 B, Sidoarjo<br>
-                Jakarta Office: Altira Business Park, Sunter<br>
-                Krian Plant: Desa Keboharan Km 26, Krian<br>
-                Surabaya Office: Spazio Tower 15th Floor
-            </div>
-        </div>
+            <!-- TITLE -->
+            <td width="92%" style="vertical-align: middle;">
+                <div style="font-size: 20px; font-weight: bold; color: #0b2d5c; letter-spacing: 1px;">
+                    PT TRIAS SENTOSA Tbk
+                </div>
 
-        <div class="title-report">Work Permit Report</div>
-        <div class="sub-title">Safety Work Permit Statistics</div>
-    </div>
+                <div style="margin-top: 8px;">
+                    <table width="100%" style="font-size: 10px; color: #000;">
+                        <tr>
+                            <td width="50%" style="vertical-align: top; padding-right: 10px;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">HEAD OFFICE / WARU PLANT :</div>
+                                <div>Jl. Raya Waru No.1 B, Waru,</div>
+                                <div>Sidoarjo 61256, Indonesia</div>
+                                <div>Ph: +62-31-8533125, Fax: +62-31-8534116</div>
+                            </td>
+
+                            <td width="50%" style="vertical-align: top;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">JAKARTA OFFICE :</div>
+                                <div>Altira Business Park</div>
+                                <div>Jl. Yos Sudarso Kav.85 Blok A01-07, 5<sup>th</sup> Floor, Sunter</div>
+                                <div>Jakarta Utara 14350, Indonesia</div>
+                                <div>Ph: +62-21-29615575, Fax: +62-21-29615565</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td width="50%" style="vertical-align: top; padding-right: 10px; padding-top: 8px;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">KRIAN PLANT :</div>
+                                <div>Desa Keboharan, Km 26, Krian,</div>
+                                <div>Sidoarjo 61262, Indonesia</div>
+                                <div>Ph: +62-31-8975825, Fax: +62-31-8972998</div>
+                            </td>
+
+                            <td width="50%" style="vertical-align: top; padding-top: 8px;">
+                                <div style="font-weight: bold; margin-bottom: 4px;">SURABAYA OFFICE :</div>
+                                <div>Spazio Tower 15<sup>th</sup> Floor</div>
+                                <div>Jl. Mayjen Yono Suwoyo,</div>
+                                <div>Surabaya 60225, Indonesia</div>
+                                <div>Ph: +62-31-99144888, Fax: +62-31-99148510</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
     <div class="container">
         <!-- Header -->
         <div class="header">
