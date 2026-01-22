@@ -59,7 +59,7 @@
             margin: 20px 0;
         }
 
-        thead {
+        thead{
             background-color: #9bbb59;
             color: white;
         }
@@ -152,7 +152,7 @@
             <!-- LOGO -->
             <td width="8%" style="vertical-align: top;">
                 <img src="https://trias-sentosa.com/images/ts.jpg"
-                    style="width: 50px; height: auto;">
+                    style="width: 80px; height: auto;">
             </td>
 
             <!-- TITLE -->
@@ -181,14 +181,14 @@
                         </tr>
 
                         <tr>
-                            <td width="50%" style="vertical-align: top; padding-right: 10px; padding-top: 8px;">
+                            <td width="50%" style="vertical-align: top; padding-right: 10px; padding-top: 8px; background-color:#FFFBB1;">
                                 <div style="font-weight: bold; margin-bottom: 4px;">KRIAN PLANT :</div>
                                 <div>Desa Keboharan, Km 26, Krian,</div>
                                 <div>Sidoarjo 61262, Indonesia</div>
                                 <div>Ph: +62-31-8975825, Fax: +62-31-8972998</div>
                             </td>
 
-                            <td width="50%" style="vertical-align: top; padding-top: 8px;">
+                            <td width="50%" style="vertical-align: top; padding-top: 8px; background-color:#FFFBB1;">
                                 <div style="font-weight: bold; margin-bottom: 4px;">SURABAYA OFFICE :</div>
                                 <div>Spazio Tower 15<sup>th</sup> Floor</div>
                                 <div>Jl. Mayjen Yono Suwoyo,</div>
