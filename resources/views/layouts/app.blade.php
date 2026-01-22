@@ -25,23 +25,27 @@
 
                 {{-- Desktop Menu --}}
                 <div class="hidden md:flex items-center gap-6">
-                    <a href="{{ route('dashboard.safety') }}"
-                    class="px-3 py-2 rounded-md text-sm font-medium
-                    {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                        Safety Metrics
-                    </a>
+                    <div class="relative group">
+                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                            Dashboards
+                        </button>
+                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50">
+                            <a href="{{ route('dashboard.safety') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Safety Metrics</a>
+                            <a href="{{ route('dashboard.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Work Permit</a>
+                            <a href="{{ route('near-miss.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Near Miss</a>
+                        </div>
+                    </div>
 
-                    <a href="{{ route('dashboard.work-permit') }}"
-                    class="px-3 py-2 rounded-md text-sm font-medium
-                    {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                        Work Permit
-                    </a>
-
-                    <a href="{{ route('near-miss.dashboard') }}"
-                    class="px-3 py-2 rounded-md text-sm font-medium
-                    {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                        Near Miss
-                    </a>
+                    <div class="relative group">
+                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                            Import Data
+                        </button>
+                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50">
+                            <a href="{{ route('import.safety-metrics') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Safety Metrics</a>
+                            <a href="{{ route('import.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Work Permit</a>
+                            <a href="{{ route('import.near-miss') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Near Miss</a>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- User + Logout --}}

@@ -6,6 +6,7 @@ use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\WorkPermitDashboardController;
 use App\Http\Controllers\NearMissController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ImportController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -51,4 +52,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.dashboard');
     Route::post('/near-miss/store', [NearMissController::class,'store'])->name('near-miss.store');
     Route::put('/near-miss/{id}/status', [NearMissController::class,'updateStatus'])->name('near-miss.updateStatus');
+
+    // Import Routes
+    Route::prefix('import')->name('import.')->group(function () {
+        // Safety Metrics Import
+        Route::get('/safety-metrics', [ImportController::class, 'showSafetyMetricsImport'])->name('safety-metrics');
+        Route::post('/safety-metrics/process', [ImportController::class, 'importSafetyMetrics'])->name('safety-metrics.process');
+        Route::get('/safety-metrics/sample', [ImportController::class, 'downloadSafetyMetricsSample'])->name('safety-metrics.sample');
+
+        // Work Permit Import
+        Route::get('/work-permit', [ImportController::class, 'showWorkPermitImport'])->name('work-permit');
+        Route::post('/work-permit/process', [ImportController::class, 'importWorkPermit'])->name('work-permit.process');
+        Route::get('/work-permit/sample', [ImportController::class, 'downloadWorkPermitSample'])->name('work-permit.sample');
+
+        // Near Miss Import
+        Route::get('/near-miss', [ImportController::class, 'showNearMissImport'])->name('near-miss');
+        Route::post('/near-miss/process', [ImportController::class, 'importNearMiss'])->name('near-miss.process');
+        Route::get('/near-miss/sample', [ImportController::class, 'downloadNearMissSample'])->name('near-miss.sample');
+    });
 });
