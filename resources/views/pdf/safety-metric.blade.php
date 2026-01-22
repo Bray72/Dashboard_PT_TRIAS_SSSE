@@ -66,7 +66,7 @@
             font-size: 11px;
         }
         
-        td {
+        .td {
             padding: 10px 12px;
             border: 1px solid #ddd;
             font-size: 11px;
@@ -219,15 +219,15 @@
             @foreach($tableData as $row)
             <tr>
                 <td>{{ $row['month'] }}</td>
-                <td class="text-right">{{ number_format($row['man_hours'], 0) }}</td>
-                <td class="text-right">{{ $row['employee'] }}</td>
-                <td class="text-right">{{ $row['lta'] }}</td>
-                <td class="text-right">{{ $row['lost_work_days'] }}</td>
-                <td class="text-right">{{ $row['lost_time'] }}</td>
-                <td class="text-right">{{ $row['kecelakaan_kerja'] }}</td>
-                <td class="text-right">{{ number_format($row['sr'], 2) }}</td>
-                <td class="text-right">{{ number_format($row['fr'], 2) }}</td>
-                <td class="text-right">{{ number_format($row['ir'], 2) }}</td>
+                <td class="td text-right">{{ number_format($row['man_hours'], 0) }}</td>
+                <td class="td text-right">{{ $row['employee'] }}</td>
+                <td class="td text-right">{{ $row['lta'] }}</td>
+                <td class="td text-right">{{ $row['lost_work_days'] }}</td>
+                <td class="td text-right">{{ $row['lost_time'] }}</td>
+                <td class="td text-right">{{ $row['kecelakaan_kerja'] }}</td>
+                <td class="td text-right">{{ number_format($row['sr'], 2) }}</td>
+                <td class="td text-right">{{ number_format($row['fr'], 2) }}</td>
+                <td class="td text-right">{{ number_format($row['ir'], 2) }}</td>
             </tr>
             @endforeach
         </tbody>
