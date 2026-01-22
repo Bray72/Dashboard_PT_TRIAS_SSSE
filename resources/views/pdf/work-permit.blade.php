@@ -146,6 +146,15 @@
     </style>
 </head>
 <body>
+    <div class="w-full bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <img width="50px" src="{{ asset('https://trias-sentosa.com/images/ts.jpg') }}"
+                    alt="Header PT Trias Sentosa Tbk"
+                    class="w-full h-auto object-contain">
+            </div>
+        </div>
+    </div>
     <div class="container">
         <!-- Header -->
         <div class="header">
