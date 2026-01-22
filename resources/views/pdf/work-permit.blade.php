@@ -146,12 +146,98 @@
     </style>
 </head>
 <body>
-    <div class="w-full bg-white">
+    <div class="w-full bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-                <img width="50px" src="{{ asset('https://trias-sentosa.com/images/ts.jpg') }}"
-                    alt="Header PT Trias Sentosa Tbk"
-                    class="w-full h-auto object-contain">
+            <div class="flex flex-col gap-4">
+
+                {{-- TOP HEADER --}}
+                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
+                    {{-- LEFT: LOGO + COMPANY --}}
+                    <div class="flex items-start gap-4">
+                        <img src="https://trias-sentosa.com/images/ts.jpg"
+                            alt="Logo PT Trias Sentosa"
+                            class="w-20 h-20 object-contain">
+
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-extrabold tracking-wide text-gray-900 uppercase">
+                                PT TRIAS SENTOSA Tbk
+                            </h1>
+
+                            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+
+                                {{-- HEAD OFFICE --}}
+                                <div>
+                                    <p class="font-semibold text-gray-900">HEAD OFFICE / WARU PLANT :</p>
+                                    <p>Jl. Raya Waru No.1 B, Waru,</p>
+                                    <p>Sidoarjo 61256, Indonesia</p>
+                                    <p>Ph: +62-31-8533125, Fax: +62-31-8534116</p>
+                                </div>
+
+                                {{-- JAKARTA OFFICE --}}
+                                <div>
+                                    <p class="font-semibold text-gray-900">JAKARTA OFFICE :</p>
+                                    <p>Altira Business Park</p>
+                                    <p>Jl. Yos Sudarso Kav.85 Blok A01-07, 5<sup>th</sup> Floor, Sunter</p>
+                                    <p>Jakarta Utara 14350, Indonesia</p>
+                                    <p>Ph: +62-21-29615575, Fax: +62-21-29615565</p>
+                                </div>
+
+                                {{-- KRIAN PLANT --}}
+                                <div>
+                                    <p class="font-semibold text-gray-900">KRIAN PLANT :</p>
+                                    <p>Desa Keboharan, Km 26, Krian,</p>
+                                    <p>Sidoarjo 61262, Indonesia</p>
+                                    <p>Ph: +62-31-8975825, Fax: +62-31-8972998</p>
+                                </div>
+
+                                {{-- SURABAYA OFFICE --}}
+                                <div>
+                                    <p class="font-semibold text-gray-900">SURABAYA OFFICE :</p>
+                                    <p>Spazio Tower 15<sup>th</sup> Floor</p>
+                                    <p>Jl. Mayjen Yono Suwoyo,</p>
+                                    <p>Surabaya 60225, Indonesia</p>
+                                    <p>Ph: +62-31-99144888, Fax: +62-31-99148510</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- RIGHT: ASTRA + CERT --}}
+                    <div class="flex flex-col items-start lg:items-end gap-2">
+                        <div class="text-right">
+                            <p class="text-2xl font-extrabold tracking-widest text-gray-900 uppercase">ASTRA</p>
+                            <p class="text-xs font-semibold text-gray-600 uppercase">
+                                Flexible Packaging Film Manufacturer
+                            </p>
+                        </div>
+
+                        {{-- CERTIFICATION BOXES (dummy display) --}}
+                        <div class="flex flex-wrap justify-start lg:justify-end gap-2 mt-1">
+                            @php
+                                $certs = [
+                                    'LRQA Certified',
+                                    'UKAS',
+                                    'LRQA Certified',
+                                    'UKAS',
+                                    'ISCC',
+                                    'LRQA Certified',
+                                    'ISO 14001',
+                                    'UKAS',
+                                ];
+                            @endphp
+
+                            @foreach ($certs as $c)
+                                <div class="border border-gray-300 rounded px-2 py-1 text-[10px] text-gray-700 bg-white">
+                                    {{ $c }}
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </div>
