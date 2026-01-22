@@ -122,10 +122,6 @@
             font-weight: bold;
             color: #2c3e50;
         }
-    </style>
-</head>
-<body>
-    <style>
         .company-header {
             display: flex;
             justify-content: space-between;
@@ -209,11 +205,12 @@
             text-align: center;
         }
     </style>
-
+</head>
+<body>
     <div class="company-header">
         <!-- LEFT SECTION -->
         <div class="header-left">
-            <img src="https://trias-sentosa.com/images/ts.jpg" alt="PT Trias Sentosa Logo" class="header-logo">
+            <img src="https://s3-symbol-logo.tradingview.com/trias-sentosa-rp-500--600.png" alt="PT Trias Sentosa Logo" class="header-logo">
             
             <div class="header-company-info">
                 <h1>PT TRIAS SENTOSA Tbk</h1>
