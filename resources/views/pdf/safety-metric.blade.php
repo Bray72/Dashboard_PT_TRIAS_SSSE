@@ -125,12 +125,141 @@
     </style>
 </head>
 <body>
-    <div class="w-full bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-                <img width="50px" src="{{ asset('https://trias-sentosa.com/images/ts.jpg') }}"
-                    alt="Header PT Trias Sentosa Tbk"
-                    class="w-full h-auto object-contain">
+    <style>
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #333;
+        }
+
+        .header-left {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .header-logo {
+            width: 60px;
+            height: 60px;
+        }
+
+        .header-company-info h1 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .office-locations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 10px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .office-location-group {
+            margin-bottom: 10px;
+        }
+
+        .office-location-group strong {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .header-right {
+            text-align: right;
+            flex: 0 0 auto;
+        }
+
+        .astra-brand {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .astra-tagline {
+            font-size: 9px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .certifications {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .cert-box {
+            border: 1px solid #999;
+            padding: 3px 5px;
+            font-size: 8px;
+            background-color: #fafafa;
+            min-width: 35px;
+            text-align: center;
+        }
+    </style>
+
+    <div class="company-header">
+        <!-- LEFT SECTION -->
+        <div class="header-left">
+            <img src="https://trias-sentosa.com/images/ts.jpg" alt="PT Trias Sentosa Logo" class="header-logo">
+            
+            <div class="header-company-info">
+                <h1>PT TRIAS SENTOSA Tbk</h1>
+                
+                <div class="office-locations">
+                    <div class="office-location-group">
+                        <strong>HEAD OFFICE / WARU PLANT :</strong>
+                        <div>Jl. Raya Waru No.1 B, Waru,<br>Sidoarjo 61256, Indonesia</div>
+                        <div>Ph: +62-31-8533125, Fax: +62-31-8534116</div>
+                    </div>
+
+                    <div class="office-location-group">
+                        <strong>JAKARTA OFFICE :</strong>
+                        <div>Altira Business Park<br>Jl. Yos Sudarso Kav.85 Blok A01-07, 5th Floor, Sunter<br>Jakarta Utara 14350, Indonesia</div>
+                        <div>Ph: +62-21-29615575, Fax: +62-21-29615565</div>
+                    </div>
+
+                    <div class="office-location-group">
+                        <strong>KRIAN PLANT :</strong>
+                        <div>Desa Keboharan, Km 26, Krian,<br>Sidoarjo 61262, Indonesia</div>
+                        <div>Ph: +62-31-8975825, Fax: +62-31-8972998</div>
+                    </div>
+
+                    <div class="office-location-group">
+                        <strong>SURABAYA OFFICE :</strong>
+                        <div>Spazio Tower 15th Floor<br>Jl. Mayjen Yono Suwoyo,<br>Surabaya 60225, Indonesia</div>
+                        <div>Ph: +62-31-99144888, Fax: +62-31-99148510</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SECTION -->
+        <div class="header-right">
+            <div class="astra-brand">ASTRIA</div>
+            <div class="astra-tagline">FLEXIBLE PACKAGING FILM MANUFACTURER</div>
+            
+            <div class="certifications">
+                <div class="cert-box">LRQA<br>CERTIFIED</div>
+                <div class="cert-box">✓<br>UKAS</div>
+                <div class="cert-box">LRQA<br>CERTIFIED</div>
+                <div class="cert-box">✓<br>UKAS</div>
+                <div class="cert-box">ISCC</div>
+                <div class="cert-box">LRQA<br>CERTIFIED</div>
+                <div class="cert-box">ISO<br>14001</div>
+                <div class="cert-box">✓<br>UKAS</div>
             </div>
         </div>
     </div>
