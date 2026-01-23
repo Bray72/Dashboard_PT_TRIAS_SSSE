@@ -91,19 +91,21 @@
                     </table>
                 </div>
             </div>
-        <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200" id="permitTrendsContainer">
             <div class="card-shadow mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="text-xl font-bold text-green-900 mb-4">Permit Trends - Year {{ $year }}</h3>
-                        <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
-                            📥 Download
-                        </button>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-green-900">Permit Trends - Year {{ $year }}</h3>
+                            <button onclick="downloadChart('permitTrendsContainer', 'Permit-Trends')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition">
+                                Download
+                            </button>
+                        </div>
                         <canvas id="permitTrendsChart" height="80"></canvas>
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
         <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
             <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
                 <h2 class="text-2xl font-bold text-green-900 mb-6">Input Work Permit</h2>
@@ -148,7 +150,9 @@
 @endsection
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+    // Fungsi untuk download chart sebagai gambar
     async function downloadChart(containerId, filename) {
         try {
             const element = document.getElementById(containerId);
@@ -194,6 +198,7 @@
             button.disabled = false;
         }
     }
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const trendsCtx = document.getElementById('permitTrendsChart');

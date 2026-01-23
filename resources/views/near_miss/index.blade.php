@@ -93,48 +93,78 @@
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Risk Level Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Risk Level Distribution</h3>
+        <div class="bg-white rounded-lg shadow p-6" id="riskChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Risk Level Distribution</h3>
+                <button onclick="downloadChart('riskChartContainer', 'Risk-Level-Distribution')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="riskChart"></canvas>
             </div>
         </div>
 
         <!-- Severity Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Severity Distribution</h3>
+        <div class="bg-white rounded-lg shadow p-6" id="severityChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Severity Distribution</h3>
+                <button onclick="downloadChart('severityChartContainer', 'Severity-Distribution')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="severityChart"></canvas>
             </div>
         </div>
 
         <!-- Category Bar Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Near Miss by Category</h3>
+        <div class="bg-white rounded-lg shadow p-6" id="categoryChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Near Miss by Category</h3>
+                <button onclick="downloadChart('categoryChartContainer', 'Near-Miss-by-Category')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="categoryChart"></canvas>
             </div>
         </div>
 
         <!-- Department Bar Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Near Miss by Department</h3>
+        <div class="bg-white rounded-lg shadow p-6" id="departmentChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Near Miss by Department</h3>
+                <button onclick="downloadChart('departmentChartContainer', 'Near-Miss-by-Department')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="departmentChart"></canvas>
             </div>
         </div>
 
         <!-- Likelihood Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Likelihood Distribution</h3>
+        <div class="bg-white rounded-lg shadow p-6" id="likelihoodChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Likelihood Distribution</h3>
+                <button onclick="downloadChart('likelihoodChartContainer', 'Likelihood-Distribution')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="likelihoodChart"></canvas>
             </div>
         </div>
 
         <!-- Monthly Trend Line Chart -->
-        <div class="bg-white p-6 rounded-xl shadow-md">
-            <h2 class="text-lg font-semibold mb-4">Near Miss per Company</h2>
+        <div class="bg-white p-6 rounded-xl shadow-md" id="companyChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Near Miss per Company</h2>
+                <button onclick="downloadChart('companyChartContainer', 'Near-Miss-per-Company')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    Download
+                </button>
+            </div>
             <canvas id="nearMissCompanyChart"></canvas>
         </div>
     </div>
@@ -419,7 +449,55 @@
 </div>
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+    // Fungsi untuk download chart sebagai gambar
+    async function downloadChart(containerId, filename) {
+        try {
+            const element = document.getElementById(containerId);
+            if (!element) {
+                alert('Chart tidak ditemukan!');
+                return;
+            }
+
+            // Tampilkan loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '';
+            button.disabled = true;
+
+            // Gunakan html2canvas untuk capture element
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                allowTaint: true,
+                useCORS: true,
+                logging: false
+            });
+
+            // Convert ke blob dan download
+            canvas.toBlob(function(blob) {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename + '_' + new Date().toISOString().split('T')[0] + '.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        } catch (error) {
+            console.error('Error downloading chart:', error);
+            alert('Gagal mendownload chart. Silakan coba lagi.');
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
     const companyLabels = {!! json_encode($nearMissPerCompany->pluck('company_name')) !!};
     const companyTotals = {!! json_encode($nearMissPerCompany->pluck('total')) !!};
 
