@@ -96,6 +96,9 @@
                 <div class="card">
                     <div class="card-body">
                         <h3 class="text-xl font-bold text-green-900 mb-4">Permit Trends - Year {{ $year }}</h3>
+                        <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                            📥 Download
+                        </button>
                         <canvas id="permitTrendsChart" height="80"></canvas>
                     </div>
                 </div>
@@ -146,6 +149,51 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    async function downloadChart(containerId, filename) {
+        try {
+            const element = document.getElementById(containerId);
+            if (!element) {
+                alert('Chart tidak ditemukan!');
+                return;
+            }
+
+            // Tampilkan loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '';
+            button.disabled = true;
+
+            // Gunakan html2canvas untuk capture element
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                allowTaint: true,
+                useCORS: true,
+                logging: false
+            });
+
+            // Convert ke blob dan download
+            canvas.toBlob(function(blob) {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename + '_' + new Date().toISOString().split('T')[0] + '.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        } catch (error) {
+            console.error('Error downloading chart:', error);
+            alert('Gagal mendownload chart. Silakan coba lagi.');
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
 document.addEventListener('DOMContentLoaded', function () {
 
     const trendsCtx = document.getElementById('permitTrendsChart');
