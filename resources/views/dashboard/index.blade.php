@@ -400,7 +400,7 @@
             // Tampilkan loading state
             const button = event.target;
             const originalText = button.innerHTML;
-            button.innerHTML = '⏳ Memproses...';
+            button.innerHTML = '';
             button.disabled = true;
 
             // Gunakan html2canvas untuk capture element
