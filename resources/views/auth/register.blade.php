@@ -13,7 +13,7 @@
 
     <div class="absolute inset-0 bg-black/35"></div>
 
-    <div class="w-full max-w-md">
+    <div class="relative z-10 w-full max-w-md my-10">
         <!-- Card Container -->
         <div class="bg-white rounded-lg shadow-lg p-8">
             <img class="mx-auto" width="100px" src="https://trias-sentosa.com/images/ts.jpg" alt="">
