@@ -45,17 +45,18 @@
                     </form>
                     <div class="mt-4 flex gap-2">
                         <a href="{{ route('dashboard.work-permit.export', ['month' => $month, 'year' => $year]) }}" 
-                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export CSV
                         </a>
                         <a href="{{ route('dashboard.work-permit.export-pdf', ['month' => $month, 'year' => $year]) }}" 
-                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export PDF
                         </a>
                     </div>
                 </div>
                 
             </div>
+
             <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
                 <div class="overflow-x-auto">
                     <table class="table table-bordered table-sm align-middle w-full min-w-[600px]">
@@ -91,19 +92,26 @@
                     </table>
                 </div>
             </div>
+
         <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
             <div class="card-shadow mb-4">
                 <div class="card">
-                    <div class="card-body">
+                    {{-- FIX: Tambahkan wrapper container sesuai ID yang dipanggil tombol --}}
+                    <div class="card-body" id="comparisonChartContainer">
                         <h3 class="text-xl font-bold text-green-900 mb-4">Permit Trends - Year {{ $year }}</h3>
-                        <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+
+                        {{-- FIX: kirim event ke function supaya event.target tidak undefined --}}
+                        <button onclick="downloadChart(event, 'comparisonChartContainer', 'Monthly-Comparison')"
+                            class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                             📥 Download
                         </button>
+
                         <canvas id="permitTrendsChart" height="80"></canvas>
                     </div>
                 </div>
             </div>
         </div>    
+
         <div class="bg-white rounded-lg p-6 mb-8 border border-green-600 shadow-lg shadow-green-400/200">
             <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
                 <h2 class="text-2xl font-bold text-green-900 mb-6">Input Work Permit</h2>
@@ -148,8 +156,16 @@
 @endsection
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{{-- FIX: html2canvas wajib ada karena dipakai untuk capture chart --}}
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 <script>
-    async function downloadChart(containerId, filename) {
+    // FIX: tambahkan parameter event supaya event.target aman
+    async function downloadChart(event, containerId, filename) {
+        let button = null;
+        let originalText = null;
+
         try {
             const element = document.getElementById(containerId);
             if (!element) {
@@ -158,10 +174,12 @@
             }
 
             // Tampilkan loading state
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '';
-            button.disabled = true;
+            button = event ? event.target : null;
+            if (button) {
+                originalText = button.innerHTML;
+                button.innerHTML = '⏳...';
+                button.disabled = true;
+            }
 
             // Gunakan html2canvas untuk capture element
             const canvas = await html2canvas(element, {
@@ -184,16 +202,23 @@
                 window.URL.revokeObjectURL(url);
 
                 // Restore button state
-                button.innerHTML = originalText;
-                button.disabled = false;
+                if (button) {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
             });
+
         } catch (error) {
             console.error('Error downloading chart:', error);
             alert('Gagal mendownload chart. Silakan coba lagi.');
-            button.innerHTML = originalText;
-            button.disabled = false;
+
+            if (button) {
+                button.innerHTML = originalText ?? '📥 Download';
+                button.disabled = false;
+            }
         }
     }
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const trendsCtx = document.getElementById('permitTrendsChart');
@@ -208,78 +233,48 @@ document.addEventListener('DOMContentLoaded', function () {
             $permitTypes->map(function($type, $index) use ($chartData) {
                 return [
                     'label' => $type->name,
-                    'data' => array_values($chartData[$type->id] ?? array_fill(1, 12, 0)),
-                    'borderColor' => ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'][$index % 6],
-                    'backgroundColor' => ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'][$index % 6],
-                    'borderWidth' => 2,
-                    'tension' => 0.4,
-                    'fill' => false
+                    'data' => $chartData[$type->id] ?? [],
+                    'borderColor' => $index,
+                    'fill' => false,
+                    'tension' => 0.3
                 ];
-            })->values()
+            })
         ) !!};
+
+        const formattedDatasets = datasets.map((ds, i) => {
+            return {
+                label: ds.label,
+                data: ds.data,
+                borderColor: colors[i % colors.length],
+                backgroundColor: colors[i % colors.length],
+                fill: false,
+                tension: ds.tension ?? 0.3
+            };
+        });
 
         new Chart(trendsCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: datasets
+                labels: [
+                    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
+                ],
+                datasets: formattedDatasets
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                    title: {
-                        display: false
+                        position: 'top'
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Total Permits'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Month'
-                        }
+                        beginAtZero: true
                     }
                 }
             }
         });
     }
-
-    const ctx = document.getElementById('ytdChart');
-    if (!ctx) {
-        console.log('Canvas ytdChart tidak ditemukan');
-        return;
-    }
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {!! json_encode($permitTypes->pluck('name')->values()) !!},
-            datasets: [{
-                label: 'YTD {{ $year }}',
-                data: {!! json_encode(
-                    $permitTypes->map(fn($t) => $ytdCurrent[$t->id]->total ?? 0)->values()
-                ) !!},
-                backgroundColor: '#4CAF50'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-
 });
 </script>
