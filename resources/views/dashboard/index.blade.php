@@ -119,10 +119,15 @@
     <!-- SR Gauge Charts -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeSR as $month => $sr)
-            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-                <h4 class="font-semibold mb-2">
-                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
-                </h4>
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeSRContainer{{ $month }}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold">
+                        {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                    </h4>
+                    <button onclick="downloadChart('gaugeSRContainer{{ $month }}', 'SR-{{ DateTime::createFromFormat('!m', $month)->format('F') }}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition">
+                        📥
+                    </button>
+                </div>
 
                 <canvas
                     id="gaugeSR{{ $month }}"
@@ -140,10 +145,15 @@
     <!-- FR Gauge Charts -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeFR as $month => $fr)
-            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-                <h4 class="font-semibold mb-2">
-                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
-                </h4>
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeFRContainer{{ $month }}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold">
+                        {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                    </h4>
+                    <button onclick="downloadChart('gaugeFRContainer{{ $month }}', 'FR-{{ DateTime::createFromFormat('!m', $month)->format('F') }}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition">
+                        📥
+                    </button>
+                </div>
 
                 <canvas
                     id="gaugeFR{{ $month }}"
@@ -161,10 +171,15 @@
     <!-- IR Gauge Charts -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeIR as $month => $ir)
-            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-                <h4 class="font-semibold mb-2">
-                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
-                </h4>
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeIRContainer{{ $month }}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold">
+                        {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                    </h4>
+                    <button onclick="downloadChart('gaugeIRContainer{{ $month }}', 'IR-{{ DateTime::createFromFormat('!m', $month)->format('F') }}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition">
+                        📥
+                    </button>
+                </div>
 
                 <canvas
                     id="gaugeIR{{ $month }}"
@@ -182,8 +197,13 @@
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- SR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Severity Rate (SR)</h3>
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="srChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Severity Rate (SR)</h3>
+                <button onclick="downloadChart('srChartContainer', 'Severity-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    📥 Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="srChart"></canvas>
             </div>
@@ -191,8 +211,13 @@
         </div>
 
         <!-- FR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Frequency Rate (FR)</h3>
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="frChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Frequency Rate (FR)</h3>
+                <button onclick="downloadChart('frChartContainer', 'Frequency-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    📥 Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="frChart"></canvas>
             </div>
@@ -200,8 +225,13 @@
         </div>
 
         <!-- IR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Incident Rate (IR)</h3>
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="irChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Incident Rate (IR)</h3>
+                <button onclick="downloadChart('irChartContainer', 'Incident-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    📥 Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="irChart"></canvas>
             </div>
@@ -209,8 +239,13 @@
         </div>
 
         <!-- Comparison Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Monthly Comparison</h3>
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="comparisonChartContainer">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Monthly Comparison</h3>
+                <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    📥 Download
+                </button>
+            </div>
             <div class="relative h-80">
                 <canvas id="comparisonChart"></canvas>
             </div>
@@ -353,6 +388,53 @@
 
 @push('scripts')
 <script>
+    // Fungsi untuk download chart sebagai gambar
+    async function downloadChart(containerId, filename) {
+        try {
+            const element = document.getElementById(containerId);
+            if (!element) {
+                alert('Chart tidak ditemukan!');
+                return;
+            }
+
+            // Tampilkan loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Memproses...';
+            button.disabled = true;
+
+            // Gunakan html2canvas untuk capture element
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                allowTaint: true,
+                useCORS: true,
+                logging: false
+            });
+
+            // Convert ke blob dan download
+            canvas.toBlob(function(blob) {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename + '_' + new Date().toISOString().split('T')[0] + '.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        } catch (error) {
+            console.error('Error downloading chart:', error);
+            alert('Gagal mendownload chart. Silakan coba lagi.');
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const chartData = @json($chartData);
         const months = chartData.labels;
