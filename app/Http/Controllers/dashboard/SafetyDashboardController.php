@@ -1,400 +1,676 @@
-<?php
+@extends('layouts.app')
 
-namespace App\Http\Controllers\Dashboard;
+@section('content')
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-blue-900">Safety Metrics Dashboard</h1>
+        <p class="text-gray-600 mt-2">Monitor monthly safety performance (SR, FR, IR)</p>
+    </div>
 
-use App\Models\Company;
-use App\Models\CompanyStatistic;
-use App\Models\Period;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
+    <!-- Filters Section -->
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+        <form method="GET" class="flex gap-4 items-end">
+            <!-- Company Filter -->
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                <select name="company_id" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @foreach($companies as $company)
+                        <option value="{{ $company->id }}" {{ $company->id == $companyId ? 'selected' : '' }}>
+                            {{ $company->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-class SafetyDashboardController extends Controller
-{
-     public function index(Request $request)
-    {
-        $companyId = $request->company_id;
-        $year = $request->year ?? Period::orderBy('year', 'desc')->value('year') ?? date('Y');
-        $gaugeMonth = $request->gauge_month ?? null;
+            <!-- Year Filter -->
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
+                <select name="year" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @for($y = date('Y'); $y >= 2020; $y--)
+                        <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
+                    @endfor
+                </select>
+            </div>
+        </form>
+        <form method="GET" class="mb-6">
+            <input type="hidden" name="year" value="{{ $year }}">
+            <input type="hidden" name="company_id" value="{{ $companyId }}">
 
-        // List perusahaan (untuk tab / dropdown)
-        $companies = Company::all();
-        $displayMonth = $gaugeMonth; 
+            <select name="gauge_month" onchange="this.form.submit()"
+                class="px-4 py-2 border rounded">
+                <option value="" {{ empty($gaugeMonth) ? 'selected' : '' }}>All Month</option>
+                @for($m = 1; $m <= 12; $m++)
+                    <option value="{{ $m }}" {{ $m == $gaugeMonth ? 'selected' : '' }}>
+                        {{ DateTime::createFromFormat('!m', $m)->format('F') }}
+                    </option>
+                @endfor
+            </select>
+        </form>
 
-        $companyId = $request->company_id 
-        ?? $companies->first()?->id;
+        <!-- Export Buttons -->
+        <div class="mt-4 flex gap-2">
+            <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year]) }}" 
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                Export CSV
+            </a>
+            <a href="{{ route('dashboard.safety.export-pdf', ['company_id' => $companyId, 'year' => $year]) }}" 
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                Export PDF (Table Only)
+            </a>
+            <button id="exportPdfWithCharts" type="button"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                Export PDF with Charts
+            </button>
+        </div>
+    </div>
 
-        // Ambil periode dalam 1 tahun
-        $periods = Period::where('year', $year)
-            ->orderBy('month')
-            ->get();
-
-        // Ambil data statistik
-        $statistics = CompanyStatistic::with(['company', 'period'])
-            ->when($companyId, function ($query) use ($companyId) {
-                $query->where('company_id', $companyId);
-            })
-            ->whereHas('period', function ($q) use ($year) {
-                $q->where('year', $year);
-            })
-            ->get();
-
-        // Data untuk chart
-        $chartData = [
-            'labels' => $periods->pluck('month'),
-            'man_hours' => [],
-            'employee' => [],
-            'lta' => [],
-            'sr' => [],
-            'fr' => [],
-            'ir' => []
-        ];
-
-        foreach ($periods as $period) {
-            $stat = $statistics
-                ->where('period_id', $period->id)
-                ->first();
-
-            $chartData['man_hours'][] = $stat->man_hours ?? 0;
-            $chartData['employee'][]  = $stat->employee ?? 0;
-            $chartData['lta'][]       = $stat->lta ?? 0;
-            
-            // Calculate rates if statistics exist
-            if ($stat) {
-                $chartData['sr'][] = $this->calculateSR($stat);
-                $chartData['fr'][] = $this->calculateFR($stat);
-                $chartData['ir'][] = $this->calculateIR($stat);
-            } else {
-                $chartData['sr'][] = 0;
-                $chartData['fr'][] = 0;
-                $chartData['ir'][] = 0;
-            }
-        }
-
-        // Get gauge data for selected month
-        $gaugeSR = $this->getGaugeData('severity_rate', $year, $companyId);
-        $gaugeFR = $this->getGaugeData('frequency_rate', $year, $companyId);
-        $gaugeIR = $this->getGaugeData('incident_rate', $year, $companyId);
+    <!-- Summary Statistics Section -->
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+        <h3 class="text-lg font-semibold text-blue-900 mb-4">
+            @if($gaugeMonth)
+                Summary Data - {{ DateTime::createFromFormat('!m', $gaugeMonth)->format('F') }} {{ $year }}
+            @else
+                Summary Data - {{ $year }}
+            @endif
+        </h3>
         
-        // Get summary data for selected month
-        if ($gaugeMonth) {
-            // kalau pilih bulan tertentu
-            $monthlySummary = $this->getMonthlySummary($companyId, $year, $gaugeMonth);
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <!-- Man Hours Card -->
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Man Hours</div>
+                <div class="text-2xl font-bold text-blue-600">{{ number_format($monthlySummary['man_hours']) }}</div>
+                <div class="text-xs text-gray-500 mt-2">hours</div>
+            </div>
 
-            // gauge hanya 1 bulan
-            $gaugeSR = [$gaugeMonth => $gaugeSR[$gaugeMonth] ?? 0];
-            $gaugeFR = [$gaugeMonth => $gaugeFR[$gaugeMonth] ?? 0];
-            $gaugeIR = [$gaugeMonth => $gaugeIR[$gaugeMonth] ?? 0];
+            <!-- Total Employees Card -->
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Total Employees</div>
+                <div class="text-2xl font-bold text-green-600">{{ number_format($monthlySummary['employee']) }}</div>
+                <div class="text-xs text-gray-500 mt-2">people</div>
+            </div>
 
-        } else {
-            // kalau All Month -> summary total 1 tahun
-            $monthlySummary = [
-                'man_hours' => $statistics->sum('man_hours'),
-                'employee' => $statistics->sum('employee'),
-                'lta' => $statistics->sum('lta'),
-                'lost_work_days' => $statistics->sum('lost_work_days'),
-                'lost_time' => $statistics->sum('lost_time'),
-                'kecelakaan_kerja' => $statistics->sum('kecelakaan_kerja'),
-            ];
-        }
+            <!-- LTA Card -->
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Lost Time Accidents</div>
+                <div class="text-2xl font-bold text-red-600">{{ $monthlySummary['lta'] }}</div>
+                <div class="text-xs text-gray-500 mt-2">accidents</div>
+            </div>
 
-        // Month names for display
-        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                      'July', 'August', 'September', 'October', 'November', 'December'];
+            <!-- Lost Work Days Card -->
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Lost Work Days</div>
+                <div class="text-2xl font-bold text-orange-600">{{ $monthlySummary['lost_work_days'] }}</div>
+                <div class="text-xs text-gray-500 mt-2">days</div>
+            </div>
 
-        // Monthly FR data for chart
-        $monthlyFR = [];
-        foreach ($periods as $period) {
-            $stat = $statistics->where('period_id', $period->id)->first();
-            if ($stat) {
-                $monthlyFR[$period->month] = $this->calculateFR($stat);
-            }
-        }
+            <!-- Lost Time Hours Card -->
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Lost Time Hours</div>
+                <div class="text-2xl font-bold text-purple-600">{{ number_format($monthlySummary['lost_time']) }}</div>
+                <div class="text-xs text-gray-500 mt-2">hours</div>
+            </div>
 
-        $date = new \DateTime($year . '-' . str_pad($displayMonth, 2, '0', STR_PAD_LEFT) . '-01');
+            <!-- Work Accidents Card -->
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Work Accidents</div>
+                <div class="text-2xl font-bold text-red-700">{{ $monthlySummary['kecelakaan_kerja'] }}</div>
+                <div class="text-xs text-gray-500 mt-2">incidents</div>
+            </div>
+        </div>
+    </div>
 
-        return view('dashboard/index', compact(
-            'companies',
-            'chartData',
-            'year',
-            'companyId',
-            'periods',
-            'monthNames',
-            'date',
-            'gaugeMonth',
-            'gaugeSR',
-            'gaugeFR',
-            'gaugeIR',
-            'monthlySummary',
-            'monthlyFR',
-            'displayMonth'
-        ));
-    }
+    <h3 class="text-lg font-semibold text-blue-900 mb-4">Severity Rate</h3>
+    <!-- SR Gauge Charts -->
+    <div class="grid grid-cols-3 gap-6 mb-8">
+        @foreach($gaugeSR as $month => $sr)
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+                <h4 class="font-semibold mb-2">
+                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                </h4>
 
-    private function getGaugeData($type, $year, $companyId)
-    {
-        $periods = Period::where('year', $year)->orderBy('month')->get();
-        $statistics = CompanyStatistic::where('company_id', $companyId)
-            ->whereHas('period', function ($q) use ($year) {
-                $q->where('year', $year);
-            })
-            ->get();
+                <canvas
+                    id="gaugeSR{{ $month }}"
+                    width="260"
+                    height="150"
+                    style="display:block;margin:auto;">
+                </canvas>
 
-        $data = [];
-        // Loop melalui semua 12 bulan
-        for ($month = 1; $month <= 12; $month++) {
-            $period = $periods->where('month', $month)->first();
-            $stat = $period ? $statistics->where('period_id', $period->id)->first() : null;
-            
-            $data[$month] = $stat ? match($type) {
-                'severity_rate' => $this->calculateSR($stat),
-                'frequency_rate' => $this->calculateFR($stat),
-                'incident_rate' => $this->calculateIR($stat),
-            } : 0;
-        }
-        return $data;
-    }
+                <div class="mt-2 font-bold">{{ $sr }}</div>
+                <div class="text-sm text-gray-500">Severity Rate</div>
+            </div>
+        @endforeach
+    </div>
+    <h3 class="text-lg font-semibold text-blue-900 mb-4">Frequency Rate</h3>
+    <!-- FR Gauge Charts -->
+    <div class="grid grid-cols-3 gap-6 mb-8">
+        @foreach($gaugeFR as $month => $fr)
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+                <h4 class="font-semibold mb-2">
+                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                </h4>
 
-    private function getMonthlySummary($companyId, $year, $month)
-    {
-        $period = Period::where('year', $year)->where('month', $month)->first();
+                <canvas
+                    id="gaugeFR{{ $month }}"
+                    width="260"
+                    height="150"
+                    style="display:block;margin:auto;">
+                </canvas>
+
+                <div class="mt-2 font-bold">{{ $fr }}</div>
+                <div class="text-sm text-gray-500">Frequency Rate</div>
+            </div>
+        @endforeach
+    </div>
+    <h3 class="text-lg font-semibold text-blue-900 mb-4">Incident Rate</h3>
+    <!-- IR Gauge Charts -->
+    <div class="grid grid-cols-3 gap-6 mb-8">
+        @foreach($gaugeIR as $month => $ir)
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+                <h4 class="font-semibold mb-2">
+                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                </h4>
+
+                <canvas
+                    id="gaugeIR{{ $month }}"
+                    width="260"
+                    height="150"
+                    style="display:block;margin:auto;">
+                </canvas>
+
+                <div class="mt-2 font-bold">{{ $ir }}</div>
+                <div class="text-sm text-gray-500">Incident Rate</div>
+            </div>
+        @endforeach
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- SR Chart -->
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Severity Rate (SR)</h3>
+            <div class="relative h-80">
+                <canvas id="srChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-500 mt-4">Formula: SR = (Lost Time × 1,000,000) / Total Man Hours</p>
+        </div>
+
+        <!-- FR Chart -->
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Frequency Rate (FR)</h3>
+            <div class="relative h-80">
+                <canvas id="frChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-500 mt-4">Formula: FR = (Lost Work Days × 1,000,000) / Total Man Hours</p>
+        </div>
+
+        <!-- IR Chart -->
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Incident Rate (IR)</h3>
+            <div class="relative h-80">
+                <canvas id="irChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-500 mt-4">Formula: IR = (Total Work Accidents × 100) / Total Employees</p>
+        </div>
+
+        <!-- Comparison Chart -->
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Monthly Comparison</h3>
+            <div class="relative h-80">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Form Section -->
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+        {{-- ALERT SUCCESS --}}
+        @if(session('success'))
+            <p style="color:green">{{ session('success') }}</p>
+        @endif
+
+        {{-- ALERT ERROR --}}
+        @if($errors->any())
+            <ul style="color:red">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Add Monthly Data</h2>
         
-        if (!$period) {
-            return [
-                'man_hours' => 0,
-                'employee' => 0,
-                'lta' => 0,
-                'lost_work_days' => 0,
-                'lost_time' => 0,
-                'kecelakaan_kerja' => 0
-            ];
-        }
+        <form action="{{ route('dashboard.safety.store') }}" method="POST" class="space-y-6">
+            @csrf
 
-        $stat = CompanyStatistic::where('company_id', $companyId)
-            ->where('period_id', $period->id)
-            ->first();
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Company Select -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Company *</label>
+                    <select name="company_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Company --</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('company_id')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-        return $stat ? $stat->toArray() : [
-            'man_hours' => 0,
-            'employee' => 0,
-            'lta' => 0,
-            'lost_work_days' => 0,
-            'lost_time' => 0,
-            'kecelakaan_kerja' => 0
-        ];
-    }
+                <!-- Month Select -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Month *</label>
+                    <select name="month" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Month --</option>
+                        @for($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" {{ old('month') == $m ? 'selected' : '' }}>
+                                {{ \DateTime::createFromFormat('!m', $m)->format('F') }}
+                            </option>
+                        @endfor
+                    </select>
+                    @error('month')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    private function calculateSR($stat)
-    {
-        return $stat->man_hours > 0 
-            ? round(($stat->lost_time * 1000000) / $stat->man_hours, 2)
-            : 0;
-    }
+                <!-- Year Select -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Year *</label>
+                    <select name="year" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Year --</option>
+                        @for($y = date('Y'); $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ old('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                    @error('year')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    private function calculateFR($stat)
-    {
-        return $stat->man_hours > 0 
-            ? round(($stat->lost_work_days * 1000000) / $stat->man_hours, 2)
-            : 0;
-    }
+                <!-- Man Hours -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Man Hours *</label>
+                    <input type="number" name="man_hours" value="{{ old('man_hours') }}" required min="0" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('man_hours')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    private function calculateIR($stat)
-    {
-        return $stat->employee > 0 
-            ? round(($stat->kecelakaan_kerja * 100) / $stat->employee, 2)
-            : 0;
-    }
+                <!-- Employee -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Employees *</label>
+                    <input type="number" name="employee" value="{{ old('employee') }}" required min="0" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('employee')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    public function store(Request $request)
-    {
-        // 1. VALIDASI
-        $request->validate([
-            'company_id'      => 'required|exists:companies,id',
-            'month'           => 'required|integer|min:1|max:12',
-            'year'            => 'required|integer|min:2000',
-            'man_hours'       => 'required|integer|min:0',
-            'employee'  => 'required|integer|min:0',
-            'lta'       => 'required|integer|min:0',
-            'lost_work_days'       => 'required|integer|min:0',
-            'lost_time'       => 'required|integer|min:0',
-            'kecelakaan_kerja'       => 'required|integer|min:0',
-        ]);
+                <!-- LTA -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">LTA (Lost Time Accidents) *</label>
+                    <input type="number" name="lta" value="{{ old('lta') }}" required min="0" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('lta')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-        // 2. CARI / BUAT PERIODE OTOMATIS JIKA BELUM ADA
-        $period = \App\Models\Period::firstOrCreate(
-            [
-                'month' => $request->month,
-                'year'  => $request->year
-            ]
-        );
+                <!-- Lost Work Days -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lost Work Days *</label>
+                    <input type="number" name="lost_work_days" value="{{ old('lost_work_days') }}" required min="0" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('lost_work_days')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-        // 3. SIMPAN / UPDATE STATISTIK
-        \App\Models\CompanyStatistic::updateOrCreate(
-            [
-                'company_id' => $request->company_id,
-                'period_id'  => $period->id
-            ],
-            [
-                'man_hours'      => $request->man_hours,
-                'employee' => $request->employee,
-                'lta'      => $request->lta,
-                'lost_work_days'      => $request->lost_work_days,
-                'lost_time'      => $request->lost_time,
-                'kecelakaan_kerja'      => $request->kecelakaan_kerja,
-            ]
-        );
+                <!-- Lost Time (hours) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lost Time (hours) *</label>
+                    <input type="number" name="lost_time" value="{{ old('lost_time') }}" required min="0" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('lost_time')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-        return redirect()
-            ->route('dashboard.safety', ['company_id' => $request->company_id])
-            ->with('success', 'Data berhasil disimpan');
-    }
+                <!-- Work Accidents -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Work Accidents *</label>
+                    <input type="number" name="kecelakaan_kerja" value="{{ old('kecelakaan_kerja') }}" required min="0" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    @error('kecelakaan_kerja')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
 
-    public function export(Request $request)
-    {
-        $companyId = $request->company_id;
-        $year = $request->year ?? date('Y');
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                Save Safety Data
+            </button>
+        </form>
+    </div>
+</div>
 
-        // Ambil data perusahaan
-        $company = Company::find($companyId);
-        if (!$company) {
-            return redirect()->back()->with('error', 'Perusahaan tidak ditemukan');
-        }
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartData = @json($chartData);
+        const months = chartData.labels;
+        const frData = @json($monthlyFR);
+        const gaugeData = @json($gaugeFR);
+        const gaugeSRData = @json($gaugeSR);
+        const gaugeIRData = @json($gaugeIR);
 
-        // Ambil periode dalam 1 tahun
-        $periods = Period::where('year', $year)->orderBy('month')->get();
+        const needlePlugin = {
+            id: 'needle',
+            afterDatasetDraw(chart, args, opts) {
+                const { ctx } = chart;
+                const meta = chart.getDatasetMeta(0).data[0];
 
-        // Ambil data statistik
-        $statistics = CompanyStatistic::with(['company', 'period'])
-            ->where('company_id', $companyId)
-            ->whereHas('period', function ($q) use ($year) {
-                $q->where('year', $year);
-            })
-            ->get();
+                if (!meta) return;
 
-        // Siapkan data untuk export
-        $exportData = [];
-        $exportData[] = ['Safety Metrics Report', $company->name, 'Year: ' . $year];
-        $exportData[] = []; // Baris kosong
-        $exportData[] = [
-            'Month', 'Man Hours', 'Total Employees', 'LTA', 
-            'Lost Work Days', 'Lost Time (hours)', 'Work Accidents',
-            'Severity Rate (SR)', 'Frequency Rate (FR)', 'Incident Rate (IR)'
-        ];
+                const value = opts.value;
+                const max = opts.max;
 
-        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                      'July', 'August', 'September', 'October', 'November', 'December'];
+                const angle = Math.PI + (value / max) * Math.PI;
 
-        foreach ($periods as $period) {
-            $stat = $statistics->where('period_id', $period->id)->first();
-            
-            $row = [
-                $monthNames[$period->month - 1] ?? $period->month,
-                $stat->man_hours ?? 0,
-                $stat->employee ?? 0,
-                $stat->lta ?? 0,
-                $stat->lost_work_days ?? 0,
-                $stat->lost_time ?? 0,
-                $stat->kecelakaan_kerja ?? 0,
-                $stat ? $this->calculateSR($stat) : 0,
-                $stat ? $this->calculateFR($stat) : 0,
-                $stat ? $this->calculateIR($stat) : 0,
-            ];
-            
-            $exportData[] = $row;
-        }
+                ctx.save();
+                ctx.translate(meta.x, meta.y);
+                ctx.rotate(angle);
 
-        // Generate filename
-        $filename = 'safety_metrics_' . str_replace(' ', '_', $company->name) . '_' . $year . '_' . date('Ymd_His');
+                ctx.beginPath();
+                ctx.moveTo(0, -2);
+                ctx.lineTo(meta.outerRadius - 10, 0);
+                ctx.lineTo(0, 2);
+                ctx.fillStyle = '#111';
+                ctx.fill();
 
-        return $this->exportToCSV($exportData, $filename);
-    }
+                ctx.restore();
 
-    private function exportToCSV($data, $filename)
-    {
-        $headers = [
-            'Content-Type' => 'text/csv; charset=utf-8',
-            'Content-Disposition' => "attachment; filename=\"$filename.csv\"",
-        ];
-
-        $callback = function() use ($data) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ["\xEF\xBB\xBF"]); // UTF-8 BOM untuk Excel
-
-            foreach ($data as $row) {
-                fputcsv($file, $row);
+                // center dot
+                ctx.beginPath();
+                ctx.arc(meta.x, meta.y, 4, 0, Math.PI * 2);
+                ctx.fill();
             }
-
-            fclose($file);
         };
 
-        return response()->stream($callback, 200, $headers);
-    }
+        Chart.register(needlePlugin);
 
-    public function exportPDF(Request $request)
-    {
-        $companyId = $request->company_id;
-        $year = $request->year ?? date('Y');
+        Object.entries(gaugeSRData).forEach(([month, value]) => {
+            const canvas = document.getElementById('gaugeSR' + month);
+            if (!canvas) return;
 
-        // Ambil data perusahaan
-        $company = Company::find($companyId);
-        if (!$company) {
-            return redirect()->back()->with('error', 'Perusahaan tidak ditemukan');
+            new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [40, 30, 30],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        needle: {
+                            value: value,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+
+        Object.entries(gaugeData).forEach(([month, value]) => {
+            const canvas = document.getElementById('gaugeFR' + month);
+            if (!canvas) return;
+
+            new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [40, 30, 30],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        needle: {
+                            value: value,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+
+        Object.entries(gaugeIRData).forEach(([month, value]) => {
+            const canvas = document.getElementById('gaugeIR' + month);
+            if (!canvas) return;
+
+            new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [40, 30, 30],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        needle: {
+                            value: value,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+
+        const srChartElement = document.getElementById('srChart');
+        if (srChartElement) {
+            new Chart(srChartElement, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Severity Rate',
+                        data: chartData.sr,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
         }
 
-        // Ambil periode dalam 1 tahun
-        $periods = Period::where('year', $year)->orderBy('month')->get();
-
-        // Ambil data statistik
-        $statistics = CompanyStatistic::with(['company', 'period'])
-            ->where('company_id', $companyId)
-            ->whereHas('period', function ($q) use ($year) {
-                $q->where('year', $year);
-            })
-            ->get();
-
-        // Siapkan data untuk table
-        $tableData = [];
-        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                      'July', 'August', 'September', 'October', 'November', 'December'];
-
-        foreach ($periods as $period) {
-            $stat = $statistics->where('period_id', $period->id)->first();
-            
-            $tableData[] = [
-                'month' => $monthNames[$period->month - 1] ?? $period->month,
-                'man_hours' => $stat->man_hours ?? 0,
-                'employee' => $stat->employee ?? 0,
-                'lta' => $stat->lta ?? 0,
-                'lost_work_days' => $stat->lost_work_days ?? 0,
-                'lost_time' => $stat->lost_time ?? 0,
-                'kecelakaan_kerja' => $stat->kecelakaan_kerja ?? 0,
-                'sr' => $stat ? $this->calculateSR($stat) : 0,
-                'fr' => $stat ? $this->calculateFR($stat) : 0,
-                'ir' => $stat ? $this->calculateIR($stat) : 0,
-            ];
+        const frChartElement = document.getElementById('frChart');
+        if (frChartElement) {
+            new Chart(frChartElement, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Frequency Rate',
+                        data: chartData.fr,
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
         }
 
-        // Data untuk view PDF
-        $data = [
-            'company' => $company,
-            'year' => $year,
-            'tableData' => $tableData,
-            'generatedDate' => date('d-m-Y H:i:s'),
-        ];
+        const irChartElement = document.getElementById('irChart');
+        if (irChartElement) {
+            new Chart(irChartElement, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Incident Rate',
+                        data: chartData.ir,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
 
-        // Load view dan generate PDF
-        $pdf = Pdf::loadView('pdf.safety-metric', $data);
-        
-        // Set ukuran dan orientasi
-        $pdf->setPaper('a4', 'landscape');
-        
-        // Enable external images
-        $pdf->getOptions()->setIsRemoteEnabled(true);
-        
-        // Download atau view
-        $filename = 'safety_metrics_' . str_replace(' ', '_', $company->name) . '_' . $year . '_' . date('Ymd_His') . '.pdf';
-        
-        return $pdf->download($filename);
-    }
+        const comparisonChartElement = document.getElementById('comparisonChart');
+        if (comparisonChartElement) {
+            new Chart(comparisonChartElement, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'SR',
+                            data: chartData.sr,
+                            backgroundColor: '#ef4444'
+                        },
+                        {
+                            label: 'FR',
+                            data: chartData.fr,
+                            backgroundColor: '#f97316'
+                        },
+                        {
+                            label: 'IR',
+                            data: chartData.ir,
+                            backgroundColor: '#3b82f6'
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
 
-}
+        // Event listener untuk Export PDF with Charts
+        document.getElementById('exportPdfWithCharts')?.addEventListener('click', async function() {
+            try {
+                console.log("[v0] Starting chart export to PDF");
+                
+                // Show loading indicator
+                const button = this;
+                const originalText = button.textContent;
+                button.disabled = true;
+                button.textContent = 'Generating PDF...';
+
+                // Array untuk menyimpan chart images
+                const chartImages = {
+                    srChart: null,
+                    frChart: null,
+                    irChart: null,
+                    comparisonChart: null
+                };
+
+                // Capture main charts
+                const chartIds = ['srChart', 'frChart', 'irChart', 'comparisonChart'];
+                for (const chartId of chartIds) {
+                    const canvas = document.getElementById(chartId);
+                    if (canvas) {
+                        chartImages[chartId] = canvas.toDataURL('image/png');
+                        console.log("[v0] Captured chart:", chartId);
+                    }
+                }
+
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('company_id', "{{ $companyId }}");
+                formData.append('year', "{{ $year }}");
+                formData.append('sr_chart', chartImages.srChart);
+                formData.append('fr_chart', chartImages.frChart);
+                formData.append('ir_chart', chartImages.irChart);
+                formData.append('comparison_chart', chartImages.comparisonChart);
+                formData.append('_token', "{{ csrf_token() }}");
+
+                // Send to backend
+                const response = await fetch('{{ route("dashboard.safety.export-pdf-charts") }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate PDF');
+                }
+
+                // Download PDF
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'safety_metrics_with_charts_{{ now()->format("Ymd_His") }}.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                console.log("[v0] PDF generated successfully");
+
+            } catch (error) {
+                console.error('[v0] Error generating PDF:', error);
+                alert('Error generating PDF: ' + error.message);
+            } finally {
+                const button = document.getElementById('exportPdfWithCharts');
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = 'Export PDF with Charts';
+                }
+            }
+        });
+    });
+</script>
+@endpush
+
+@endsection
