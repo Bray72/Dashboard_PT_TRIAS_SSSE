@@ -125,7 +125,7 @@
                         {{ DateTime::createFromFormat('!m', $month)->format('F') }}
                     </h4>
                     <button onclick="downloadChart('gaugeSRContainer{{ $month }}', 'SR-{{ DateTime::createFromFormat('!m', $month)->format('F') }}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition">
-                        📥
+                        Download
                     </button>
                 </div>
 
@@ -151,7 +151,7 @@
                         {{ DateTime::createFromFormat('!m', $month)->format('F') }}
                     </h4>
                     <button onclick="downloadChart('gaugeFRContainer{{ $month }}', 'FR-{{ DateTime::createFromFormat('!m', $month)->format('F') }}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition">
-                        📥
+                        Download
                     </button>
                 </div>
 
@@ -177,7 +177,7 @@
                         {{ DateTime::createFromFormat('!m', $month)->format('F') }}
                     </h4>
                     <button onclick="downloadChart('gaugeIRContainer{{ $month }}', 'IR-{{ DateTime::createFromFormat('!m', $month)->format('F') }}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition">
-                        📥
+                        Download
                     </button>
                 </div>
 
@@ -201,7 +201,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Severity Rate (SR)</h3>
                 <button onclick="downloadChart('srChartContainer', 'Severity-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
-                    📥 Download
+                    Download
                 </button>
             </div>
             <div class="relative h-80">
@@ -215,7 +215,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Frequency Rate (FR)</h3>
                 <button onclick="downloadChart('frChartContainer', 'Frequency-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
-                    📥 Download
+                    Download
                 </button>
             </div>
             <div class="relative h-80">
@@ -229,7 +229,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Incident Rate (IR)</h3>
                 <button onclick="downloadChart('irChartContainer', 'Incident-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
-                    📥 Download
+                    Download
                 </button>
             </div>
             <div class="relative h-80">
@@ -243,7 +243,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Monthly Comparison</h3>
                 <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
-                    📥 Download
+                    Download
                 </button>
             </div>
             <div class="relative h-80">
