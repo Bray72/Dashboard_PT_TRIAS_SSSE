@@ -48,7 +48,7 @@
         </form>
 
         <!-- Export Buttons -->
-        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="mt-4 flex gap-2">
             <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year]) }}" 
                 class="w-full justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                 Export CSV
@@ -138,7 +138,7 @@
     </div>
     <h3 class="text-lg font-semibold text-blue-900 mb-4">Frequency Rate</h3>
     <!-- FR Gauge Charts -->
-    <div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeFR as $month => $fr)
             <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
                 <h4 class="font-semibold mb-2">
@@ -159,7 +159,7 @@
     </div>
     <h3 class="text-lg font-semibold text-blue-900 mb-4">Incident Rate</h3>
     <!-- IR Gauge Charts -->
-    <div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeIR as $month => $ir)
             <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
                 <h4 class="font-semibold mb-2">
