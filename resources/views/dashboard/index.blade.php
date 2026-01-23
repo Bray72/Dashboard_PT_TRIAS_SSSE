@@ -56,12 +56,13 @@
             </a>
             <a href="{{ route('dashboard.safety.export-pdf', ['company_id' => $companyId, 'year' => $year]) }}" 
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
-                Export PDF (Table Only)
+                Export PDF
             </a>
-            <button id="exportPdfWithCharts" type="button"
-                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
-                Export PDF with Charts
-            </button>
+            <button onclick="exportPDF()">Export PDF</button>
+                <form id="pdfForm" method="POST" action="{{ route('dashboard.export.pdf') }}">
+                @csrf
+                <input type="hidden" name="chartImage" id="chartImage">
+            </form>
         </div>
     </div>
 
@@ -358,6 +359,13 @@
 
 @push('scripts')
 <script>
+    function exportPDF() {
+    const chartCanvas = document.getElementById('myChart'); // id canvas chart kamu
+    const imgBase64 = chartCanvas.toDataURL("image/png");
+
+    document.getElementById("chartImage").value = imgBase64;
+    document.getElementById("pdfForm").submit();
+    }
     document.addEventListener('DOMContentLoaded', function() {
         const chartData = @json($chartData);
         const months = chartData.labels;
@@ -595,80 +603,6 @@
                 }
             });
         }
-
-        // Event listener untuk Export PDF with Charts
-        document.getElementById('exportPdfWithCharts')?.addEventListener('click', async function() {
-            try {
-                console.log("[v0] Starting chart export to PDF");
-                
-                // Show loading indicator
-                const button = this;
-                const originalText = button.textContent;
-                button.disabled = true;
-                button.textContent = 'Generating PDF...';
-
-                // Array untuk menyimpan chart images
-                const chartImages = {
-                    srChart: null,
-                    frChart: null,
-                    irChart: null,
-                    comparisonChart: null
-                };
-
-                // Capture main charts
-                const chartIds = ['srChart', 'frChart', 'irChart', 'comparisonChart'];
-                for (const chartId of chartIds) {
-                    const canvas = document.getElementById(chartId);
-                    if (canvas) {
-                        chartImages[chartId] = canvas.toDataURL('image/png');
-                        console.log("[v0] Captured chart:", chartId);
-                    }
-                }
-
-                // Prepare form data
-                const formData = new FormData();
-                formData.append('company_id', "{{ $companyId }}");
-                formData.append('year', "{{ $year }}");
-                formData.append('sr_chart', chartImages.srChart);
-                formData.append('fr_chart', chartImages.frChart);
-                formData.append('ir_chart', chartImages.irChart);
-                formData.append('comparison_chart', chartImages.comparisonChart);
-                formData.append('_token', "{{ csrf_token() }}");
-
-                // Send to backend
-                const response = await fetch('{{ route("dashboard.safety.export-pdf-charts") }}', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to generate PDF');
-                }
-
-                // Download PDF
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'safety_metrics_with_charts_{{ now()->format("Ymd_His") }}.pdf';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                a.remove();
-
-                console.log("[v0] PDF generated successfully");
-
-            } catch (error) {
-                console.error('[v0] Error generating PDF:', error);
-                alert('Error generating PDF: ' + error.message);
-            } finally {
-                const button = document.getElementById('exportPdfWithCharts');
-                if (button) {
-                    button.disabled = false;
-                    button.textContent = 'Export PDF with Charts';
-                }
-            }
-        });
     });
 </script>
 @endpush

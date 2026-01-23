@@ -397,4 +397,16 @@ class SafetyDashboardController extends Controller
         return $pdf->download($filename);
     }
 
+    public function exportPDF1(Request $request)
+    {
+        $chartImage = $request->chartImage; // base64 png
+
+        $data = [
+            'chartImage' => $chartImage,
+            'title' => 'Laporan Dashboard',
+        ];
+
+        $pdf = Pdf::loadView('pdf.dashboard-report', $data);
+        return $pdf->download('dashboard-report.pdf');
+    }
 }

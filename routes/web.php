@@ -72,4 +72,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/near-miss/process', [ImportController::class, 'importNearMiss'])->name('near-miss.process');
         Route::get('/near-miss/sample', [ImportController::class, 'downloadNearMissSample'])->name('near-miss.sample');
     });
+
+    Route::post('/dashboard/export-pdf', [SafetyDashboardController::class, 'exportPDF1'])
+    ->name('dashboard.export.pdf');
 });
