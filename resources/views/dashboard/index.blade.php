@@ -10,11 +10,11 @@
 
     <!-- Filters Section -->
     <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
-        <form method="GET" class="flex gap-4 items-end">
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Company Filter -->
             <div class="flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                <select name="company_id" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <select name="company_id"onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @foreach($companies as $company)
                         <option value="{{ $company->id }}" {{ $company->id == $companyId ? 'selected' : '' }}>
                             {{ $company->name }}
@@ -26,7 +26,7 @@
             <!-- Year Filter -->
             <div class="flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <select name="year" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <select name="year"onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @for($y = date('Y'); $y >= 2020; $y--)
                         <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
                     @endfor
@@ -37,8 +37,7 @@
             <input type="hidden" name="year" value="{{ $year }}">
             <input type="hidden" name="company_id" value="{{ $companyId }}">
 
-            <select name="gauge_month" onchange="this.form.submit()"
-                class="px-4 py-2 border rounded">
+            <select name="gauge_month" onchange="this.form.submit()" class="w-full md:w-auto px-4 py-2 border rounded-lg">
                 <option value="" {{ empty($gaugeMonth) ? 'selected' : '' }}>All Month</option>
                 @for($m = 1; $m <= 12; $m++)
                     <option value="{{ $m }}" {{ $m == $gaugeMonth ? 'selected' : '' }}>
@@ -49,13 +48,13 @@
         </form>
 
         <!-- Export Buttons -->
-        <div class="mt-4 flex gap-2">
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
             <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year]) }}" 
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                class="w-full justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                 Export CSV
             </a>
             <a href="{{ route('dashboard.safety.export-pdf', ['company_id' => $companyId, 'year' => $year]) }}" 
-                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                class="w-full justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                 Export PDF
             </a>
         </div>
@@ -118,7 +117,7 @@
 
     <h3 class="text-lg font-semibold text-blue-900 mb-4">Severity Rate</h3>
     <!-- SR Gauge Charts -->
-    <div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeSR as $month => $sr)
             <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
                 <h4 class="font-semibold mb-2">
