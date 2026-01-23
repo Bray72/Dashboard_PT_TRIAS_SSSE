@@ -58,11 +58,6 @@
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                 Export PDF
             </a>
-            <button onclick="exportPDF()">Export PDF</button>
-                <form id="pdfForm" method="POST" action="{{ route('dashboard.export.pdf') }}">
-                @csrf
-                <input type="hidden" name="chartImage" id="chartImage">
-            </form>
         </div>
     </div>
 
@@ -359,13 +354,6 @@
 
 @push('scripts')
 <script>
-    function exportPDF() {
-    const chartCanvas = document.getElementById('myChart'); // id canvas chart kamu
-    const imgBase64 = chartCanvas.toDataURL("image/png");
-
-    document.getElementById("chartImage").value = imgBase64;
-    document.getElementById("pdfForm").submit();
-    }
     document.addEventListener('DOMContentLoaded', function() {
         const chartData = @json($chartData);
         const months = chartData.labels;
