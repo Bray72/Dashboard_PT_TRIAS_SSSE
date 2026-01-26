@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
@@ -18,7 +23,7 @@
         })();
     </script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-950 dark:text-gray-50">
     <nav class="bg-white border-b border-gray-200 shadow-sm dark:bg-gray-900 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -98,29 +103,29 @@
         </div>
 
         {{-- Mobile Menu --}}
-        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200">
+        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 dark:border-gray-800 dark:bg-gray-900">
             <div class="px-4 py-3 space-y-2">
 
                 <a href="{{ route('dashboard.safety') }}"
                 class="block px-3 py-2 rounded-md text-sm font-medium
-                {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800' }}">
                     Safety Metrics
                 </a>
 
                 <a href="{{ route('dashboard.work-permit') }}"
                 class="block px-3 py-2 rounded-md text-sm font-medium
-                {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800' }}">
                     Work Permit
                 </a>
 
                 <a href="{{ route('near-miss.dashboard') }}"
                 class="block px-3 py-2 rounded-md text-sm font-medium
-                {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800' }}">
                     Near Miss
                 </a>
 
-                <div class="pt-3 border-t border-gray-200 flex items-center justify-between">
-                    <span class="text-sm text-gray-700 font-medium">
+                <div class="pt-3 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                    <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">
                         {{ Auth::user()->name ?? 'User' }}
                     </span>
 
