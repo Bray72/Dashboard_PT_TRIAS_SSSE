@@ -4,16 +4,16 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-blue-900 dark:text-blue-300 dark:text-blue-300">Safety Metrics Dashboard</h1>
-        <p class="text-gray-600 dark:text-slate-300 dark:text-slate-300 mt-2">Monitor monthly safety performance (SR, FR, IR)</p>
+        <h1 class="text-4xl font-bold text-blue-900">Safety Metrics Dashboard</h1>
+        <p class="text-gray-600 mt-2">Monitor monthly safety performance (SR, FR, IR)</p>
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
         <form method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Company Filter -->
             <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Company</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
                 <select name="company_id"onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @foreach($companies as $company)
                         <option value="{{ $company->id }}" {{ $company->id == $companyId ? 'selected' : '' }}>
@@ -25,7 +25,7 @@
 
             <!-- Year Filter -->
             <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Year</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
                 <select name="year"onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @for($y = date('Y'); $y >= 2020; $y--)
                         <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
@@ -61,8 +61,8 @@
     </div>
 
     <!-- Summary Statistics Section -->
-    <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
-        <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-4">
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+        <h3 class="text-lg font-semibold text-blue-900 mb-4">
             @if($gaugeMonth)
                 Summary Data - {{ DateTime::createFromFormat('!m', $gaugeMonth)->format('F') }} {{ $year }}
             @else
@@ -72,60 +72,54 @@
         
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <!-- Man Hours Card -->
-            <div class="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
-            bg-white dark:bg-slate-800 dark:bg-slate-900">
-                <div class="text-gray-600 dark:text-slate-300 text-sm font-medium mb-2">Man Hours</div>
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Man Hours</div>
                 <div class="text-2xl font-bold text-blue-600">{{ number_format($monthlySummary['man_hours']) }}</div>
-                <div class="text-xs text-gray-500 dark:text-slate-400 mt-2">hours</div>
+                <div class="text-xs text-gray-500 mt-2">hours</div>
             </div>
 
             <!-- Total Employees Card -->
-            <div class="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
-            bg-white dark:bg-slate-800 dark:bg-slate-900">
-                <div class="text-gray-600 dark:text-slate-300 text-sm font-medium mb-2">Total Employees</div>
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Total Employees</div>
                 <div class="text-2xl font-bold text-green-600">{{ number_format($monthlySummary['employee']) }}</div>
-                <div class="text-xs text-gray-500 dark:text-slate-400 mt-2">people</div>
+                <div class="text-xs text-gray-500 mt-2">people</div>
             </div>
 
             <!-- LTA Card -->
-            <div class="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
-            bg-white dark:bg-slate-800 dark:bg-slate-900">
-                <div class="text-gray-600 dark:text-slate-300 text-sm font-medium mb-2">Lost Time Accidents</div>
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Lost Time Accidents</div>
                 <div class="text-2xl font-bold text-red-600">{{ $monthlySummary['lta'] }}</div>
-                <div class="text-xs text-gray-500 dark:text-slate-400 mt-2">accidents</div>
+                <div class="text-xs text-gray-500 mt-2">accidents</div>
             </div>
 
             <!-- Lost Work Days Card -->
-            <div class="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
-            bg-white dark:bg-slate-800 dark:bg-slate-900">
-                <div class="text-gray-600 dark:text-slate-300 text-sm font-medium mb-2">Lost Work Days</div>
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Lost Work Days</div>
                 <div class="text-2xl font-bold text-orange-600">{{ $monthlySummary['lost_work_days'] }}</div>
-                <div class="text-xs text-gray-500 dark:text-slate-400 mt-2">days</div>
+                <div class="text-xs text-gray-500 mt-2">days</div>
             </div>
 
             <!-- Lost Time Hours Card -->
-           <div class="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
-            bg-white dark:bg-slate-800 dark:bg-slate-900">
-                <div class="text-gray-600 dark:text-slate-300 text-sm font-medium mb-2">Lost Time Hours</div>
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Lost Time Hours</div>
                 <div class="text-2xl font-bold text-purple-600">{{ number_format($monthlySummary['lost_time']) }}</div>
-                <div class="text-xs text-gray-500 dark:text-slate-400 mt-2">hours</div>
+                <div class="text-xs text-gray-500 mt-2">hours</div>
             </div>
 
             <!-- Work Accidents Card -->
-            <div class="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
-            bg-white dark:bg-slate-800 dark:bg-slate-900">
-                <div class="text-gray-600 dark:text-slate-300 text-sm font-medium mb-2">Work Accidents</div>
+            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+                <div class="text-gray-600 text-sm font-medium mb-2">Work Accidents</div>
                 <div class="text-2xl font-bold text-red-700">{{ $monthlySummary['kecelakaan_kerja'] }}</div>
-                <div class="text-xs text-gray-500 dark:text-slate-400 mt-2">incidents</div>
+                <div class="text-xs text-gray-500 mt-2">incidents</div>
             </div>
         </div>
     </div>
 
-    <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-4">Severity Rate</h3>
+    <h3 class="text-lg font-semibold text-blue-900 mb-4">Severity Rate</h3>
     <!-- SR Gauge Charts -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeSR as $month => $sr)
-            <div class="bg-white dark:bg-slate-800 text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeSRContainer{{ $month }}">
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeSRContainer{{ $month }}">
                 <div class="flex justify-between items-center mb-2">
                     <h4 class="font-semibold">
                         {{ DateTime::createFromFormat('!m', $month)->format('F') }}
@@ -143,15 +137,15 @@
                 </canvas>
 
                 <div class="mt-2 font-bold">{{ $sr }}</div>
-                <div class="text-sm text-gray-500 dark:text-slate-400">Severity Rate</div>
+                <div class="text-sm text-gray-500">Severity Rate</div>
             </div>
         @endforeach
     </div>
-    <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-4">Frequency Rate</h3>
+    <h3 class="text-lg font-semibold text-blue-900 mb-4">Frequency Rate</h3>
     <!-- FR Gauge Charts -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeFR as $month => $fr)
-            <div class="bg-white dark:bg-slate-800 text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeFRContainer{{ $month }}">
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeFRContainer{{ $month }}">
                 <div class="flex justify-between items-center mb-2">
                     <h4 class="font-semibold">
                         {{ DateTime::createFromFormat('!m', $month)->format('F') }}
@@ -169,15 +163,15 @@
                 </canvas>
 
                 <div class="mt-2 font-bold">{{ $fr }}</div>
-                <div class="text-sm text-gray-500 dark:text-slate-400">Frequency Rate</div>
+                <div class="text-sm text-gray-500">Frequency Rate</div>
             </div>
         @endforeach
     </div>
-    <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-4">Incident Rate</h3>
+    <h3 class="text-lg font-semibold text-blue-900 mb-4">Incident Rate</h3>
     <!-- IR Gauge Charts -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($gaugeIR as $month => $ir)
-            <div class="bg-white dark:bg-slate-800 text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeIRContainer{{ $month }}">
+            <div class="bg-white text-center rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="gaugeIRContainer{{ $month }}">
                 <div class="flex justify-between items-center mb-2">
                     <h4 class="font-semibold">
                         {{ DateTime::createFromFormat('!m', $month)->format('F') }}
@@ -195,7 +189,7 @@
                 </canvas>
 
                 <div class="mt-2 font-bold">{{ $ir }}</div>
-                <div class="text-sm text-gray-500 dark:text-slate-400">Incident Rate</div>
+                <div class="text-sm text-gray-500">Incident Rate</div>
             </div>
         @endforeach
     </div>
@@ -203,7 +197,7 @@
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- SR Chart -->
-        <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="srChartContainer">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Severity Rate (SR)</h3>
                 <button onclick="downloadChart('srChartContainer', 'Severity-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -213,11 +207,11 @@
             <div class="relative h-80">
                 <canvas id="srChart"></canvas>
             </div>
-            <p class="text-sm text-gray-500 dark:text-slate-400 mt-4">Formula: SR = (Lost Time × 1,000,000) / Total Man Hours</p>
+            <p class="text-sm text-gray-500 mt-4">Formula: SR = (Lost Time × 1,000,000) / Total Man Hours</p>
         </div>
 
         <!-- FR Chart -->
-        <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="frChartContainer">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Frequency Rate (FR)</h3>
                 <button onclick="downloadChart('frChartContainer', 'Frequency-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -227,11 +221,11 @@
             <div class="relative h-80">
                 <canvas id="frChart"></canvas>
             </div>
-            <p class="text-sm text-gray-500 dark:text-slate-400 mt-4">Formula: FR = (Lost Work Days × 1,000,000) / Total Man Hours</p>
+            <p class="text-sm text-gray-500 mt-4">Formula: FR = (Lost Work Days × 1,000,000) / Total Man Hours</p>
         </div>
 
         <!-- IR Chart -->
-        <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="irChartContainer">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Incident Rate (IR)</h3>
                 <button onclick="downloadChart('irChartContainer', 'Incident-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -241,11 +235,11 @@
             <div class="relative h-80">
                 <canvas id="irChart"></canvas>
             </div>
-            <p class="text-sm text-gray-500 dark:text-slate-400 mt-4">Formula: IR = (Total Work Accidents × 100) / Total Employees</p>
+            <p class="text-sm text-gray-500 mt-4">Formula: IR = (Total Work Accidents × 100) / Total Employees</p>
         </div>
 
         <!-- Comparison Chart -->
-        <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
+        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="comparisonChartContainer">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Monthly Comparison</h3>
                 <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -259,7 +253,7 @@
     </div>
 
     <!-- Input Form Section -->
-    <div class="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
+    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
         {{-- ALERT SUCCESS --}}
         @if(session('success'))
             <p style="color:green">{{ session('success') }}</p>
@@ -282,7 +276,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Company Select -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Company *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Company *</label>
                     <select name="company_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         <option value="">-- Select Company --</option>
                         @foreach($companies as $company)
@@ -296,7 +290,7 @@
 
                 <!-- Month Select -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Month *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Month *</label>
                     <select name="month" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         <option value="">-- Select Month --</option>
                         @for($m = 1; $m <= 12; $m++)
@@ -312,7 +306,7 @@
 
                 <!-- Year Select -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Year *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Year *</label>
                     <select name="year" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         <option value="">-- Select Year --</option>
                         @for($y = date('Y'); $y >= 2020; $y--)
@@ -326,7 +320,7 @@
 
                 <!-- Man Hours -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Man Hours *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Man Hours *</label>
                     <input type="number" name="man_hours" value="{{ old('man_hours') }}" required min="0" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @error('man_hours')
@@ -336,7 +330,7 @@
 
                 <!-- Employee -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Total Employees *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Employees *</label>
                     <input type="number" name="employee" value="{{ old('employee') }}" required min="0" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @error('employee')
@@ -346,7 +340,7 @@
 
                 <!-- LTA -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">LTA (Lost Time Accidents) *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">LTA (Lost Time Accidents) *</label>
                     <input type="number" name="lta" value="{{ old('lta') }}" required min="0" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @error('lta')
@@ -356,7 +350,7 @@
 
                 <!-- Lost Work Days -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Lost Work Days *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lost Work Days *</label>
                     <input type="number" name="lost_work_days" value="{{ old('lost_work_days') }}" required min="0" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @error('lost_work_days')
@@ -366,7 +360,7 @@
 
                 <!-- Lost Time (hours) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Lost Time (hours) *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lost Time (hours) *</label>
                     <input type="number" name="lost_time" value="{{ old('lost_time') }}" required min="0" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @error('lost_time')
@@ -376,7 +370,7 @@
 
                 <!-- Work Accidents -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Work Accidents *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Work Accidents *</label>
                     <input type="number" name="kecelakaan_kerja" value="{{ old('kecelakaan_kerja') }}" required min="0" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     @error('kecelakaan_kerja')
