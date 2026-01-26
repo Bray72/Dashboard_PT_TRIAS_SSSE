@@ -8,8 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="bg-gray-50 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200">
-    <nav class="bg-white border-b border-gray-200 shadow-sm dark:bg-slate-900 dark:border-slate-700">
+<body class="<body class="bg-gray-50 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200">">
+    <nav class="bg-white border-b border-gray-200 dark:border-slate-700 shadow-sm dark:bg-slate-900 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
 
@@ -27,24 +27,24 @@
                 {{-- Desktop Menu --}}
                 <div class="hidden md:flex items-center gap-6">
                     <div class="relative group">
-                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700">
                             Dashboards
                         </button>
-                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-slate-800 dark:border dark:border-slate-700">
-                            <a href="{{ route('dashboard.safety') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Safety Metrics</a>
-                            <a href="{{ route('dashboard.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Work Permit</a>
-                            <a href="{{ route('near-miss.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Near Miss</a>
+                        <div class="absolute left-0 mt-0 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-slate-800 dark:border dark:border-slate-700">
+                            <a href="{{ route('dashboard.safety') }}" class="block px-4 py-2 text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-700">Safety Metrics</a>
+                            <a href="{{ route('dashboard.work-permit') }}" class="block px-4 py-2 text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-700">Work Permit</a>
+                            <a href="{{ route('near-miss.dashboard') }}" class="block px-4 py-2 text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-700">Near Miss</a>
                         </div>
                     </div>
 
                     <div class="relative group">
-                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700">
                             Import Data
                         </button>
-                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-slate-800 dark:border dark:border-slate-700">
-                            <a href="{{ route('import.safety-metrics') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700"">Safety Metrics</a>
-                            <a href="{{ route('import.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Work Permit</a>
-                            <a href="{{ route('import.near-miss') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Near Miss</a>
+                        <div class="absolute left-0 mt-0 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-slate-800 dark:border dark:border-slate-700">
+                            <a href="{{ route('import.safety-metrics') }}" class="block px-4 py-2 text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"">Safety Metrics</a>
+                            <a href="{{ route('import.work-permit') }}" class="block px-4 py-2 text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-700">Work Permit</a>
+                            <a href="{{ route('import.near-miss') }}" class="block px-4 py-2 text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-700">Near Miss</a>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
 
                     <button id="themeToggle"
                         type="button"
-                        class="px-3 py-2 rounded-md text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-100
+                        class="px-3 py-2 rounded-md text-sm font-medium border border-gray-200 dark:border-slate-700 bg-white text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700
                             dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition">
                         🌙 Dark
                     </button>
@@ -78,42 +78,42 @@
 
                 {{-- Mobile button --}}
                 <button id="mobileMenuBtn"
-                    class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                    class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700">
                     ☰
                 </button>
             </div>
         </div>
 
         {{-- Mobile Menu --}}
-        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200">
+        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 dark:border-slate-700">
             <div class="px-4 py-3 space-y-2">
 
                 <a href="{{ route('dashboard.safety') }}"
                 class="block px-3 py-2 rounded-md text-sm font-medium
-                {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('dashboard.index') ? 'bg-green-600 text-white' : 'text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700' }}">
                     Safety Metrics
                 </a>
 
                 <a href="{{ route('dashboard.work-permit') }}"
                 class="block px-3 py-2 rounded-md text-sm font-medium
-                {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('dashboard.work-permit') ? 'bg-green-600 text-white' : 'text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700' }}">
                     Work Permit
                 </a>
 
                 <a href="{{ route('near-miss.dashboard') }}"
                 class="block px-3 py-2 rounded-md text-sm font-medium
-                {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('dashboard.near-miss') ? 'bg-green-600 text-white' : 'text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700' }}">
                     Near Miss
                 </a>
 
-                <div class="pt-3 border-t border-gray-200 flex items-center justify-between">
+                <div class="pt-3 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between">
                     <span class="text-sm text-gray-700 font-medium">
                         {{ Auth::user()->name ?? 'User' }}
                     </span>
 
                     <button id="themeToggleMobile"
                         type="button"
-                        class="w-full text-left px-3 py-2 rounded-md text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-100
+                        class="w-full text-left px-3 py-2 rounded-md text-sm font-medium border border-gray-200 dark:border-slate-700 bg-white text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700
                             dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition">
                         🌙 Dark Mode
                     </button>
