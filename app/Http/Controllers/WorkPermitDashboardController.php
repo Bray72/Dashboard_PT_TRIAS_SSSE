@@ -24,6 +24,9 @@ class WorkPermitDashboardController extends Controller
         $monthly = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.month', $month)
             ->where('periods.year', $year)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -33,6 +36,9 @@ class WorkPermitDashboardController extends Controller
         $ytdCurrent = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year)
             ->whereBetween('periods.month', [1, $month])
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -41,6 +47,9 @@ class WorkPermitDashboardController extends Controller
         // YTD tahun lalu
         $ytdPrevious = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year - 1)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -48,6 +57,9 @@ class WorkPermitDashboardController extends Controller
 
         $monthlyTrends = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', 'periods.month', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id', 'periods.month')
             ->orderBy('periods.month')
@@ -124,6 +136,7 @@ class WorkPermitDashboardController extends Controller
     {
         $month = (int) ($request->month ?? 1);
         $year = (int) ($request->year ?? 2026);
+        $companyId = $request->company_id;
 
         $permitTypes = PermitType::orderBy('name')->get();
 
@@ -131,6 +144,9 @@ class WorkPermitDashboardController extends Controller
         $monthly = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.month', $month)
             ->where('periods.year', $year)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -140,6 +156,9 @@ class WorkPermitDashboardController extends Controller
         $ytdCurrent = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year)
             ->whereBetween('periods.month', [1, $month])
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -148,6 +167,9 @@ class WorkPermitDashboardController extends Controller
         // YTD previous year
         $ytdPrevious = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year - 1)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -190,6 +212,7 @@ class WorkPermitDashboardController extends Controller
     {
         $month = (int) ($request->month ?? 1);
         $year = (int) ($request->year ?? 2026);
+        $companyId = $request->company_id;
 
         $permitTypes = PermitType::orderBy('name')->get();
 
@@ -197,6 +220,9 @@ class WorkPermitDashboardController extends Controller
         $monthly = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.month', $month)
             ->where('periods.year', $year)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -206,6 +232,9 @@ class WorkPermitDashboardController extends Controller
         $ytdCurrent = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year)
             ->whereBetween('periods.month', [1, $month])
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()
@@ -214,6 +243,9 @@ class WorkPermitDashboardController extends Controller
         // YTD previous year
         $ytdPrevious = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.year', $year - 1)
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('permit_statistics.company_id', $companyId);
+            })
             ->select('permit_statistics.permit_type_id', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id')
             ->get()

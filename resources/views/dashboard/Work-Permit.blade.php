@@ -57,11 +57,11 @@
                         </div>
                     </form>
                     <div class="mt-4 flex gap-2">
-                        <a href="{{ route('dashboard.work-permit.export', ['month' => $month, 'year' => $year]) }}" 
+                        <a href="{{ route('dashboard.work-permit.export', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
                             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export CSV
                         </a>
-                        <a href="{{ route('dashboard.work-permit.export-pdf', ['month' => $month, 'year' => $year]) }}" 
+                        <a href="{{ route('dashboard.work-permit.export-pdf', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
                             class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export PDF
                         </a>
@@ -124,9 +124,14 @@
                 <h2 class="text-2xl font-bold text-green-900 dark:text-green-400 mb-6">Input Work Permit</h2>
                 @csrf
 
-                <input type="hidden" name="company_id" value="1">
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <select name="company_id" required class="dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 border rounded px-2 py-1">
+                        <option value="">-- Pilih Company --</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                        @endforeach
+                    </select>
 
-                <div class="grid grid-cols-2 gap-4 mb-4">
                     <select name="month" required class="dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 border rounded px-2 py-1">
                         @for($m=1; $m<=12; $m++)
                             <option value="{{ $m }}">{{ DateTime::createFromFormat('!m',$m)->format('F') }}</option>
