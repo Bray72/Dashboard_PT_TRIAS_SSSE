@@ -19,7 +19,8 @@ class WorkPermitDashboardController extends Controller
         $year  = (int) ($request->year ?? 2026);
         $companyId = $request->company_id;
         $permitTypes = PermitType::orderBy('name')->get();
-
+        $companyId = $request->company_id 
+        ?? $companies->first()?->id;
         // Nov'25 (bulan spesifik)
         $monthly = PermitStatistic::join('periods', 'periods.id', '=', 'permit_statistics.period_id')
             ->where('periods.month', $month)
