@@ -9,3 +9,55 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Dark Mode Styles */
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    @apply bg-gray-950 text-gray-50;
+}
+
+html.dark nav {
+    @apply bg-gray-900 border-gray-800;
+}
+
+html.dark [class*="bg-white"] {
+    @apply bg-gray-800;
+}
+
+html.dark [class*="text-gray-700"] {
+    @apply text-gray-300;
+}
+
+html.dark [class*="hover:bg-gray-100"] {
+    @apply hover:bg-gray-700;
+}
+
+html.dark .border-gray-200 {
+    @apply border-gray-700;
+}
+
+html.dark .shadow-sm,
+html.dark .shadow {
+    @apply shadow-gray-900/50;
+}
+
+html.dark .bg-gray-50 {
+    @apply bg-gray-950;
+}
+
+html.dark .bg-gray-100 {
+    @apply bg-gray-800;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+    @apply bg-gray-800 text-gray-50 border-gray-600;
+}
+
+html.dark button:not([class*="bg-"]) {
+    @apply text-gray-300;
+}
