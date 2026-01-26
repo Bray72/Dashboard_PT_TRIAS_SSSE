@@ -8,14 +8,16 @@ use App\Models\Period;
 use Illuminate\Support\Facades\DB;
 use App\Models\PermitType;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Company;
 
 class WorkPermitDashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $companies = Company::orderBy('name')->get();
         $month = (int) ($request->month ?? 1);
         $year  = (int) ($request->year ?? 2026);
-
+        $companyId = $request->company_id;
         $permitTypes = PermitType::orderBy('name')->get();
 
         // Nov'25 (bulan spesifik)
@@ -68,7 +70,8 @@ class WorkPermitDashboardController extends Controller
             'ytdPrevious',
             'month',
             'year',
-            'chartData'
+            'chartData',
+            'companies'
         ));
     }
 

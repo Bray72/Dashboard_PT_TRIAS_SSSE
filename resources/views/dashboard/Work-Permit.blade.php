@@ -33,6 +33,19 @@
                                     @endfor
                                 </select>
                             </div> <br>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold dark:text-gray-300">Company</label>
+                                <select name="company_id" class="form-select dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600">
+                                    <option value="">Semua Company</option>
+                                    @foreach($companies as $company)
+                                        <option value="{{ $company->id }}"
+                                            {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                            {{ $company->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             {{-- Button --}}
                             <div class="col-md-6">
