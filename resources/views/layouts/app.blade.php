@@ -8,8 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="bg-gray-50">
-    <nav class="bg-white border-b border-gray-200 shadow-sm">
+<body class="bg-gray-50 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <nav class="bg-white border-b border-gray-200 shadow-sm dark:bg-slate-900 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
 
@@ -30,10 +30,10 @@
                         <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
                             Dashboards
                         </button>
-                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50">
-                            <a href="{{ route('dashboard.safety') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Safety Metrics</a>
-                            <a href="{{ route('dashboard.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Work Permit</a>
-                            <a href="{{ route('near-miss.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Near Miss</a>
+                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-slate-800 dark:border dark:border-slate-700">
+                            <a href="{{ route('dashboard.safety') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Safety Metrics</a>
+                            <a href="{{ route('dashboard.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Work Permit</a>
+                            <a href="{{ route('near-miss.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Near Miss</a>
                         </div>
                     </div>
 
@@ -41,10 +41,10 @@
                         <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
                             Import Data
                         </button>
-                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50">
-                            <a href="{{ route('import.safety-metrics') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Safety Metrics</a>
-                            <a href="{{ route('import.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Work Permit</a>
-                            <a href="{{ route('import.near-miss') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Near Miss</a>
+                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-slate-800 dark:border dark:border-slate-700">
+                            <a href="{{ route('import.safety-metrics') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700"">Safety Metrics</a>
+                            <a href="{{ route('import.work-permit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Work Permit</a>
+                            <a href="{{ route('import.near-miss') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-700">Near Miss</a>
                         </div>
                     </div>
                 </div>
@@ -59,6 +59,13 @@
                             {{ Auth::user()->name ?? 'User' }}
                         </span>
                     </div>
+
+                    <button id="themeToggle"
+                        type="button"
+                        class="px-3 py-2 rounded-md text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-100
+                            dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition">
+                        🌙 Dark
+                    </button>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -104,6 +111,13 @@
                         {{ Auth::user()->name ?? 'User' }}
                     </span>
 
+                    <button id="themeToggleMobile"
+                        type="button"
+                        class="w-full text-left px-3 py-2 rounded-md text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-100
+                            dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition">
+                        🌙 Dark Mode
+                    </button>
+
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
@@ -126,6 +140,43 @@
                 menu.classList.toggle("hidden");
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const html = document.documentElement;
+        const btn = document.getElementById("themeToggle");
+        const btnMobile = document.getElementById("themeToggleMobile");
+
+        function setTheme(mode) {
+            if (mode === "dark") {
+                html.classList.add("dark");
+                localStorage.setItem("theme", "dark");
+                if (btn) btn.innerText = "☀️ Light";
+                if (btnMobile) btnMobile.innerText = "☀️ Light Mode";
+            } else {
+                html.classList.remove("dark");
+                localStorage.setItem("theme", "light");
+                if (btn) btn.innerText = "🌙 Dark";
+                if (btnMobile) btnMobile.innerText = "🌙 Dark Mode";
+            }
+        }
+
+        // Load theme
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") setTheme("dark");
+
+        // Toggle click
+        if (btn) {
+            btn.addEventListener("click", () => {
+                setTheme(html.classList.contains("dark") ? "light" : "dark");
+            });
+        }
+
+        if (btnMobile) {
+            btnMobile.addEventListener("click", () => {
+                setTheme(html.classList.contains("dark") ? "light" : "dark");
+            });
+        }
+    });
     </script>
 
     @if($message = Session::get('success'))

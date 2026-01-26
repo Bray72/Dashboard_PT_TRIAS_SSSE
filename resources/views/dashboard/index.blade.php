@@ -4,12 +4,12 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-blue-900">Safety Metrics Dashboard</h1>
-        <p class="text-gray-600 mt-2">Monitor monthly safety performance (SR, FR, IR)</p>
+        <h1 class="text-4xl font-bold text-blue-900 dark:text-blue-300">Safety Metrics Dashboard</h1>
+        <p class="text-gray-600 dark:text-slate-300 mt-2">Monitor monthly safety performance (SR, FR, IR)</p>
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+    <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
         <form method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Company Filter -->
             <div class="flex-1">
@@ -61,7 +61,7 @@
     </div>
 
     <!-- Summary Statistics Section -->
-    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+    <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
         <h3 class="text-lg font-semibold text-blue-900 mb-4">
             @if($gaugeMonth)
                 Summary Data - {{ DateTime::createFromFormat('!m', $gaugeMonth)->format('F') }} {{ $year }}
@@ -72,42 +72,48 @@
         
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <!-- Man Hours Card -->
-            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+            <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
+            bg-white dark:bg-slate-900">
                 <div class="text-gray-600 text-sm font-medium mb-2">Man Hours</div>
                 <div class="text-2xl font-bold text-blue-600">{{ number_format($monthlySummary['man_hours']) }}</div>
                 <div class="text-xs text-gray-500 mt-2">hours</div>
             </div>
 
             <!-- Total Employees Card -->
-            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+            <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
+            bg-white dark:bg-slate-900">
                 <div class="text-gray-600 text-sm font-medium mb-2">Total Employees</div>
                 <div class="text-2xl font-bold text-green-600">{{ number_format($monthlySummary['employee']) }}</div>
                 <div class="text-xs text-gray-500 mt-2">people</div>
             </div>
 
             <!-- LTA Card -->
-            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+            <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
+            bg-white dark:bg-slate-900">
                 <div class="text-gray-600 text-sm font-medium mb-2">Lost Time Accidents</div>
                 <div class="text-2xl font-bold text-red-600">{{ $monthlySummary['lta'] }}</div>
                 <div class="text-xs text-gray-500 mt-2">accidents</div>
             </div>
 
             <!-- Lost Work Days Card -->
-            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+            <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
+            bg-white dark:bg-slate-900">
                 <div class="text-gray-600 text-sm font-medium mb-2">Lost Work Days</div>
                 <div class="text-2xl font-bold text-orange-600">{{ $monthlySummary['lost_work_days'] }}</div>
                 <div class="text-xs text-gray-500 mt-2">days</div>
             </div>
 
             <!-- Lost Time Hours Card -->
-            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+           <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
+            bg-white dark:bg-slate-900">
                 <div class="text-gray-600 text-sm font-medium mb-2">Lost Time Hours</div>
                 <div class="text-2xl font-bold text-purple-600">{{ number_format($monthlySummary['lost_time']) }}</div>
                 <div class="text-xs text-gray-500 mt-2">hours</div>
             </div>
 
             <!-- Work Accidents Card -->
-            <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
+            <div class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 text-center hover:shadow-md transition
+            bg-white dark:bg-slate-900">
                 <div class="text-gray-600 text-sm font-medium mb-2">Work Accidents</div>
                 <div class="text-2xl font-bold text-red-700">{{ $monthlySummary['kecelakaan_kerja'] }}</div>
                 <div class="text-xs text-gray-500 mt-2">incidents</div>
@@ -197,7 +203,7 @@
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- SR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="srChartContainer">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Severity Rate (SR)</h3>
                 <button onclick="downloadChart('srChartContainer', 'Severity-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -211,7 +217,7 @@
         </div>
 
         <!-- FR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="frChartContainer">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Frequency Rate (FR)</h3>
                 <button onclick="downloadChart('frChartContainer', 'Frequency-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -225,7 +231,7 @@
         </div>
 
         <!-- IR Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="irChartContainer">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Incident Rate (IR)</h3>
                 <button onclick="downloadChart('irChartContainer', 'Incident-Rate')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -239,7 +245,7 @@
         </div>
 
         <!-- Comparison Chart -->
-        <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200" id="comparisonChartContainer">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Monthly Comparison</h3>
                 <button onclick="downloadChart('comparisonChartContainer', 'Monthly-Comparison')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
@@ -253,7 +259,7 @@
     </div>
 
     <!-- Input Form Section -->
-    <div class="bg-white rounded-lg p-6 mb-8 border border-blue-700 shadow-lg shadow-blue-400/200">
+    <div class="bg-white dark:bg-slate-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-slate-700 shadow-lg shadow-blue-400/200">
         {{-- ALERT SUCCESS --}}
         @if(session('success'))
             <p style="color:green">{{ session('success') }}</p>
