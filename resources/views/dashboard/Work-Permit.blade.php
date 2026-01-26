@@ -32,7 +32,7 @@
                                         </option>
                                     @endfor
                                 </select>
-                            </div> <br>
+                            </div>
                             
                             <div class="col-md-4">
                                 <label class="form-label fw-bold dark:text-gray-300">Company</label>
@@ -45,7 +45,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> <br>
 
                             {{-- Button --}}
                             <div class="col-md-6">
