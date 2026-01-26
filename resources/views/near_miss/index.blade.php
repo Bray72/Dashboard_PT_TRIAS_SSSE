@@ -4,17 +4,17 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header Section -->
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-blue-900">Near Miss Dashboard</h1>
-        <p class="text-gray-600 mt-2">Monitor Near Miss incidents and safety trends</p>
+        <h1 class="text-4xl font-bold text-blue-900 dark:text-blue-400">Near Miss Dashboard</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Monitor Near Miss incidents and safety trends</p>
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
         <form method="GET" class="flex gap-4 items-end flex-wrap">
             <!-- Year Filter -->
             <div class="flex-1 min-w-48">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <select name="year" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Year</label>
+                <select name="year" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                     @for($y = date('Y'); $y >= 2020; $y--)
                         <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
                     @endfor
@@ -23,8 +23,8 @@
 
             <!-- Month Filter -->
             <div class="flex-1 min-w-48">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                <select name="month" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Month</label>
+                <select name="month" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                     <option value="">All Months</option>
                     @for($m = 1; $m <= 12; $m++)
                         <option value="{{ $m }}" {{ $m == $month ? 'selected' : '' }}>
@@ -39,11 +39,11 @@
     <!-- KPI Cards Section -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Total Near Miss Card -->
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow p-6 border-l-4 border-blue-600">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-lg shadow p-6 border-l-4 border-blue-600">
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <p class="text-gray-600 text-sm font-medium mb-1">Total Near Miss</p>
-                    <h3 class="text-4xl font-bold text-blue-900">{{ $totalNearMiss }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Near Miss</p>
+                    <h3 class="text-4xl font-bold text-blue-900 dark:text-blue-400">{{ $totalNearMiss }}</h3>
                 </div>
                 <div class="bg-blue-600 text-white rounded-full p-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,15 +51,15 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-600">Incidents reported</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Incidents reported</p>
         </div>
 
         <!-- Near Miss Rate Card -->
-        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg shadow p-6 border-l-4 border-orange-600">
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-lg shadow p-6 border-l-4 border-orange-600">
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <p class="text-gray-600 text-sm font-medium mb-1">Near Miss Rate</p>
-                    <h3 class="text-4xl font-bold text-orange-900">{{ number_format($nearMissRate, 4) }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Near Miss Rate</p>
+                    <h3 class="text-4xl font-bold text-orange-900 dark:text-orange-400">{{ number_format($nearMissRate, 4) }}</h3>
                 </div>
                 <div class="bg-orange-600 text-white rounded-full p-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,18 +67,18 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-600">
+            <p class="text-xs text-gray-600 dark:text-gray-400">
                 <strong>Formula:</strong> Qty Near Miss / Man Hours * 100.000
             </p>
-            <p class="text-xs text-gray-600 mt-1">Total Man Hours: <strong>{{ number_format($manHours) }}</strong></p>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Total Man Hours: <strong>{{ number_format($manHours) }}</strong></p>
         </div>
 
         <!-- Open Status Card -->
-        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow p-6 border-l-4 border-green-600">
+        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-lg shadow p-6 border-l-4 border-green-600">
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <p class="text-gray-600 text-sm font-medium mb-1">Open Cases</p>
-                    <h3 class="text-4xl font-bold text-green-900">{{ $status['Open'] ?? 0 }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Open Cases</p>
+                    <h3 class="text-4xl font-bold text-green-900 dark:text-green-400">{{ $status['Open'] ?? 0 }}</h3>
                 </div>
                 <div class="bg-green-600 text-white rounded-full p-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,16 +86,16 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-600">Cases in progress</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Cases in progress</p>
         </div>
     </div>
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Risk Level Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6" id="riskChartContainer">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" id="riskChartContainer">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Risk Level Distribution</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-300">Risk Level Distribution</h3>
                 <button onclick="downloadChart('riskChartContainer', 'Risk-Level-Distribution')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     Download
                 </button>
@@ -106,9 +106,9 @@
         </div>
 
         <!-- Severity Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6" id="severityChartContainer">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" id="severityChartContainer">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Severity Distribution</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-300">Severity Distribution</h3>
                 <button onclick="downloadChart('severityChartContainer', 'Severity-Distribution')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     Download
                 </button>
@@ -119,9 +119,9 @@
         </div>
 
         <!-- Category Bar Chart -->
-        <div class="bg-white rounded-lg shadow p-6" id="categoryChartContainer">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" id="categoryChartContainer">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Near Miss by Category</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-300">Near Miss by Category</h3>
                 <button onclick="downloadChart('categoryChartContainer', 'Near-Miss-by-Category')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     Download
                 </button>
@@ -132,9 +132,9 @@
         </div>
 
         <!-- Department Bar Chart -->
-        <div class="bg-white rounded-lg shadow p-6" id="departmentChartContainer">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" id="departmentChartContainer">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Near Miss by Department</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-300">Near Miss by Department</h3>
                 <button onclick="downloadChart('departmentChartContainer', 'Near-Miss-by-Department')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     Download
                 </button>
@@ -145,9 +145,9 @@
         </div>
 
         <!-- Likelihood Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6" id="likelihoodChartContainer">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" id="likelihoodChartContainer">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Likelihood Distribution</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-300">Likelihood Distribution</h3>
                 <button onclick="downloadChart('likelihoodChartContainer', 'Likelihood-Distribution')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     Download
                 </button>
@@ -158,9 +158,9 @@
         </div>
 
         <!-- Monthly Trend Line Chart -->
-        <div class="bg-white p-6 rounded-xl shadow-md" id="companyChartContainer">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md" id="companyChartContainer">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Near Miss per Company</h2>
+                <h2 class="text-lg font-semibold dark:text-gray-300">Near Miss per Company</h2>
                 <button onclick="downloadChart('companyChartContainer', 'Near-Miss-per-Company')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     Download
                 </button>
@@ -170,60 +170,60 @@
     </div>
 
     <!-- Near Miss Data Table Section -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Near Miss Reports</h2>
-            <p class="text-gray-600 text-sm mt-1">List of all near miss incidents</p>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-200">Near Miss Reports</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">List of all near miss incidents</p>
         </div>
 
         @if($nearMisses->count() > 0)
             <div class="overflow-x-auto">
                 <table class="w-full">
-                    <thead class="bg-gray-50 border-b border-gray-200">
+                    <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Location</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Department</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Category</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Risk Level</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Department</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Risk Level</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($nearMisses as $nearMiss)
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->date->format('M d, Y') }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->location }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->department->name ?? '-' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $nearMiss->category }}</td>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">{{ $nearMiss->date->format('M d, Y') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">{{ $nearMiss->location }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">{{ $nearMiss->department->name ?? '-' }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">{{ $nearMiss->category }}</td>
                                 <td class="px-6 py-4 text-sm">
                                     @php
                                         $riskColors = [
-                                            'Low' => 'bg-green-100 text-green-800',
-                                            'Medium' => 'bg-yellow-100 text-yellow-800',
-                                            'High' => 'bg-red-100 text-red-800'
+                                            'Low' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                                            'Medium' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                                            'High' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                                         ];
                                     @endphp
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $riskColors[$nearMiss->risk_level] ?? 'bg-gray-100 text-gray-800' }}">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $riskColors[$nearMiss->risk_level] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
                                         {{ $nearMiss->risk_level }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     @php
                                         $statusColors = [
-                                            'Open' => 'bg-blue-100 text-blue-800',
-                                            'Closed' => 'bg-green-100 text-green-800'
+                                            'Open' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                                            'Closed' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                         ];
                                     @endphp
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColors[$nearMiss->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColors[$nearMiss->status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
                                         {{ $nearMiss->status }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     <button type="button" 
                                         onclick="openEditModal({{ $nearMiss->id }}, '{{ $nearMiss->status }}')"
-                                        class="text-blue-600 hover:text-blue-900 font-medium text-sm">
+                                        class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 font-medium text-sm">
                                         Edit Status
                                     </button>
                                 </td>
@@ -239,48 +239,48 @@
             </div>
         @else
             <div class="text-center py-12">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 00-.707.293h-3.172a1 1 0 00-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No near miss reports</h3>
-                <p class="mt-1 text-sm text-gray-500">Start by adding a near miss report using the form above.</p>
+                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-300">No near miss reports</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Start by adding a near miss report using the form above.</p>
             </div>
         @endif
     </div>
 
     <!-- Status Distribution Cards -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
-        <h3 class="text-lg font-semibold text-gray-900 mb-6">Status Overview</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-6">Status Overview</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @forelse($status as $statusName => $count)
-                <div class="border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex justify-between items-center dark:bg-gray-700">
                     <div>
-                        <p class="text-gray-600 font-medium">{{ $statusName }}</p>
-                        <p class="text-xs text-gray-500">Cases</p>
+                        <p class="text-gray-600 dark:text-gray-400 font-medium">{{ $statusName }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Cases</p>
                     </div>
-                    <div class="text-3xl font-bold {{ $statusName === 'Open' ? 'text-orange-600' : 'text-green-600' }}">
+                    <div class="text-3xl font-bold {{ $statusName === 'Open' ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400' }}">
                         {{ $count }}
                     </div>
                 </div>
             @empty
-                <p class="text-gray-500">No status data available</p>
+                <p class="text-gray-500 dark:text-gray-400">No status data available</p>
             @endforelse
         </div>
     </div>
 
     <!-- Form Section -->
-    <div class="bg-white rounded-lg shadow p-8 mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Add New Near Miss Report</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-200 mb-6">Add New Near Miss Report</h2>
 
         @if(session('success'))
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6">
+            <div class="bg-green-100 dark:bg-green-900 border-l-4 border-green-500 text-green-700 dark:text-green-200 p-4 mb-6">
                 <p class="font-bold">Success!</p>
                 <p>{{ session('success') }}</p>
             </div>
         @endif
 
         @if($errors->any())
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+            <div class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 text-red-700 dark:text-red-200 p-4 mb-6">
                 <p class="font-bold">Error!</p>
                 <ul>
                     @foreach($errors->all() as $error)
@@ -293,8 +293,8 @@
         <form method="POST" action="{{ route('near-miss.store') }}" class="space-y-6">
             @csrf
             <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Company *</label>
-                    <select name="company_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company *</label>
+                    <select name="company_id" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                         <option value="">-- Select Company --</option>
                         @foreach($companies as $company)
                             <option value="{{ $company->id }}">{{ $company->name }}</option>
@@ -309,9 +309,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Date -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Date *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date *</label>
                     <input type="date" name="date" value="{{ old('date') }}" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                     @error('date')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -319,9 +319,9 @@
 
                 <!-- Department -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Department *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Department *</label>
                     <select name="department_id" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                         <option value="">-- Select Department --</option>
                         @foreach($departments as $dept)
                             <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
@@ -336,9 +336,9 @@
 
                 <!-- Location -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location *</label>
                     <input type="text" name="location" value="{{ old('location') }}" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                     @error('location')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -346,9 +346,9 @@
 
                 <!-- Category -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category *</label>
                     <select name="category" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                         <option value="">-- Select Category --</option>
                         <option value="Unsafe Act" {{ old('category') == 'Unsafe Act' ? 'selected' : '' }}>Unsafe Act</option>
                         <option value="Unsafe Condition" {{ old('category') == 'Unsafe Condition' ? 'selected' : '' }}>Unsafe Condition</option>
@@ -360,9 +360,9 @@
 
                 <!-- Severity -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Severity *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Severity *</label>
                     <select name="severity" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                         <option value="">-- Select Severity --</option>
                         <option value="Low" {{ old('severity') == 'Low' ? 'selected' : '' }}>Low</option>
                         <option value="Medium" {{ old('severity') == 'Medium' ? 'selected' : '' }}>Medium</option>
@@ -375,9 +375,9 @@
 
                 <!-- Likelihood -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Likelihood *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Likelihood *</label>
                     <select name="likelihood" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
                         <option value="">-- Select Likelihood --</option>
                         <option value="Low" {{ old('likelihood') == 'Low' ? 'selected' : '' }}>Low</option>
                         <option value="Medium" {{ old('likelihood') == 'Medium' ? 'selected' : '' }}>Medium</option>
@@ -392,9 +392,9 @@
             <div class="grid grid-cols-1 gap-6">
                 <!-- Description -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description *</label>
                     <textarea name="description" rows="4" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ old('description') }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -402,9 +402,9 @@
 
                 <!-- Action Required -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Action Required</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Action Required</label>
                     <textarea name="action_required" rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ old('action_required') }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">{{ old('action_required') }}</textarea>
                 </div>
             </div>
 
@@ -416,9 +416,9 @@
 
     <!-- Edit Status Modal -->
     <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Update Near Miss Status</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200">Update Near Miss Status</h3>
             </div>
             
             <form id="editStatusForm" method="POST" class="p-6">
@@ -426,8 +426,8 @@
                 @method('PUT')
                 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select name="status" id="statusSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                    <select name="status" id="statusSelect" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
                         <option value="Open">Open</option>
                         <option value="Closed">Closed</option>
                     </select>
@@ -436,7 +436,7 @@
                 <div class="flex justify-end gap-3">
                     <button type="button" 
                         onclick="closeEditModal()"
-                        class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition">
+                        class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition">
                         Cancel
                     </button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">
