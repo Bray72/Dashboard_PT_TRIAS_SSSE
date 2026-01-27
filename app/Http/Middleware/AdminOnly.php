@@ -15,11 +15,6 @@ class AdminOnly
      */
     public function handle(Request $request, Closure $next): Response
     {
-        dd(
-            auth()->user()->email,
-            config('app.admin_email')
-        );
-        
         if (!auth()->check()) {
             abort(403);
         }
