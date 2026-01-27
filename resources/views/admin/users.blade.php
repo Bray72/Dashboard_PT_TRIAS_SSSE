@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.app')
+
+@section('content')
 <head>
     <title>Admin - User Pending</title>
     <style>
@@ -64,4 +65,6 @@
 </table>
 
 </body>
-</html>
+@endpush
+
+@endsection
