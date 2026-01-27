@@ -38,6 +38,5 @@
         @endforelse
     </tbody>
 </table>
-@endpush
 
 @endsection
