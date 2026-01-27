@@ -23,6 +23,11 @@ class AdminOnly
             abort(403, 'Kamu bukan admin');
         }
 
+        dd(
+            auth()->user()->email,
+            config('app.admin_email')
+        );
+
         return $next($request);
     }
 }
