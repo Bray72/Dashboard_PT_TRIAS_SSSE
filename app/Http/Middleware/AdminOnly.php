@@ -15,6 +15,11 @@ class AdminOnly
      */
     public function handle(Request $request, Closure $next): Response
     {
+        dd(
+            auth()->user()->email,
+            config('app.admin_email')
+        );
+        
         if (!auth()->check()) {
             abort(403);
         }
@@ -22,11 +27,6 @@ class AdminOnly
         if (auth()->user()->email !== config('app.admin_email')) {
             abort(403, 'Kamu bukan admin');
         }
-
-        dd(
-            auth()->user()->email,
-            config('app.admin_email')
-        );
 
         return $next($request);
     }
