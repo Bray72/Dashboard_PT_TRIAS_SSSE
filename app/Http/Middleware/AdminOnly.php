@@ -19,8 +19,8 @@ class AdminOnly
             abort(403);
         }
 
-        if (auth()->user()->email !== env('ADMIN_EMAIL')) {
-            abort(403, 'Kamu bukan admin');
+        if (!auth()->user()->is_admin) {
+            abort(403, 'KAMU BUKAN ADMIN');
         }
 
         return $next($request);
