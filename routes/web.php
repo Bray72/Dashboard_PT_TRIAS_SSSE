@@ -8,6 +8,7 @@ use App\Http\Controllers\NearMissController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImportController;
 use App\Notifications\UserApprovalNotification;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -22,12 +23,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 });
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users');
+    Route::post('/users/{id}/approve', [UserController::class, 'approve'])
+        ->name('admin.users.approve');
+});
+
 // Logout route (only accessible when logged in)
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/approve/{id}', [ApprovalController::class, 'approve'])
     ->name('user.approve');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users', function () {return 'HALAMAN ADMIN USER';});});
+
 // ========== PROTECTED DASHBOARD ROUTES (Require Authentication) ==========
 Route::middleware('auth')->group(function () {
     // Safety Dashboard Routes
