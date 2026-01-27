@@ -26,6 +26,8 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/approve/{id}', [ApprovalController::class, 'approve'])
     ->name('user.approve');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/users', function () {return 'HALAMAN ADMIN USER';});});
 // ========== PROTECTED DASHBOARD ROUTES (Require Authentication) ==========
 Route::middleware('auth')->group(function () {
     // Safety Dashboard Routes
