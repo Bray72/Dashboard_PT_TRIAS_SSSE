@@ -77,7 +77,21 @@
                         </svg>
                     </button>
 
-                    <a href="{{ route('admin.users') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">User Approval</a>
+                    <div class="relative group">
+                        <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                            <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                                <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold">
+                                    {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
+                                </div>
+                                <span class="text-sm font-medium">
+                                    {{ Auth::user()->name ?? 'User' }}
+                                </span>
+                            </div>
+                        </button>
+                        <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-gray-800">
+                            <a href="{{ route('admin.users') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">User Approval</a>
+                        </div>
+                    </div>
 
                     <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                         <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold">
