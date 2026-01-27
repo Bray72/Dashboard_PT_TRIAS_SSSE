@@ -93,15 +93,6 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                        <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold">
-                            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
-                        </div>
-                        <span class="text-sm font-medium">
-                            {{ Auth::user()->name ?? 'User' }}
-                        </span>
-                    </div>
-
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
