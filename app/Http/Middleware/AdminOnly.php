@@ -13,13 +13,13 @@ class AdminOnly
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
         if (!auth()->check()) {
             abort(403);
         }
 
-        if (auth()->user()->email !== config('app.admin_email')) {
+        if (auth()->user()->email !== env('ADMIN_EMAIL')) {
             abort(403, 'Kamu bukan admin');
         }
 
