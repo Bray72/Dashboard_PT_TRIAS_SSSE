@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\UserApprovalNotification;
 
 class AuthController extends Controller
 {
@@ -24,8 +26,19 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+
+            if (Auth::user()->status !== 'approved') {
+                Auth::logout();
+
+                return back()->with(
+                    'error',
+                    'Akun kamu belum disetujui admin.'
+                );
+            }
+
             $request->session()->regenerate();
-            return redirect()->route('dashboard.safety')->with('success', 'Login successful!');
+            return redirect()->route('dashboard.safety')
+                ->with('success', 'Login successful!');
         }
 
         return back()->with('error', 'Invalid email or password')->onlyInput('email');
@@ -49,12 +62,15 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password'])
+            'password' => Hash::make($validated['password']),
+            'status' => 'pending',
         ]);
 
-        Auth::login($user);
+        Notification::route('mail', config('mail.admin_email'))
+        ->notify(new UserApprovalNotification($user));
 
-        return redirect()->route('dashboard.safety')->with('success', 'Registration successful!');
+        return redirect('/login')
+            ->with('success', 'Akun kamu berhasil dibuat dan menunggu persetujuan admin.');
     }
 
     // Handle logout

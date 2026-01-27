@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkPermitDashboardController;
 use App\Http\Controllers\NearMissController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImportController;
+use App\Notifications\UserApprovalNotification;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -23,7 +24,8 @@ Route::middleware('guest')->group(function () {
 
 // Logout route (only accessible when logged in)
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-
+Route::get('/approve/{id}', [ApprovalController::class, 'approve'])
+    ->name('user.approve');
 // ========== PROTECTED DASHBOARD ROUTES (Require Authentication) ==========
 Route::middleware('auth')->group(function () {
     // Safety Dashboard Routes
