@@ -1,42 +1,89 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="max-w-6xl mx-auto px-4 py-6">
 
-<h2>Daftar User Menunggu Persetujuan</h2>
+    <!-- Header -->
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+            Persetujuan User
+        </h2>
+        <p class="text-sm text-gray-500">
+            Daftar user yang menunggu persetujuan admin
+        </p>
+    </div>
 
-@if (session('success'))
-    <p style="color: green">{{ session('success') }}</p>
-@endif
+    <!-- Alert Success -->
+    @if (session('success'))
+        <div class="mb-4 rounded-lg bg-green-100 border border-green-300 text-green-700 px-4 py-3">
+            {{ session('success') }}
+        </div>
+    @endif
 
-<table>
-    <thead>
-        <tr>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse ($users as $user)
-            <tr>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
-                <td>{{ $user->status }}</td>
-                <td>
-                    <form method="POST"
-                          action="{{ route('admin.users.approve', $user->id) }}">
-                        @csrf
-                        <button type="submit">Approve</button>
-                    </form>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="4">Tidak ada user pending</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+    <!-- Card -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
 
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Nama
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Email
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Status
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase">
+                            Aksi
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="bg-white divide-y divide-gray-100">
+                    @forelse ($users as $user)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 text-gray-800 font-medium">
+                                {{ $user->name }}
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-600">
+                                {{ $user->email }}
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full
+                                    {{ $user->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
+                                    {{ ucfirst($user->status) }}
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                <form method="POST" action="{{ route('admin.users.approve', $user->id) }}">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium
+                                               text-white bg-blue-600 rounded-lg hover:bg-blue-700
+                                               focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                        ✔ Approve
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-6 text-center text-gray-500">
+                                Tidak ada user yang menunggu persetujuan
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
 @endsection
