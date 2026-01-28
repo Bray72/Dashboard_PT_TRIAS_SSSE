@@ -5,10 +5,8 @@
 
     <!-- HEADER -->
     <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Persetujuan User</h2>
-        <p class="text-sm text-gray-500">
-            Daftar user yang menunggu persetujuan admin
-        </p>
+        <h1 class="text-4xl font-bold text-blue-900 dark:text-blue-400">Detail User</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Daftar Semua User</p>
     </div>
 
     <!-- ALERT -->
@@ -72,7 +70,7 @@
         <!-- PENDING -->
         <div class="bg-white rounded-xl shadow-md p-6">
             <h3 class="text-lg font-semibold mb-4">
-                ⏳ User Pending ({{ $pendingUsers->count() }})
+                User Pending ({{ $pendingUsers->count() }})
             </h3>
 
             <div class="space-y-3 max-h-64 overflow-y-auto">
@@ -95,7 +93,7 @@
         <!-- APPROVED -->
         <div class="bg-white rounded-xl shadow-md p-6">
             <h3 class="text-lg font-semibold mb-4">
-                ✅ User Approved ({{ $approvedUsers->count() }})
+                User Approved ({{ $approvedUsers->count() }})
             </h3>
 
             <div class="space-y-3 max-h-64 overflow-y-auto">
