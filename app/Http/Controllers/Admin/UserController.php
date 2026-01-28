@@ -10,9 +10,13 @@ class UserController extends Controller
     // tampilkan user pending
     public function index()
     {
-        $users = User::where('status', 'pending')->get();
+        $pendingUsers = User::where('status', 'pending')->get();
+        $approvedUsers = User::where('status', 'approved')->get();
 
-        return view('admin.users', compact('users'));
+        return view('admin.users', compact(
+            'pendingUsers',
+            'approvedUsers'
+        ));
     }
 
     // approve user

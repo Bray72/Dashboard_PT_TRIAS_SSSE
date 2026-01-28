@@ -82,8 +82,57 @@
                     @endforelse
                 </tbody>
             </table>
-        </div>
 
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- USER PENDING -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        ⏳ User Pending ({{ $pendingUsers->count() }})
+                    </h3>
+
+                    <div class="space-y-3 max-h-64 overflow-y-auto">
+                        @forelse ($pendingUsers as $user)
+                            <div class="flex justify-between items-center border rounded-lg p-3 hover:bg-gray-50">
+                                <div>
+                                    <p class="font-medium text-gray-800">{{ $user->name }}</p>
+                                    <p class="text-sm text-gray-500">{{ $user->email }}</p>
+                                </div>
+                                <span class="text-xs px-3 py-1 rounded-full bg-yellow-100 text-yellow-700">
+                                    Pending
+                                </span>
+                            </div>
+                        @empty
+                            <p class="text-sm text-gray-500">Tidak ada user pending</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- USER APPROVED -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        ✅ User Approved ({{ $approvedUsers->count() }})
+                    </h3>
+
+                    <div class="space-y-3 max-h-64 overflow-y-auto">
+                        @forelse ($approvedUsers as $user)
+                            <div class="flex justify-between items-center border rounded-lg p-3 hover:bg-gray-50">
+                                <div>
+                                    <p class="font-medium text-gray-800">{{ $user->name }}</p>
+                                    <p class="text-sm text-gray-500">{{ $user->email }}</p>
+                                </div>
+                                <span class="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700">
+                                    Approved
+                                </span>
+                            </div>
+                        @empty
+                            <p class="text-sm text-gray-500">Belum ada user approved</p>
+                        @endforelse
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 @endsection
