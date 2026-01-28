@@ -47,9 +47,29 @@
                             Dashboards
                         </button>
                         <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-gray-800">
-                            <a href="{{ route('dashboard.safety') }}" class="block bg-blue-600 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">Safety Metrics</a>
-                            <a href="{{ route('dashboard.work-permit') }}" class="block bg-blue-600 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">Work Permit</a>
-                            <a href="{{ route('near-miss.dashboard') }}" class="block bg-blue-600 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">Near Miss</a>
+                            <a href="{{ route('dashboard.safety') }}"
+                            class="block px-4 py-2
+                            {{ request()->routeIs('dashboard.safety') 
+                                    ? 'bg-blue-600 text-white' 
+                                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+                                Safety Metrics
+                            </a>
+
+                            <a href="{{ route('dashboard.work-permit') }}"
+                            class="block px-4 py-2
+                            {{ request()->routeIs('dashboard.work-permit') 
+                                    ? 'bg-blue-600 text-white' 
+                                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+                                Work Permit
+                            </a>
+
+                            <a href="{{ route('near-miss.dashboard') }}"
+                            class="block px-4 py-2
+                            {{ request()->routeIs('near-miss.dashboard') 
+                                    ? 'bg-blue-600 text-white' 
+                                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+                                Near Miss
+                            </a>
                         </div>
                     </div>
 
