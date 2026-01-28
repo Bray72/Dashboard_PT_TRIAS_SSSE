@@ -664,7 +664,7 @@
                         likelihoodData['Medium'] || 0,
                         likelihoodData['Low'] || 0
                     ],
-                    backgroundColor: ['#e74c3c', '#f1c40f', '#2ecc71'],
+                    backgroundColor: ['#FF4646', '#FDFF00', '#9CFF2E'],
                     borderColor: '#fff',
                     borderWidth: 2
                 }]
