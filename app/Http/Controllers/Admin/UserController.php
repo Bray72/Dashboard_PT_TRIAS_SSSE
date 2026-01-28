@@ -31,4 +31,26 @@ class UserController extends Controller
         return redirect()->route('admin.users')
             ->with('success', 'User berhasil di-approve');
     }
+
+    // reject user
+    public function reject($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return redirect()->route('admin.users')
+            ->with('success', 'User berhasil di-reject');
+    }
+
+    // delete user
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return redirect()->route('admin.users')
+            ->with('success', 'User berhasil dihapus');
+    }
 }
