@@ -15,8 +15,8 @@ class NearMissController extends Controller
     public function index(Request $request)
     {
         $year  = $request->year ?? now()->year;
-        $month = $request->month;
-        $companyId = $request->company_id;
+        $month = $request->month ?? null;
+        $companyId = $request->company_id ?? null;
         $companies = Company::all();
         $periodQuery = Period::where('year', $year);
         if ($month) {
