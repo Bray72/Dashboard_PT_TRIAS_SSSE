@@ -104,7 +104,7 @@ class NearMissController extends Controller
             ->selectRaw('month, EXTRACT(MONTH FROM created_at) as month_num')
             ->orderBy('month')
             ->get()
-            ->map(function($period) {
+            ->map(function($period) use ($companyId) {
                 $countQuery = NearMiss::whereIn('period_id', [$period->id]);
                 if ($companyId) {
                     $countQuery->where('company_id', $companyId);
