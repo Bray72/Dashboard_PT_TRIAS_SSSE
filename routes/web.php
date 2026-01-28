@@ -27,6 +27,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.users');
     Route::post('/users/{id}/approve', [UserController::class, 'approve'])
         ->name('admin.users.approve');
+    Route::delete('/users/{id}/reject', [UserController::class, 'reject'])
+        ->name('admin.users.reject');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])
+        ->name('admin.users.destroy');
 });
 
 // Logout route (only accessible when logged in)
