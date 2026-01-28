@@ -132,14 +132,16 @@
                     Near Miss
                 </a>
 
+                <a href="{{ route('admin.users') }}"
+                class="block px-3 py-2 rounded-md text-sm font-medium
+                {{ request()->routeIs('admin.users') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800' }}">
+                    User Approval
+                </a>
+
                 <div class="pt-3 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
                     <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">
                         {{ Auth::user()->name ?? 'User' }}
                     </span>
-
-                    <div class="absolute left-0 mt-0 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-gray-800">
-                            <a href="{{ route('admin.users') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">User Approval</a>
-                    </div>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
