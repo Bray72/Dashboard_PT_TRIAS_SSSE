@@ -33,6 +33,19 @@
                     @endfor
                 </select>
             </div>
+
+            <!-- Company Filter -->
+            <div class="flex-1 min-w-48">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company</label>
+                <select name="company_id" onchange="this.form.submit()" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                    <option value="">All Companies</option>
+                    @foreach($companies as $company)
+                        <option value="{{ $company->id }}" {{ $companyId == $company->id ? 'selected' : '' }}>
+                            {{ $company->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </form>
     </div>
 
@@ -541,9 +554,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const chartColors = {
-            low: '#10b981',
-            medium: '#f59e0b',
-            high: '#ef4444'
+            low: '#2ecc71',
+            medium: '#f1c40f',
+            high: '#e74c3c'
         };
 
         // Risk Level Chart
@@ -558,7 +571,7 @@
                         riskData['Medium'] || 0,
                         riskData['Low'] || 0
                     ],
-                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                    backgroundColor: ['#e74c3c', '#f1c40f', '#2ecc71'],
                     borderColor: '#fff',
                     borderWidth: 2
                 }]
@@ -584,7 +597,7 @@
                         severityData['Medium'] || 0,
                         severityData['Low'] || 0
                     ],
-                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                    backgroundColor: ['#e74c3c', '#f1c40f', '#2ecc71'],
                     borderColor: '#fff',
                     borderWidth: 2
                 }]

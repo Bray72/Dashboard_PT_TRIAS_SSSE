@@ -16,7 +16,8 @@ class NearMissController extends Controller
     {
         $year  = $request->year ?? now()->year;
         $month = $request->month;
-         $companies = Company::all();
+        $companyId = $request->company_id;
+        $companies = Company::all();
         $periodQuery = Period::where('year', $year);
         if ($month) {
             $periodQuery->where('month', $month);
@@ -24,49 +25,63 @@ class NearMissController extends Controller
 
         $periodIds = $periodQuery->pluck('id');
 
+        // Build base query with optional company filter
+        $baseQuery = NearMiss::whereIn('period_id', $periodIds);
+        if ($companyId) {
+            $baseQuery->where('company_id', $companyId);
+        }
+
         // Total near miss count
-        $totalNearMiss = NearMiss::whereIn('period_id', $periodIds)->count();
+        $totalNearMiss = $baseQuery->clone()->count();
 
         // Get man hours for near miss rate calculation
-        $manHours = CompanyStatistic::whereIn('period_id', $periodIds)
-            ->sum('man_hours');
+        $manHoursQuery = CompanyStatistic::whereIn('period_id', $periodIds);
+        if ($companyId) {
+            $manHoursQuery->where('company_id', $companyId);
+        }
+        $manHours = $manHoursQuery->sum('man_hours');
 
         // Calculate near miss rate: total near miss / man hours
         $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours * 100000 : 0;
 
         // Risk level distribution
-        $risk = NearMiss::whereIn('period_id', $periodIds)
+        $risk = $baseQuery->clone()
             ->groupBy('risk_level')
             ->selectRaw('risk_level, COUNT(*) as total')
             ->pluck('total', 'risk_level');
 
-        $nearMissPerCompany = DB::table('near_misses')
+        $nearMissPerCompanyQuery = DB::table('near_misses')
             ->join('companies', 'near_misses.company_id', '=', 'companies.id')
+            ->whereIn('near_misses.period_id', $periodIds);
+        if ($companyId) {
+            $nearMissPerCompanyQuery->where('near_misses.company_id', $companyId);
+        }
+        $nearMissPerCompany = $nearMissPerCompanyQuery
             ->select('companies.name as company_name', DB::raw('COUNT(near_misses.id) as total'))
             ->groupBy('companies.name')
             ->orderBy('companies.name')
             ->get();
         
         // Severity distribution
-        $severity = NearMiss::whereIn('period_id', $periodIds)
+        $severity = $baseQuery->clone()
             ->groupBy('severity')
             ->selectRaw('severity, COUNT(*) as total')
             ->pluck('total', 'severity');
 
         // Likelihood distribution
-        $likelihood = NearMiss::whereIn('period_id', $periodIds)
+        $likelihood = $baseQuery->clone()
             ->groupBy('likelihood')
             ->selectRaw('likelihood, COUNT(*) as total')
             ->pluck('total', 'likelihood');
 
         // Category distribution
-        $category = NearMiss::whereIn('period_id', $periodIds)
+        $category = $baseQuery->clone()
             ->groupBy('category')
             ->selectRaw('category, COUNT(*) as total')
             ->pluck('total', 'category');
 
         // Department distribution
-        $departmentStats = NearMiss::whereIn('period_id', $periodIds)
+        $departmentStats = $baseQuery->clone()
             ->groupBy('department_id')
             ->selectRaw('department_id, COUNT(*) as total')
             ->with('department')
@@ -79,7 +94,7 @@ class NearMissController extends Controller
             });
 
         // Status distribution
-        $status = NearMiss::whereIn('period_id', $periodIds)
+        $status = $baseQuery->clone()
             ->groupBy('status')
             ->selectRaw('status, COUNT(*) as total')
             ->pluck('total', 'status');
@@ -90,14 +105,22 @@ class NearMissController extends Controller
             ->orderBy('month')
             ->get()
             ->map(function($period) {
-                $count = NearMiss::whereIn('period_id', [$period->id])->count();
+                $countQuery = NearMiss::whereIn('period_id', [$period->id]);
+                if ($companyId) {
+                    $countQuery->where('company_id', $companyId);
+                }
+                $count = $countQuery->count();
                 return [
                     'month' => $this->getMonthName($period->month),
                     'count' => $count
                 ];
             });
 
-        $nearMisses = NearMiss::whereIn('period_id', $periodIds)
+        $nearMissesQuery = NearMiss::whereIn('period_id', $periodIds);
+        if ($companyId) {
+            $nearMissesQuery->where('company_id', $companyId);
+        }
+        $nearMisses = $nearMissesQuery
             ->with(['department', 'period'])
             ->orderBy('date', 'desc')
             ->paginate(10);
@@ -107,6 +130,7 @@ class NearMissController extends Controller
         return view('near_miss.index', compact(
             'year',
             'month',
+            'companyId',
             'totalNearMiss',
             'nearMissRate',
             'manHours',
