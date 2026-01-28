@@ -43,20 +43,20 @@
                 </thead>
 
                 <tbody class="bg-white divide-y divide-gray-100">
-                    @forelse ($users as $user)
+                    @forelse ($$pendingUsers as $user)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-gray-800 font-medium">
-                                {{ $user->name }}
+                                {{ $pendingUsers->name }}
                             </td>
 
                             <td class="px-6 py-4 text-gray-600">
-                                {{ $user->email }}
+                                {{ $pendingUsers->email }}
                             </td>
 
                             <td class="px-6 py-4">
                                 <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full
                                     {{ $user->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' }}">
-                                    {{ ucfirst($user->status) }}
+                                    {{ ucfirst($pendingUsers->status) }}
                                 </span>
                             </td>
 
