@@ -8,11 +8,6 @@ use App\Listeners\UpdateLastLoginAt;
 
 class AppServiceProvider extends ServiceProvider
 {
-    protected $listen = [
-        Login::class => [
-            UpdateLastLoginAt::class,
-        ],
-    ];
     /**
      * Register any application services.
      */
