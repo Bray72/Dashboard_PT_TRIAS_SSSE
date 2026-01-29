@@ -10,6 +10,7 @@
             darkMode: 'class'
         }
     </script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
@@ -98,11 +99,12 @@
                         </svg>
                     </button>
 
-                    <div class="relative group inline-block">
-                        <div
-                            class="px-3 py-2 rounded-md cursor-pointer
-                                text-sm font-medium text-gray-700
-                                hover:bg-gray-100
+                    <div x-data="{ open: false }" class="relative inline-block">
+                        <button
+                            @click="open = !open"
+                            @click.outside="open = false"
+                            class="px-3 py-2 rounded-md text-sm font-medium
+                                text-gray-700 hover:bg-gray-100
                                 dark:text-gray-300 dark:hover:bg-gray-800">
 
                             <div class="flex items-center gap-2">
@@ -111,20 +113,17 @@
                                         flex items-center justify-center font-semibold">
                                     {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
                                 </div>
-                                <span class="text-sm font-medium">
-                                    {{ Auth::user()->name ?? 'User' }}
-                                </span>
+                                <span>{{ Auth::user()->name ?? 'User' }}</span>
                             </div>
-                        </div>
+                        </button>
 
                         <!-- DROPDOWN -->
                         <div
-                            class="absolute left-0 mt-1 w-48
+                            x-show="open"
+                            x-transition
+                            class="absolute left-0 mt-2 w-48
                                 bg-white dark:bg-gray-800
-                                rounded-md shadow-lg z-50
-                                opacity-0 invisible
-                                group-hover:opacity-100 group-hover:visible
-                                transition duration-150">
+                                rounded-md shadow-lg z-50">
 
                             <a href="{{ route('admin.users') }}"
                             class="block px-4 py-2 text-gray-700
