@@ -71,9 +71,9 @@
                                 Near Miss
                             </a>
 
-                            <a href="{{ route('dashbaord.activity') }}"
+                            <a href="{{ route('activity') }}"
                             class="block px-4 py-2
-                            {{ request()->routeIs('dashbaord.activity') 
+                            {{ request()->routeIs('activity') 
                                     ? 'bg-blue-600 text-white' 
                                     : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }}">
                                 Activity
