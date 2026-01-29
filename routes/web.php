@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImportController;
 use App\Notifications\UserApprovalNotification;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ActivityController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -31,6 +32,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         ->name('admin.users.reject');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])
         ->name('admin.users.destroy');
+    Route::get('/activity', [ActivityController::class, 'index'])
+        ->name('activity');
 });
 
 // Logout route (only accessible when logged in)
