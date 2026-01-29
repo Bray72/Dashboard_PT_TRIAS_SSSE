@@ -2,38 +2,7 @@
 
 @section('content')
         <div class="container mx-auto px-4 py-8">
-            <div id="pageLoading">
-    {{-- Skeleton Header --}}
-    <div class="mb-8">
-        <div class="h-10 w-1/3 rounded skeleton"></div>
-    </div>
-
-    {{-- Skeleton Filter --}}
-    <div class="bg-white rounded-lg p-6 mb-8">
-        <div class="grid grid-cols-3 gap-4">
-            <div class="h-10 rounded skeleton"></div>
-            <div class="h-10 rounded skeleton"></div>
-            <div class="h-10 rounded skeleton"></div>
-        </div>
-        <div class="h-10 w-32 mt-4 rounded skeleton"></div>
-    </div>
-
-    {{-- Skeleton Table --}}
-    <div class="bg-white rounded-lg p-6 mb-8">
-        @for ($i = 0; $i < 5; $i++)
-            <div class="h-6 w-full mb-3 rounded skeleton"></div>
-        @endfor
-    </div>
-
-    {{-- Skeleton Chart --}}
-    <div class="bg-white rounded-lg p-6 mb-8">
-        <div class="h-64 rounded skeleton"></div>
-    </div>
-</div>
-
-{{-- Konten Asli --}}
-<div id="pageContent" class="hidden">
-    <div class="card-body">
+            <div class="card-body">
                 <div class="mb-8">
                     <h1 class="text-4xl font-bold text-blue-900 dark:text-blue-400">Work Permit Dashboard</h1>
                 </div>
@@ -194,31 +163,11 @@
                 </button>
             </form>
         </div>
-    {{-- SEMUA KONTEN ASLI KAMU PINDAHKAN KE SINI --}}
 @endsection
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-     document.addEventListener("DOMContentLoaded", function () {
-        const loading = document.getElementById('pageLoading');
-        const content = document.getElementById('pageContent');
-
-        // simulasi tunggu data (bisa dihapus kalau mau)
-        setTimeout(() => {
-            loading.classList.add('hidden');
-            content.classList.remove('hidden');
-        }, 600);
-    });
-
-    // Saat submit filter
-    const filterForm = document.querySelector('form[action="{{ route('dashboard.work-permit') }}"]');
-    if (filterForm) {
-        filterForm.addEventListener('submit', () => {
-            document.getElementById('pageLoading').classList.remove('hidden');
-            document.getElementById('pageContent').classList.add('hidden');
-        });
-    }
     // Fungsi untuk download chart sebagai gambar
     async function downloadChart(containerId, filename) {
         try {
