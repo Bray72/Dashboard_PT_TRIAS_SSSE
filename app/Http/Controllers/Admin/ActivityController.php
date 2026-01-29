@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\NearMiss;
 use App\Models\CompanyStatistic;
-use App\Models\WorkPermit;
+use App\Models\PermitStatistic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -47,7 +47,7 @@ class ActivityController extends Controller
         /**
          * 3. WORK PERMIT INPUT
          */
-        WorkPermit::latest('created_at')
+        PermitStatistic::latest('created_at')
             ->take(10)
             ->get()
             ->each(function ($item) use ($activities) {
