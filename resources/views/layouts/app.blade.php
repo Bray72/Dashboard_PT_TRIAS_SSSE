@@ -46,9 +46,7 @@
                         <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                             Dashboards
                         </button>
-                        <div class="absolute left-0 top-full pt-2 w-48 bg-white rounded-md shadow-lg
-            hidden group-hover:block z-50 dark:bg-gray-800">
-
+                        <div class="absolute left-0 top-full pt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-gray-800">
                             <a href="{{ route('dashboard.safety') }}"
                             class="block px-4 py-2
                             {{ request()->routeIs('dashboard.safety') 
@@ -112,12 +110,7 @@
                             </div>
                         </button>
                         <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-50 dark:bg-gray-800">
-                            <a href="{{ route('admin.users') }}"
-                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100
-                                    dark:text-gray-300 dark:hover:bg-gray-700">
-                                User Approval
-                            </a>
-
+                            <a href="{{ route('admin.users') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">User Approve</a>
                             <a href="{{ route('activity') }}"
                             class="block px-4 py-2 text-gray-700 hover:bg-gray-100
                                     dark:text-gray-300 dark:hover:bg-gray-700">
