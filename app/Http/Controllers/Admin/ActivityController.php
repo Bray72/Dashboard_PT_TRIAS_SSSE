@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\NearMiss;
-use App\Models\SafetyMetric;
+use App\Models\CompanyStatistic;
 use App\Models\WorkPermit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -33,7 +33,7 @@ class ActivityController extends Controller
         /**
          * 2. SAFETY METRIC INPUT
          */
-        SafetyMetric::latest('created_at')
+        CompanyStatistic::latest('created_at')
             ->take(10)
             ->get()
             ->each(function ($item) use ($activities) {
