@@ -22,6 +22,23 @@
             }
         })();
     </script>
+    <style>
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                #e5e7eb 25%,
+                #f3f4f6 37%,
+                #e5e7eb 63%
+            );
+            background-size: 400% 100%;
+            animation: skeleton-loading 1.4s ease infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 100% 0 }
+            100% { background-position: -100% 0 }
+        }
+    </style>
     <link rel="icon" type="image/png" href="{{ asset('https://media.licdn.com/dms/image/v2/D560BAQEupOn406TVUw/company-logo_200_200/company-logo_200_200/0/1690511883379/pt_trias_sentosa_tbk_logo?e=2147483647&v=beta&t=H5jupd3fgQtrgyLZBBwu_2sDuWX5sYHYzhvlffGAdBY') }}">
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 dark:text-gray-50">
