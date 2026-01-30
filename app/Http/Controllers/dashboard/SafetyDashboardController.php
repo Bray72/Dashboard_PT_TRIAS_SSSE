@@ -37,6 +37,7 @@ class SafetyDashboardController extends Controller
             ->whereHas('period', function ($q) use ($year) {
                 $q->where('year', $year);
             })
+            ->orderBy('period_id', 'asc')
             ->paginate(10)   
             ->withQueryString();
 
