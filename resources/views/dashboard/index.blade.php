@@ -445,6 +445,7 @@
 
 @push('scripts')
 <script>
+/*
     // Fungsi untuk download chart sebagai gambar
     async function downloadChart(containerId, filename) {
         try {
@@ -731,4 +732,5 @@
         }
     });
 </script>
+*/
 @endpush
