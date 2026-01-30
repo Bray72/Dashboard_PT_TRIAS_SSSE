@@ -731,6 +731,7 @@
             });
         }
     });
-</script>
 */
+</script>
+
 @endpush
