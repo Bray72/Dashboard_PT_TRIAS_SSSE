@@ -57,13 +57,17 @@
                         </div>
                     </form>
                     <div class="mt-4 flex gap-2">
-                        <a href="{{ route('dashboard.work-permit.export', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
-                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                        <a href="{{ route('dashboard.safety.export', ['company_id' => $companyId, 'year' => $year]) }}" 
+                            class="w-full justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export CSV
                         </a>
-                        <a href="{{ route('dashboard.work-permit.export-pdf', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
-                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                        <a href="{{ route('dashboard.safety.export-pdf', ['company_id' => $companyId, 'year' => $year]) }}" 
+                            class="w-full justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export PDF
+                        </a>
+                        <a href="#form" 
+                            class="w-full justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                            Tambah Data
                         </a>
                     </div>
                 </div>
@@ -119,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-green-600 dark:border-green-600 shadow-lg shadow-green-400/200">
+        <div id="form" class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-green-600 dark:border-green-600 shadow-lg shadow-green-400/200">
             <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
                 <h2 class="text-2xl font-bold text-green-900 dark:text-green-400 mb-6">Input Work Permit</h2>
                 @csrf

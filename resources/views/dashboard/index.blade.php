@@ -257,7 +257,7 @@
     </div>
 
     <!-- Input Form Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-blue-600 shadow-lg shadow-blue-400/200">
+    <div id="form" class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-blue-600 shadow-lg shadow-blue-400/200">
         {{-- ALERT SUCCESS --}}
         @if(session('success'))
             <p style="color:green">{{ session('success') }}</p>
@@ -274,7 +274,7 @@
 
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-200 mb-6">Add Monthly Data</h2>
         
-        <form id="form" action="{{ route('dashboard.safety.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('dashboard.safety.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
