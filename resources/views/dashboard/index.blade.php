@@ -731,6 +731,4 @@
     });
 </script>
 @endpush
-
-    </div>
 @endsection
