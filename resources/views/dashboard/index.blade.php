@@ -195,60 +195,8 @@
                 <div class="mt-2 font-bold dark:text-gray-200">{{ $ir }}</div>
                 <div class="text-sm text-gray-500 dark:text-gray-400">Incident Rate</div>
             </div>
-        </div>
+        @endforeach
     </div>
-
-    <!-- Company Statistics Table -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-blue-600 shadow-lg shadow-blue-400/200">
-        <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4">Company Statistics Data</h3>
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[800px] table table-bordered table-sm dark:bg-gray-700">
-                <thead style="background:#3b82f6;color:white;">
-                    <tr>
-                        <th class="text-center">Company</th>
-                        <th class="text-center">Period</th>
-                        <th class="text-center">Man Hours</th>
-                        <th class="text-center">Employees</th>
-                        <th class="text-center">LTA</th>
-                        <th class="text-center">Lost Work Days</th>
-                        <th class="text-center">Lost Time</th>
-                        <th class="text-center">Work Accidents</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="dark:border-gray-600">
-                    @forelse($statistics as $stat)
-                        <tr class="dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
-                            <td class="dark:text-gray-300">{{ $stat->company->name ?? 'N/A' }}</td>
-                            <td class="text-center dark:text-gray-300">
-                                {{ \Carbon\Carbon::create()->month($stat->period->month)->format('M') }} {{ $stat->period->year }}
-                            </td>
-                            <td class="text-center dark:text-gray-300">{{ number_format($stat->man_hours) }}</td>
-                            <td class="text-center dark:text-gray-300">{{ number_format($stat->employee) }}</td>
-                            <td class="text-center dark:text-gray-300">{{ $stat->lta }}</td>
-                            <td class="text-center dark:text-gray-300">{{ $stat->lost_work_days }}</td>
-                            <td class="text-center dark:text-gray-300">{{ number_format($stat->lost_time) }}</td>
-                            <td class="text-center dark:text-gray-300">{{ $stat->kecelakaan_kerja }}</td>
-                            <td class="text-center">
-                                <form action="{{ route('statistics.company.destroy', $stat->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition" onclick="return confirm('Are you sure you want to delete this record?');">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr class="dark:border-gray-600">
-                            <td colspan="9" class="text-center text-gray-500 dark:text-gray-400 py-4">No data available</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -441,57 +389,101 @@
         </form>
     </div>
 </div>
-@endsection
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    // Fungsi untuk download chart sebagai gambar
+    async function downloadChart(containerId, filename) {
+        try {
+            const element = document.getElementById(containerId);
+            if (!element) {
+                alert('Chart tidak ditemukan!');
+                return;
+            }
 
-    // ===================== DATA =====================
-    const chartData = @json($chartData);
-    const months = chartData.labels;
+            // Tampilkan loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '';
+            button.disabled = true;
 
-    const gaugeData   = @json($gaugeFR);
-    const gaugeSRData = @json($gaugeSR);
-    const gaugeIRData = @json($gaugeIR);
+            // Gunakan html2canvas untuk capture element
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                allowTaint: true,
+                useCORS: true,
+                logging: false
+            });
 
-    // ===================== NEEDLE PLUGIN =====================
-    const needlePlugin = {
-        id: 'needle',
-        afterDatasetDraw(chart, args, opts) {
-            const { ctx } = chart;
-            const meta = chart.getDatasetMeta(0).data[0];
-            if (!meta) return;
+            // Convert ke blob dan download
+            canvas.toBlob(function(blob) {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename + '_' + new Date().toISOString().split('T')[0] + '.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
 
-            const value = opts.value ?? 0;
-            const max   = opts.max ?? 100;
-
-            const angle = Math.PI + (value / max) * Math.PI;
-
-            ctx.save();
-            ctx.translate(meta.x, meta.y);
-            ctx.rotate(angle);
-
-            ctx.beginPath();
-            ctx.moveTo(0, -2);
-            ctx.lineTo(meta.outerRadius - 10, 0);
-            ctx.lineTo(0, 2);
-            ctx.fillStyle = '#111';
-            ctx.fill();
-            ctx.restore();
-
-            ctx.beginPath();
-            ctx.arc(meta.x, meta.y, 4, 0, Math.PI * 2);
-            ctx.fill();
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        } catch (error) {
+            console.error('Error downloading chart:', error);
+            alert('Gagal mendownload chart. Silakan coba lagi.');
+            button.innerHTML = originalText;
+            button.disabled = false;
         }
-    };
+    }
 
-    Chart.register(needlePlugin);
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartData = @json($chartData);
+        const months = chartData.labels;
+        const frData = @json($monthlyFR);
+        const gaugeData = @json($gaugeFR);
+        const gaugeSRData = @json($gaugeSR);
+        const gaugeIRData = @json($gaugeIR);
 
-    // ===================== GAUGE BUILDER =====================
-    function buildGauge(idPrefix, dataSource) {
-        Object.entries(dataSource).forEach(([month, value]) => {
-            const canvas = document.getElementById(idPrefix + month);
+        const needlePlugin = {
+            id: 'needle',
+            afterDatasetDraw(chart, args, opts) {
+                const { ctx } = chart;
+                const meta = chart.getDatasetMeta(0).data[0];
+
+                if (!meta) return;
+
+                const value = opts.value;
+                const max = opts.max;
+
+                const angle = Math.PI + (value / max) * Math.PI;
+
+                ctx.save();
+                ctx.translate(meta.x, meta.y);
+                ctx.rotate(angle);
+
+                ctx.beginPath();
+                ctx.moveTo(0, -2);
+                ctx.lineTo(meta.outerRadius - 10, 0);
+                ctx.lineTo(0, 2);
+                ctx.fillStyle = '#111';
+                ctx.fill();
+
+                ctx.restore();
+
+                // center dot
+                ctx.beginPath();
+                ctx.arc(meta.x, meta.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        };
+
+        Chart.register(needlePlugin);
+
+        Object.entries(gaugeSRData).forEach(([month, value]) => {
+            const canvas = document.getElementById('gaugeSR' + month);
             if (!canvas) return;
 
             new Chart(canvas.getContext('2d'), {
@@ -519,66 +511,173 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
-    }
 
-    buildGauge('gaugeSR', gaugeSRData);
-    buildGauge('gaugeFR', gaugeData);
-    buildGauge('gaugeIR', gaugeIRData);
+        Object.entries(gaugeData).forEach(([month, value]) => {
+            const canvas = document.getElementById('gaugeFR' + month);
+            if (!canvas) return;
 
-    // ===================== LINE CHARTS =====================
-    function buildLineChart(id, label, data, color, bg) {
-        const el = document.getElementById(id);
-        if (!el) return;
-
-        new Chart(el, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: label,
-                    data: data,
-                    borderColor: color,
-                    backgroundColor: bg,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: { beginAtZero: true }
+            new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [40, 30, 30],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        needle: {
+                            value: value,
+                            max: 100
+                        }
+                    }
                 }
-            }
+            });
         });
-    }
 
-    buildLineChart('srChart', 'Severity Rate',  chartData.sr, '#ef4444', 'rgba(239,68,68,0.1)');
-    buildLineChart('frChart', 'Frequency Rate', chartData.fr, '#f97316', 'rgba(249,115,22,0.1)');
-    buildLineChart('irChart', 'Incident Rate',  chartData.ir, '#3b82f6', 'rgba(59,130,246,0.1)');
+        Object.entries(gaugeIRData).forEach(([month, value]) => {
+            const canvas = document.getElementById('gaugeIR' + month);
+            if (!canvas) return;
 
-    // ===================== BAR COMPARISON =====================
-    const comparison = document.getElementById('comparisonChart');
-    if (comparison) {
-        new Chart(comparison, {
-            type: 'bar',
-            data: {
-                labels: months,
-                datasets: [
-                    { label: 'SR', data: chartData.sr, backgroundColor: '#ef4444' },
-                    { label: 'FR', data: chartData.fr, backgroundColor: '#f97316' },
-                    { label: 'IR', data: chartData.ir, backgroundColor: '#3b82f6' },
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
+            new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [40, 30, 30],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        needle: {
+                            value: value,
+                            max: 100
+                        }
+                    }
                 }
-            }
+            });
         });
-    }
 
-});
+        const srChartElement = document.getElementById('srChart');
+        if (srChartElement) {
+            new Chart(srChartElement, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Severity Rate',
+                        data: chartData.sr,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        const frChartElement = document.getElementById('frChart');
+        if (frChartElement) {
+            new Chart(frChartElement, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Frequency Rate',
+                        data: chartData.fr,
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        const irChartElement = document.getElementById('irChart');
+        if (irChartElement) {
+            new Chart(irChartElement, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Incident Rate',
+                        data: chartData.ir,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        const comparisonChartElement = document.getElementById('comparisonChart');
+        if (comparisonChartElement) {
+            new Chart(comparisonChartElement, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'SR',
+                            data: chartData.sr,
+                            backgroundColor: '#ef4444'
+                        },
+                        {
+                            label: 'FR',
+                            data: chartData.fr,
+                            backgroundColor: '#f97316'
+                        },
+                        {
+                            label: 'IR',
+                            data: chartData.ir,
+                            backgroundColor: '#3b82f6'
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+    });
 </script>
 @endpush
+
+@endsection
