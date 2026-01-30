@@ -64,8 +64,7 @@ class WorkPermitDashboardController extends Controller
             ->select('permit_statistics.permit_type_id', 'periods.month', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id', 'periods.month')
             ->orderBy('periods.month')
-            ->paginate(10) 
-            ->withQueryString();
+            ->get();
 
         // Transform data for chart
         $chartData = [];
@@ -83,7 +82,8 @@ class WorkPermitDashboardController extends Controller
                 return $q->where('company_id', $companyId);
             })
             ->orderBy('period_id', 'desc')
-            ->get();
+            ->paginate(10)   
+            ->withQueryString();
 
         return view('dashboard.Work-Permit', compact(
             'permitTypes',
