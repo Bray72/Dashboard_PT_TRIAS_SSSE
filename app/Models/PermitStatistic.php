@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PermitStatistic extends Model
 {
@@ -23,5 +24,10 @@ class PermitStatistic extends Model
     public function period()
     {
         return $this->belongsTo(Period::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

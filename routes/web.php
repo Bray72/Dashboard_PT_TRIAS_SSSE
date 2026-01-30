@@ -58,6 +58,9 @@ Route::middleware('auth')->group(function () {
             ->name('dashboard.safety.export-pdf-charts');
     });
 
+    // Company Statistics Delete Route
+    Route::delete('/statistics/company/{id}', [SafetyDashboardController::class, 'deleteCompanyStatistic'])->name('statistics.company.destroy');
+
     Route::post('/period/store', [PeriodController::class, 'store'])->name('period.store');
 
     // Work Permit Dashboard Routes
@@ -66,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/work-permit/create',[WorkPermitDashboardController::class, 'create'])->name('dashboard.work-permit.create');
     Route::get('/dashboard/work-permit/export', [WorkPermitDashboardController::class, 'export'])->name('dashboard.work-permit.export');
     Route::get('/dashboard/work-permit/export-pdf', [WorkPermitDashboardController::class, 'exportPDF'])->name('dashboard.work-permit.export-pdf');
+    Route::delete('/dashboard/work-permit/{id}', [WorkPermitDashboardController::class, 'deletePermitStatistic'])->name('dashboard.work-permit.destroy');
 
     // Near Miss Dashboard Routes
     Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.dashboard');

@@ -76,6 +76,14 @@ class WorkPermitDashboardController extends Controller
             $chartData[$trend->permit_type_id][$trend->month] = $trend->total;
         }
 
+        // Get all permit statistics with relationships
+        $permitStatistics = PermitStatistic::with(['permitType', 'period'])
+            ->when($companyId, function($q) use ($companyId) {
+                return $q->where('company_id', $companyId);
+            })
+            ->orderBy('period_id', 'desc')
+            ->get();
+
         return view('dashboard.Work-Permit', compact(
             'permitTypes',
             'monthly',
@@ -84,7 +92,8 @@ class WorkPermitDashboardController extends Controller
             'month',
             'year',
             'chartData',
-            'companies'
+            'companies',
+            'permitStatistics'
         ));
     }
 
@@ -309,5 +318,21 @@ class WorkPermitDashboardController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function deletePermitStatistic($id)
+    {
+        try {
+            $statistic = PermitStatistic::findOrFail($id);
+            $statistic->delete();
+            
+            return redirect()
+                ->back()
+                ->with('success', 'Data Permit Statistic berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menghapus data');
+        }
     }
 }

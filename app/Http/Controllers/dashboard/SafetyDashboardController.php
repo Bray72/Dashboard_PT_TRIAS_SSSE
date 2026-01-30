@@ -127,7 +127,8 @@ class SafetyDashboardController extends Controller
             'gaugeIR',
             'monthlySummary',
             'monthlyFR',
-            'displayMonth'
+            'displayMonth',
+            'statistics'
         ));
     }
 
@@ -408,5 +409,21 @@ class SafetyDashboardController extends Controller
 
         $pdf = Pdf::loadView('pdf.dashboard-report', $data);
         return $pdf->download('dashboard-report.pdf');
+    }
+
+    public function deleteCompanyStatistic($id)
+    {
+        try {
+            $statistic = CompanyStatistic::findOrFail($id);
+            $statistic->delete();
+            
+            return redirect()
+                ->back()
+                ->with('success', 'Data Company Statistic berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menghapus data');
+        }
     }
 }

@@ -58,11 +58,11 @@
                     </form>
                     <div class="mt-4 flex gap-2">
                         <a href="{{ route('dashboard.work-permit.export', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
-                            class="w-full justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                            class="w-full justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export CSV
                         </a>
                         <a href="{{ route('dashboard.work-permit.export-pdf', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
-                            class="w-full justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                            class="w-full justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                             Export PDF
                         </a>
                         <a href="#form" 
@@ -123,6 +123,50 @@
                 </div>
             </div>
         </div>
+
+        <!-- Permit Statistics Table -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-green-600 dark:border-green-600 shadow-lg shadow-green-400/200">
+            <h3 class="text-lg font-semibold text-green-900 dark:text-green-400 mb-4">Permit Statistics Data</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[700px] table table-bordered table-sm dark:bg-gray-700">
+                    <thead style="background:#9bbb59;color:white;">
+                        <tr>
+                            <th class="text-center">Company</th>
+                            <th class="text-center">Permit Type</th>
+                            <th class="text-center">Period</th>
+                            <th class="text-center">Total</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="dark:border-gray-600">
+                        @forelse($permitStatistics ?? [] as $stat)
+                            <tr class="dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition">
+                                <td class="dark:text-gray-300">{{ $stat->company->name ?? 'N/A' }}</td>
+                                <td class="dark:text-gray-300">{{ $stat->permitType->name ?? 'N/A' }}</td>
+                                <td class="text-center dark:text-gray-300">
+                                    {{ \Carbon\Carbon::create()->month($stat->period->month)->format('M') }} {{ $stat->period->year }}
+                                </td>
+                                <td class="text-center dark:text-gray-300">{{ $stat->total }}</td>
+                                <td class="text-center">
+                                    <form action="{{ route('dashboard.work-permit.destroy', $stat->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition" onclick="return confirm('Are you sure you want to delete this record?');">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr class="dark:border-gray-600">
+                                <td colspan="5" class="text-center text-gray-500 dark:text-gray-400 py-4">No data available</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div id="form" class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-green-600 dark:border-green-600 shadow-lg shadow-green-400/200">
             <form method="POST" action="{{ route('dashboard.work-permit.store') }}">
                 <h2 class="text-2xl font-bold text-green-900 dark:text-green-400 mb-6">Input Work Permit</h2>

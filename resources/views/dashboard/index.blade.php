@@ -195,8 +195,60 @@
                 <div class="mt-2 font-bold dark:text-gray-200">{{ $ir }}</div>
                 <div class="text-sm text-gray-500 dark:text-gray-400">Incident Rate</div>
             </div>
-        @endforeach
+        </div>
     </div>
+
+    <!-- Company Statistics Table -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-blue-700 dark:border-blue-600 shadow-lg shadow-blue-400/200">
+        <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4">Company Statistics Data</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[800px] table table-bordered table-sm dark:bg-gray-700">
+                <thead style="background:#3b82f6;color:white;">
+                    <tr>
+                        <th class="text-center">Company</th>
+                        <th class="text-center">Period</th>
+                        <th class="text-center">Man Hours</th>
+                        <th class="text-center">Employees</th>
+                        <th class="text-center">LTA</th>
+                        <th class="text-center">Lost Work Days</th>
+                        <th class="text-center">Lost Time</th>
+                        <th class="text-center">Work Accidents</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="dark:border-gray-600">
+                    @forelse($statistics as $stat)
+                        <tr class="dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+                            <td class="dark:text-gray-300">{{ $stat->company->name ?? 'N/A' }}</td>
+                            <td class="text-center dark:text-gray-300">
+                                {{ \Carbon\Carbon::create()->month($stat->period->month)->format('M') }} {{ $stat->period->year }}
+                            </td>
+                            <td class="text-center dark:text-gray-300">{{ number_format($stat->man_hours) }}</td>
+                            <td class="text-center dark:text-gray-300">{{ number_format($stat->employee) }}</td>
+                            <td class="text-center dark:text-gray-300">{{ $stat->lta }}</td>
+                            <td class="text-center dark:text-gray-300">{{ $stat->lost_work_days }}</td>
+                            <td class="text-center dark:text-gray-300">{{ number_format($stat->lost_time) }}</td>
+                            <td class="text-center dark:text-gray-300">{{ $stat->kecelakaan_kerja }}</td>
+                            <td class="text-center">
+                                <form action="{{ route('statistics.company.destroy', $stat->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition" onclick="return confirm('Are you sure you want to delete this record?');">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr class="dark:border-gray-600">
+                            <td colspan="9" class="text-center text-gray-500 dark:text-gray-400 py-4">No data available</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
