@@ -211,6 +211,7 @@
                 </button>
             </form>
         </div>
+        </div>
 @endsection
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
