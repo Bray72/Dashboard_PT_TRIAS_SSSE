@@ -58,7 +58,7 @@
                 Export PDF
             </a>
             <a href="#form" 
-                class="w-full justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                class="w-full justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                 Tambah Data
             </a>
         </div>
