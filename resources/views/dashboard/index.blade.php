@@ -57,6 +57,10 @@
                 class="w-full justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
                 Export PDF
             </a>
+            <a href="#form" 
+                class="w-full justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 inline-flex items-center gap-2">
+                Tambah Data
+            </a>
         </div>
     </div>
 
@@ -270,7 +274,7 @@
 
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-200 mb-6">Add Monthly Data</h2>
         
-        <form action="{{ route('dashboard.safety.store') }}" method="POST" class="space-y-6">
+        <form id="form" action="{{ route('dashboard.safety.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
