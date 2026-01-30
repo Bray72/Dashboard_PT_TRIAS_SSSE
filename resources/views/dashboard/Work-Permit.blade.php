@@ -165,6 +165,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-4">
+                {{ $permitStatistics->links() }}
+            </div>
         </div>
 
         <div id="form" class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 border border-green-600 dark:border-green-600 shadow-lg shadow-green-400/200">

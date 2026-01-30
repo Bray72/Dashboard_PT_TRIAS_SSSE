@@ -64,7 +64,8 @@ class WorkPermitDashboardController extends Controller
             ->select('permit_statistics.permit_type_id', 'periods.month', DB::raw('SUM(total) as total'))
             ->groupBy('permit_statistics.permit_type_id', 'periods.month')
             ->orderBy('periods.month')
-            ->get();
+            ->paginate(10) 
+            ->withQueryString();
 
         // Transform data for chart
         $chartData = [];
