@@ -56,7 +56,7 @@
 
                         </div>
                     </form>
-                    <div class="mt-4 flex gap-2">
+                    <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:gap-2">
                         <a href="{{ route('dashboard.work-permit.export', ['month' => $month, 'year' => $year, 'company_id' => request('company_id')]) }}" 
                             class="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm transition">
                             Export CSV
