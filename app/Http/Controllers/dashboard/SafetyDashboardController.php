@@ -37,7 +37,8 @@ class SafetyDashboardController extends Controller
             ->whereHas('period', function ($q) use ($year) {
                 $q->where('year', $year);
             })
-            ->get();
+            ->paginate(10)   
+            ->withQueryString();
 
         // Data untuk chart
         $chartData = [

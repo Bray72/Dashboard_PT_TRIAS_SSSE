@@ -81,7 +81,7 @@ class WorkPermitDashboardController extends Controller
             ->when($companyId, function($q) use ($companyId) {
                 return $q->where('company_id', $companyId);
             })
-            ->orderBy('period_id', 'desc')
+            ->orderBy('period_id', 'asc')
             ->paginate(10)   
             ->withQueryString();
 
