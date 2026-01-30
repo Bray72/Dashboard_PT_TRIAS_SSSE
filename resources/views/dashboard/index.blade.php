@@ -732,4 +732,5 @@
 </script>
 @endpush
 
+    </div>
 @endsection
