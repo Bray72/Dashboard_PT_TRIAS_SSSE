@@ -9,8 +9,13 @@
         </h2>
 
         <ul class="space-y-3 text-sm">
+
             @forelse ($activities as $activity)
                 <li class="flex justify-between items-center">
+                    <span class="font-medium text-gray-700">
+                        {{ optional($user->last_login_at)->diffForHumans() ?? '-' }}
+                    </span>
+                    
                     <span class="text-gray-700 dark:text-gray-300">
                         {{ $activity['message'] }}
                     </span>
