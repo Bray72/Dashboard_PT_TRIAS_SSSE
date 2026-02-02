@@ -9,6 +9,8 @@ class NearMiss extends Model
 {
     use HasFactory;
 
+    protected $table = 'near_misses';
+
     protected $fillable = [
         'company_id',
         'period_id',

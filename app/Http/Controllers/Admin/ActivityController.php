@@ -16,7 +16,7 @@ class ActivityController extends Controller
     public function index()
     {
         // 1️⃣ Near Miss activity
-        $nearMissActivities = DB::table('')
+        $nearMissActivities = DB::table('near_misses')
             ->select(
                 DB::raw("'Input data Near Miss' as activity"),
                 'created_at'
