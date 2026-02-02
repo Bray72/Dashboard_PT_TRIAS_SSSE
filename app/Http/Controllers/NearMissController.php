@@ -42,7 +42,7 @@ class NearMissController extends Controller
         $manHours = $manHoursQuery->sum('man_hours');
 
         // Calculate near miss rate: total near miss / man hours
-        $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours * 100000 : 0;
+        $nearMissRate = $manHours > 0 ? $totalNearMiss / $manHours * 1000000 : 0;
 
         // Risk level distribution
         $risk = $baseQuery->clone()
