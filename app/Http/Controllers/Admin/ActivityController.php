@@ -15,7 +15,17 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        // 1️⃣ Near Miss activity
+        // 1️⃣ User login activity
+        $userLoginActivities = DB::table('users')
+            ->select(
+                DB::raw("'User Login' as activity"),
+                'last_login_at as created_at'
+            )
+            ->whereNotNull('last_login_at')
+            ->latest('last_login_at')
+            ->limit(10);
+
+        // 2️⃣ Near Miss activity
         $nearMissActivities = DB::table('near_misses')
             ->select(
                 DB::raw("'Input data Near Miss' as activity"),
@@ -24,7 +34,7 @@ class ActivityController extends Controller
             ->latest()
             ->limit(10);
 
-        // 2️⃣ Safety Metric activity (contoh)
+        // 3️⃣ Safety Metric activity (contoh)
         $safetyMetricActivities = DB::table('company_statistics')
             ->select(
                 DB::raw("'Input data Safety Metric' as activity"),
@@ -33,13 +43,14 @@ class ActivityController extends Controller
             ->latest()
             ->limit(10);
 
-        // 3️⃣ Gabungkan semua activity
-        $activities = $nearMissActivities
+        // 4️⃣ Gabungkan semua activity
+        $activities = $userLoginActivities
+            ->unionAll($nearMissActivities)
             ->unionAll($safetyMetricActivities)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // 4️⃣ Kirim ke view
+        // 5️⃣ Kirim ke view
         return view('dashboard.activity', [
             'activities' => $activities
         ]);
