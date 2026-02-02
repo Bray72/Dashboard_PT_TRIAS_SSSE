@@ -18,7 +18,7 @@ class ActivityController extends Controller
         // 1️⃣ User login activity
         $userLoginActivities = DB::table('users')
             ->select(
-                DB::raw("'User Login' as activity"),
+                DB::raw("CONCAT(name, ' Login') as activity"),
                 'last_login_at as created_at'
             )
             ->whereNotNull('last_login_at')
