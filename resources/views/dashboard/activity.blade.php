@@ -8,34 +8,28 @@
             Last Activity
         </h2>
 
+        <div class="text-sm text-gray-500">
+            Last login:
+            <span class="font-medium">
+                {{ optional(auth()->user()->last_login_at)->diffForHumans() ?? '-' }}
+            </span>
+        </div>
+
         <ul class="space-y-3 text-sm">
-            @foreach ($activities as $activity)
-            <li class="flex justify-between items-center">
+            @forelse ($activities as $activity)
+                <li class="flex justify-between items-center">
+                    <span class="text-gray-700">
+                        {{ $activity->activity }}
+                    </span>
 
-                {{-- USER --}}
-                <div>
-                    <div class="font-medium text-gray-700">
-                        {{ $activity->user->name ?? 'Unknown User' }}
-                    </div>
-                    <div class="text-xs text-gray-400">
-                        Last login {{ optional($activity->user?->last_login_at)->diffForHumans() ?? '-' }}
-                    </div>
-                </div>
-
-                {{-- ACTIVITY --}}
-                <div class="text-gray-700">
-                    {{ $activity->description }}
-                </div>
-
-                {{-- TIME --}}
-                <div class="text-xs text-gray-400">
-                    {{ $activity->created_at->diffForHumans() }}
-                </div>
-
-            </li>
-            @endforeach
+                    <span class="text-gray-400">
+                        {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}
+                    </span>
+                </li>
+            @empty
+                <li class="text-gray-400">Belum ada aktivitas</li>
+            @endforelse
         </ul>
     </div>
-
 </div>
 @endsection

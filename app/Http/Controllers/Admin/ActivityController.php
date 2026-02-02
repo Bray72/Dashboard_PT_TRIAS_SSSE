@@ -14,70 +14,33 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        $activities = collect();
+        // 1️⃣ Near Miss activity
+        $nearMissActivities = DB::table('near_misses')
+            ->select(
+                DB::raw("'Input data Near Miss' as activity"),
+                'created_at'
+            )
+            ->latest()
+            ->limit(10);
 
-        /**
-         * 1. USER REGISTER
-         */
-        User::latest('created_at')
-            ->take(10)
-            ->get()
-            ->each(function ($user) use ($activities) {
-                $activities = Activity::with('user')
-                ->latest()
-                ->take(10)
-                ->get();
-            });
+        // 2️⃣ Safety Metric activity (contoh)
+        $safetyMetricActivities = DB::table('company_statistics')
+            ->select(
+                DB::raw("'Input data Safety Metric' as activity"),
+                'created_at'
+            )
+            ->latest()
+            ->limit(10);
 
-        /**
-         * 2. SAFETY METRIC INPUT
-         */
-        CompanyStatistic::latest('created_at')
-            ->take(10)
-            ->get()
-            ->each(function ($item) use ($activities) {
-                $activities->push([
-                    'message' => "Input data Safety Metric",
-                    'time' => $item->created_at,
-                    'type' => 'safety_metric',
-                ]);
-            });
+        // 3️⃣ Gabungkan semua activity
+        $activities = $nearMissActivities
+            ->unionAll($safetyMetricActivities)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        /**
-         * 3. WORK PERMIT INPUT
-         */
-        PermitStatistic::latest('created_at')
-            ->take(10)
-            ->get()
-            ->each(function ($item) use ($activities) {
-                $activities->push([
-                    'message' => "Input data Work Permit",
-                    'time' => $item->created_at,
-                    'type' => 'work_permit',
-                ]);
-            });
-
-        /**
-         * 4. NEAR MISS INPUT
-         */
-        NearMiss::latest('created_at')
-            ->take(10)
-            ->get()
-            ->each(function ($item) use ($activities) {
-                $activities->push([
-                    'message' => "Input data Near Miss",
-                    'time' => $item->created_at,
-                    'type' => 'near_miss',
-                ]);
-            });
-
-        /**
-         * SORT + LIMIT FINAL
-         */
-        $activities = $activities
-            ->sortByDesc('time')
-            ->take(15);
-
-        return view('dashboard.activity', compact('activities'));
+        // 4️⃣ Kirim ke view
+        return view('dashboard.activity', [
+            'activities' => $activities
+        ]);
     }
 }
