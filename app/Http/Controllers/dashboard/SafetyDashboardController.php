@@ -92,7 +92,7 @@ class SafetyDashboardController extends Controller
             // kalau All Month -> summary total 1 tahun
             $monthlySummary = [
                 'man_hours' => $statistics->sum('man_hours'),
-                'employee' => $statistics->first()?->employee ?? 0,
+                'employee' => $latestData?->employee ?? 0,
                 'lta' => $statistics->sum('lta'),
                 'lost_work_days' => $statistics->sum('lost_work_days'),
                 'lost_time' => $statistics->sum('lost_time'),
