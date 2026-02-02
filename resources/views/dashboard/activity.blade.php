@@ -8,7 +8,7 @@
             Last Activity
         </h2>
 
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-700">
             Last login:
             <span class="font-medium">
                 {{ optional(auth()->user()->last_login_at)->diffForHumans() ?? '-' }}
