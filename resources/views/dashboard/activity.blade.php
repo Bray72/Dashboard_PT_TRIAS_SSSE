@@ -2,18 +2,17 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto mt-6">
-
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+        <div class="text-lg text-gray-800">
+        Last login:
+        <span class="text-sm text-gray-800">
+            {{ optional(auth()->user()->last_login_at)->diffForHumans() ?? '-' }}
+        </span>
+    </div>
+
         <h2 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
             Last Activity
         </h2>
-
-        <div class="text-sm text-gray-700">
-            Last login:
-            <span class="text-sm text-gray-700">
-                {{ optional(auth()->user()->last_login_at)->diffForHumans() ?? '-' }}
-            </span>
-        </div>
 
         <ul class="space-y-3 text-sm">
             @forelse ($activities as $activity)
