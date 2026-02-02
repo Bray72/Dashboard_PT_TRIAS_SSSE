@@ -18,7 +18,7 @@ class AuthController extends Controller
     }
 
     // Handle login
-    public function login(Request $request)
+   public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -27,6 +27,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
 
+            // 1️⃣ Cek status user
             if (Auth::user()->status !== 'approved') {
                 Auth::logout();
 
@@ -36,12 +37,18 @@ class AuthController extends Controller
                 );
             }
 
+            // 2️⃣ Regenerate session
             $request->session()->regenerate();
-            return redirect()->route('dashboard.safety')
-                ->with('success', 'Login successful!');
-        }
 
-        return back()->with('error', 'Invalid email or password')->onlyInput('email');
+            // 3️⃣ Update last_login_at (DI SINI)
+            Auth::user()->update([
+                'last_login_at' => now(),
+            ]);
+
+            // 4️⃣ Redirect
+            return redirect()->route('dashboard.safety')->with('success', 'Login successful!');
+            }
+            return back()->with('error', 'Invalid email or password')->onlyInput('email');
     }
 
     // Show register form
