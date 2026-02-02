@@ -212,6 +212,15 @@ class NearMissController extends Controller
             ->with('success', 'Status Near Miss berhasil diperbarui');
     }
 
+    public function destroy($id)
+    {
+        $nearMiss = NearMiss::findOrFail($id);
+        $nearMiss->delete();
+
+        return redirect()->route('near-miss.dashboard')
+            ->with('success', 'Near Miss berhasil dihapus');
+    }
+
     private function getMonthName($month)
     {
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

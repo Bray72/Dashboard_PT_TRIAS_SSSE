@@ -233,12 +233,21 @@
                                         {{ $nearMiss->status }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm">
+                                <td class="px-6 py-4 text-sm space-x-2 flex">
                                     <button type="button" 
                                         onclick="openEditModal({{ $nearMiss->id }}, '{{ $nearMiss->status }}')"
                                         class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 font-medium text-sm">
                                         Edit Status
                                     </button>
+                                    <form action="{{ route('near-miss.destroy', $nearMiss->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            onclick="return confirm('Are you sure you want to delete this near miss report?')"
+                                            class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-medium text-sm">
+                                            Delete
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

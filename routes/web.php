@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/near-miss', [NearMissController::class,'index'])->name('near-miss.dashboard');
     Route::post('/near-miss/store', [NearMissController::class,'store'])->name('near-miss.store');
     Route::put('/near-miss/{id}/status', [NearMissController::class,'updateStatus'])->name('near-miss.updateStatus');
+    Route::delete('/near-miss/{id}', [NearMissController::class,'destroy'])->name('near-miss.destroy');
 
     // Import Routes
     Route::prefix('import')->name('import.')->group(function () {
