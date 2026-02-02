@@ -240,7 +240,7 @@
                                             onclick="openEditModal({{ $nearMiss->id }}, '{{ $nearMiss->status }}')"
                                             class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 
                                                 hover:bg-blue-200 transition font-medium">
-                                            Edit
+                                            Edit Status
                                         </button>
 
                                         <!-- Delete -->
