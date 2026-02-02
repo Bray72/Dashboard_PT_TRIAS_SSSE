@@ -9,26 +9,31 @@
         </h2>
 
         <ul class="space-y-3 text-sm">
+            @foreach ($activities as $activity)
+            <li class="flex justify-between items-center">
 
-            @forelse ($activities as $activity)
-                <li class="flex justify-between items-center">
-                    <span class="font-medium text-gray-700">
-                       {{ optional(auth()->user()->last_login_at)->diffForHumans() ?? '-' }}
-                    </span>
+                {{-- USER --}}
+                <div>
+                    <div class="font-medium text-gray-700">
+                        {{ $activity->user->name ?? 'Unknown User' }}
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        Last login {{ optional($activity->user?->last_login_at)->diffForHumans() ?? '-' }}
+                    </div>
+                </div>
 
-                    <span class="text-gray-700 dark:text-gray-300">
-                        {{ $activity['message'] }}
-                    </span>
+                {{-- ACTIVITY --}}
+                <div class="text-gray-700">
+                    {{ $activity->description }}
+                </div>
 
-                    <span class="text-xs text-gray-400">
-                        {{ $activity['time']->diffForHumans() }}
-                    </span>
-                </li>
-            @empty
-                <li class="text-gray-500 text-sm">
-                    Belum ada aktivitas
-                </li>
-            @endforelse
+                {{-- TIME --}}
+                <div class="text-xs text-gray-400">
+                    {{ $activity->created_at->diffForHumans() }}
+                </div>
+
+            </li>
+            @endforeach
         </ul>
     </div>
 

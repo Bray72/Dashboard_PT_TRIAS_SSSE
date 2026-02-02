@@ -23,11 +23,10 @@ class ActivityController extends Controller
             ->take(10)
             ->get()
             ->each(function ($user) use ($activities) {
-                $activities->push([
-                    'message' => "{$user->name} register",
-                    'time' => $user->created_at,
-                    'type' => 'register',
-                ]);
+                $activities = Activity::with('user')
+                ->latest()
+                ->take(10)
+                ->get();
             });
 
         /**
