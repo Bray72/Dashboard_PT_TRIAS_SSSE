@@ -10,7 +10,7 @@
 
         <div class="text-sm text-gray-700">
             Last login:
-            <span class="font-medium">
+            <span class="text-sm text-gray-700">
                 {{ optional(auth()->user()->last_login_at)->diffForHumans() ?? '-' }}
             </span>
         </div>
