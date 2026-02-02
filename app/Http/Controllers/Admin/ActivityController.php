@@ -9,13 +9,14 @@ use App\Models\CompanyStatistic;
 use App\Models\PermitStatistic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {
     public function index()
     {
         // 1️⃣ Near Miss activity
-        $nearMissActivities = DB::table('near_misses')
+        $nearMissActivities = DB::table('')
             ->select(
                 DB::raw("'Input data Near Miss' as activity"),
                 'created_at'
