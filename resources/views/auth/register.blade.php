@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Safety Metrics Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ asset('https://media.licdn.com/dms/image/v2/D560BAQEupOn406TVUw/company-logo_200_200/company-logo_200_200/0/1690511883379/pt_trias_sentosa_tbk_logo?e=2147483647&v=beta&t=H5jupd3fgQtrgyLZBBwu_2sDuWX5sYHYzhvlffGAdBY') }}">
 </head>
 <body class="min-h-screen relative overflow-y-auto flex items-start justify-center p-4">
     <div class="absolute inset-0 bg-cover bg-center"
